@@ -18,3 +18,4 @@ services/auth-service/src/generated
 # Editor
 .DS_Store
 *.log
+storybook-static/
