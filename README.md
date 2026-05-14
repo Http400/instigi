@@ -1,5 +1,9 @@
 # Instigi
 
+This application helps users track and manage their workouts in a simple, structured way. It allows users to log exercises, monitor progress over time, and stay consistent with their fitness goals through personalized workout history and performance insights. The app is designed to make workout tracking fast, intuitive, and motivating for both beginners and experienced athletes.
+
+## Architecture
+
 A pnpm + Turborepo monorepo with shared packages, React apps, and a Node.js auth service.
 
 ## Structure

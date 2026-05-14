@@ -24,7 +24,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4000
-      DATABASE_URL: postgresql://instigi:instigi_password@postgres:5432/instigi_db
+      DATABASE_URL: postgresql://instigi:instigi_password@postgres:5432/instigi_db?search_path=auth
       JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change-me-refresh-in-production}
     ports:

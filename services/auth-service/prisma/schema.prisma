@@ -8,6 +8,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  schemas  = ["auth"]
 }
 
 model User {
@@ -20,10 +21,13 @@ model User {
   updatedAt DateTime @updatedAt
 
   @@map("users")
+  @@schema("auth")
 }
 
 enum Role {
   ADMIN
   USER
   GUEST
+
+  @@schema("auth")
 }
