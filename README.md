@@ -73,6 +73,20 @@ This starts everything in parallel via Turborepo:
 
 ---
 
+## UI Package (`packages/ui`)
+
+The `@instigi/ui` package is a shared MUI component library used by both apps. It includes a [Storybook](https://storybook.js.org/) setup for developing and previewing components in isolation.
+
+### Run Storybook
+
+```bash
+pnpm --filter @instigi/ui storybook
+```
+
+Storybook will be available at **http://localhost:6006**.
+
+---
+
 ## Running individual services
 
 ```bash
