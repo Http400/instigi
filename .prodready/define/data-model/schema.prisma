@@ -1,0 +1,76 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  workouts  WorkoutSession[]
+  exercises Exercise[]
+}
+
+model WorkoutSession {
+  id          String    @id @default(uuid())
+  userId      String
+  name        String
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercises WorkoutExercise[]
+
+  @@index([userId])
+  @@index([completedAt])
+}
+
+model Exercise {
+  id          String   @id @default(uuid())
+  name        String
+  muscleGroup String?
+  isCustom    Boolean  @default(false)
+  userId      String?
+  createdAt   DateTime @default(now())
+
+  user             User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  workoutExercises WorkoutExercise[]
+
+  @@unique([name, userId])
+}
+
+model WorkoutExercise {
+  id               String  @id @default(uuid())
+  workoutSessionId String
+  exerciseId       String
+  order            Int
+  notes            String?
+
+  workoutSession WorkoutSession @relation(fields: [workoutSessionId], references: [id], onDelete: Cascade)
+  exercise       Exercise       @relation(fields: [exerciseId], references: [id])
+  sets           ExerciseSet[]
+
+  @@index([workoutSessionId, order])
+}
+
+model ExerciseSet {
+  id                String   @id @default(uuid())
+  workoutExerciseId String
+  setNumber         Int
+  reps              Int?
+  weightKg          Float?
+  durationSec       Int?
+  completedAt       DateTime @default(now())
+
+  workoutExercise WorkoutExercise @relation(fields: [workoutExerciseId], references: [id], onDelete: Cascade)
+}

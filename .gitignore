@@ -1,0 +1,20 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+build
+coverage
+.turbo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Generated files
+services/auth-service/src/generated
+
+# Editor
+.DS_Store
+*.log

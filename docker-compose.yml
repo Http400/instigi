@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: instigi_postgres
+    environment:
+      POSTGRES_USER: instigi
+      POSTGRES_PASSWORD: instigi_password
+      POSTGRES_DB: instigi_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U instigi -d instigi_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: services/auth-service/Dockerfile
+    container_name: instigi_auth
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgresql://instigi:instigi_password@postgres:5432/instigi_db
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change-me-refresh-in-production}
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web-app:
+    build:
+      context: .
+      dockerfile: apps/web-app/Dockerfile
+    container_name: instigi_web
+    ports:
+      - "3000:80"
+    depends_on:
+      - auth-service
+
+  admin-app:
+    build:
+      context: .
+      dockerfile: apps/admin-app/Dockerfile
+    container_name: instigi_admin
+    ports:
+      - "3001:80"
+    depends_on:
+      - auth-service
+
+volumes:
+  postgres_data:
