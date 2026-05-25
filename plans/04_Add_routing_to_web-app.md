@@ -22,11 +22,11 @@ Mode chosen: **Data Mode** — `createBrowserRouter` + `RouterProvider`
 
 ## Routes
 
-| Path | Component | Description |
-|------|-----------|-------------|
-| `/` | `HomePage` | Landing / home page |
-| `/auth` | `AuthPage` | Single page for sign-in **and** sign-up — mode toggled via local state |
-| `*` | `NotFoundPage` | 404 catch-all |
+| Path    | Component      | Description                                                            |
+| ------- | -------------- | ---------------------------------------------------------------------- |
+| `/`     | `HomePage`     | Landing / home page                                                    |
+| `/auth` | `AuthPage`     | Single page for sign-in **and** sign-up — mode toggled via local state |
+| `*`     | `NotFoundPage` | 404 catch-all                                                          |
 
 A `RootLayout` component provides shared chrome (nav bar, MUI theme wrappers via `<Outlet />`).
 
@@ -65,7 +65,9 @@ export default function HomePage() {
           Welcome to Instigi
         </Typography>
         <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
-          <Button component={Link} to="/auth" variant="contained">Sign In / Sign Up</Button>
+          <Button component={Link} to="/auth" variant="contained">
+            Sign In / Sign Up
+          </Button>
         </Box>
       </Box>
     </Container>
@@ -118,8 +120,12 @@ export default function NotFoundPage() {
   return (
     <Container maxWidth="sm">
       <Box sx={{ py: 8, textAlign: 'center' }}>
-        <Typography variant="h4" gutterBottom>404 — Page Not Found</Typography>
-        <Button component={Link} to="/" variant="contained">Go Home</Button>
+        <Typography variant="h4" gutterBottom>
+          404 — Page Not Found
+        </Typography>
+        <Button component={Link} to="/" variant="contained">
+          Go Home
+        </Button>
       </Box>
     </Container>
   );
@@ -147,9 +153,13 @@ export default function RootLayout() {
       <AppBar position="static" color="default" elevation={1}>
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>Instigi</Link>
+            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+              Instigi
+            </Link>
           </Typography>
-          <Button component={Link} to="/auth">Sign In / Sign Up</Button>
+          <Button component={Link} to="/auth">
+            Sign In / Sign Up
+          </Button>
         </Toolbar>
       </AppBar>
       <Outlet />
@@ -201,7 +211,7 @@ if (!rootEl) throw new Error('Root element not found');
 createRoot(rootEl).render(
   <StrictMode>
     <RouterProvider router={router} />
-  </StrictMode>,
+  </StrictMode>
 );
 ```
 
@@ -216,13 +226,18 @@ createRoot(rootEl).render(
 **Update `src/App.test.tsx`** — wrap renders with `MemoryRouter` since `App` (if kept) no longer provides routing context, or rewrite tests to target individual page components.
 
 Example for a page-level test:
+
 ```tsx
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import HomePage from './pages/HomePage';
 
 it('renders home heading', () => {
-  render(<MemoryRouter><HomePage /></MemoryRouter>);
+  render(
+    <MemoryRouter>
+      <HomePage />
+    </MemoryRouter>
+  );
   expect(screen.getByRole('heading', { name: /welcome to instigi/i })).toBeInTheDocument();
 });
 ```
@@ -237,6 +252,7 @@ pnpm --filter @instigi/web-app test
 ```
 
 Verify:
+
 - No TypeScript errors
 - All tests pass (update `App.test.tsx` as needed)
 
@@ -244,16 +260,16 @@ Verify:
 
 ## File Checklist
 
-| File | Action |
-|------|--------|
-| `apps/web-app/src/router.tsx` | **Create** — `createBrowserRouter` config |
-| `apps/web-app/src/layouts/RootLayout.tsx` | **Create** — shared shell with `<Outlet />` |
-| `apps/web-app/src/pages/HomePage.tsx` | **Create** — landing page with link to `/auth` |
-| `apps/web-app/src/pages/AuthPage.tsx` | **Create** — sign-in/sign-up via `AuthForm` + local mode state |
-| `apps/web-app/src/pages/NotFoundPage.tsx` | **Create** — 404 fallback |
-| `apps/web-app/src/main.tsx` | **Update** — use `RouterProvider` |
-| `apps/web-app/src/App.tsx` | **Delete** (or repurpose as `HomePage`) |
-| `apps/web-app/src/App.test.tsx` | **Update** — adapt tests for new page structure |
+| File                                      | Action                                                         |
+| ----------------------------------------- | -------------------------------------------------------------- |
+| `apps/web-app/src/router.tsx`             | **Create** — `createBrowserRouter` config                      |
+| `apps/web-app/src/layouts/RootLayout.tsx` | **Create** — shared shell with `<Outlet />`                    |
+| `apps/web-app/src/pages/HomePage.tsx`     | **Create** — landing page with link to `/auth`                 |
+| `apps/web-app/src/pages/AuthPage.tsx`     | **Create** — sign-in/sign-up via `AuthForm` + local mode state |
+| `apps/web-app/src/pages/NotFoundPage.tsx` | **Create** — 404 fallback                                      |
+| `apps/web-app/src/main.tsx`               | **Update** — use `RouterProvider`                              |
+| `apps/web-app/src/App.tsx`                | **Delete** (or repurpose as `HomePage`)                        |
+| `apps/web-app/src/App.test.tsx`           | **Update** — adapt tests for new page structure                |
 
 ---
 

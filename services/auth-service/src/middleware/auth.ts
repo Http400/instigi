@@ -21,6 +21,8 @@ export function requireAuth(req: AuthRequest, res: Response, next: NextFunction)
     req.user = verifyAccessToken(token);
     next();
   } catch {
-    res.status(401).json({ message: 'Invalid or expired token', code: 'INVALID_TOKEN', statusCode: 401 });
+    res
+      .status(401)
+      .json({ message: 'Invalid or expired token', code: 'INVALID_TOKEN', statusCode: 401 });
   }
 }

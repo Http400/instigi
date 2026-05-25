@@ -1,7 +1,9 @@
 # Monorepo Setup Plan
 
 ## Problem
+
 Set up a pnpm + Turborepo monorepo in the `instigi` repo with:
+
 - **apps/web-app** — Vite + Vitest + React + TypeScript
 - **apps/admin-app** — Vite + Vitest + React + TypeScript
 - **services/auth-service** — Node.js + Express + TypeScript + Prisma (PostgreSQL)

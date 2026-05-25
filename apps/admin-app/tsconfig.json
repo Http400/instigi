@@ -6,8 +6,5 @@
     "rootDir": "src"
   },
   "include": ["src"],
-  "references": [
-    { "path": "../../packages/types" },
-    { "path": "../../packages/ui" }
-  ]
+  "references": [{ "path": "../../packages/types" }, { "path": "../../packages/ui" }]
 }

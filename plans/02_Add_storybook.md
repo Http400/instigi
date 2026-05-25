@@ -7,6 +7,7 @@ using MUI v9 (`@mui/material`). Storybook will be configured with the `@storyboo
 to reuse the existing Vite setup. Stories will be written for the two existing components: `Button` and `TextField`.
 
 > **Storybook 10 key highlights:**
+>
 > - ESM-only (no CommonJS), requires **Node ≥ 20.16** (current engines allow `>=20.0.0` — bump to `>=20.16.0`)
 > - Typesafe **CSF Factories** for writing strongly-typed stories
 > - Native Vitest 4 integration support
@@ -40,6 +41,7 @@ pnpm add -D \
 ```
 
 Expected packages added:
+
 - `storybook` — Storybook CLI (v10.4.x)
 - `@storybook/react-vite` — React + Vite framework (v10.4.x)
 - `@storybook/addon-essentials` — Docs, controls, actions, backgrounds, viewport
@@ -65,10 +67,7 @@ import type { StorybookConfig } from '@storybook/react-vite';
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(ts|tsx|mdx)'],
-  addons: [
-    '@storybook/addon-essentials',
-    '@storybook/addon-interactions',
-  ],
+  addons: ['@storybook/addon-essentials', '@storybook/addon-interactions'],
   framework: {
     name: '@storybook/react-vite',
     options: {},
@@ -148,6 +147,7 @@ from the framework package. Stories use `const Story = meta.story({...})` patter
 #### `packages/ui/src/components/Button.stories.tsx`
 
 Cover the key variants of `Button`:
+
 - Default (contained)
 - Outlined / text variants
 - Loading state
@@ -157,6 +157,7 @@ Cover the key variants of `Button`:
 #### `packages/ui/src/components/TextField.stories.tsx`
 
 Cover key states of `TextField`:
+
 - Default
 - With label and placeholder
 - With helper text
@@ -169,6 +170,7 @@ Cover key states of `TextField`:
 Stories should not be compiled into the `dist/` output.
 
 **`packages/ui/tsconfig.json`** — add `exclude`:
+
 ```json
 "exclude": ["src/**/*.stories.*", "node_modules"]
 ```
@@ -180,22 +182,23 @@ from the library build naturally. No changes needed unless index.ts re-exports s
 
 ## File Checklist
 
-| File | Action |
-|---|---|
-| `package.json` (root) | Bump `node` engine to `>=20.16.0` |
-| `packages/ui/package.json` | Add devDeps + scripts |
-| `packages/ui/.storybook/main.ts` | Create |
-| `packages/ui/.storybook/preview.tsx` | Create |
-| `packages/ui/src/components/Button.stories.tsx` | Create |
-| `packages/ui/src/components/TextField.stories.tsx` | Create |
-| `packages/ui/tsconfig.json` | Update exclude |
-| `turbo.json` | Add storybook tasks |
+| File                                               | Action                            |
+| -------------------------------------------------- | --------------------------------- |
+| `package.json` (root)                              | Bump `node` engine to `>=20.16.0` |
+| `packages/ui/package.json`                         | Add devDeps + scripts             |
+| `packages/ui/.storybook/main.ts`                   | Create                            |
+| `packages/ui/.storybook/preview.tsx`               | Create                            |
+| `packages/ui/src/components/Button.stories.tsx`    | Create                            |
+| `packages/ui/src/components/TextField.stories.tsx` | Create                            |
+| `packages/ui/tsconfig.json`                        | Update exclude                    |
+| `turbo.json`                                       | Add storybook tasks               |
 
 ---
 
 ## Verification
 
 After implementation:
+
 1. `cd packages/ui && pnpm storybook` — Storybook dev server starts on port 6006, both stories visible
 2. `cd packages/ui && pnpm build-storybook` — static output generated in `storybook-static/`
 3. `pnpm build` (root) — library build is unaffected (stories excluded)

@@ -65,10 +65,10 @@ pnpm dev
 
 This starts everything in parallel via Turborepo:
 
-| Service | URL |
-|---|---|
-| web-app | http://localhost:3000 |
-| admin-app | http://localhost:3001 |
+| Service      | URL                   |
+| ------------ | --------------------- |
+| web-app      | http://localhost:3000 |
+| admin-app    | http://localhost:3001 |
 | auth-service | http://localhost:4000 |
 
 ---
@@ -102,14 +102,14 @@ pnpm dev --filter @instigi/auth-service
 
 ## Common Commands
 
-| Command | Description |
-|---|---|
-| `pnpm dev` | Start all services in watch/dev mode |
-| `pnpm build` | Build all packages |
-| `pnpm test` | Run all tests |
-| `pnpm lint` | Type-check all packages |
-| `pnpm --filter @instigi/auth-service db:migrate` | Run Prisma migrations |
-| `pnpm --filter @instigi/auth-service db:studio` | Open Prisma Studio |
+| Command                                          | Description                          |
+| ------------------------------------------------ | ------------------------------------ |
+| `pnpm dev`                                       | Start all services in watch/dev mode |
+| `pnpm build`                                     | Build all packages                   |
+| `pnpm test`                                      | Run all tests                        |
+| `pnpm lint`                                      | Type-check all packages              |
+| `pnpm --filter @instigi/auth-service db:migrate` | Run Prisma migrations                |
+| `pnpm --filter @instigi/auth-service db:studio`  | Open Prisma Studio                   |
 
 ## Docker (full stack)
 
@@ -122,21 +122,21 @@ cp services/auth-service/.env.example services/auth-service/.env
 docker compose up --build
 ```
 
-| Service | URL |
-|---|---|
-| web-app | http://localhost:3000 |
-| admin-app | http://localhost:3001 |
+| Service      | URL                   |
+| ------------ | --------------------- |
+| web-app      | http://localhost:3000 |
+| admin-app    | http://localhost:3001 |
 | auth-service | http://localhost:4000 |
-| PostgreSQL | localhost:5432 |
+| PostgreSQL   | localhost:5432        |
 
 ## Auth Service API
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/auth/register` | Register a new user |
-| `POST` | `/api/auth/login` | Log in, returns JWT tokens |
-| `POST` | `/api/auth/refresh` | Refresh access token |
-| `GET` | `/health` | Health check |
+| Method | Endpoint             | Description                |
+| ------ | -------------------- | -------------------------- |
+| `POST` | `/api/auth/register` | Register a new user        |
+| `POST` | `/api/auth/login`    | Log in, returns JWT tokens |
+| `POST` | `/api/auth/refresh`  | Refresh access token       |
+| `GET`  | `/health`            | Health check               |
 
 ### Example: Register
 
@@ -156,12 +156,12 @@ curl -X POST http://localhost:4000/api/auth/login \
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Package manager | pnpm workspaces |
-| Task runner | Turborepo |
-| Frontend | React 19, Vite 8, MUI v9 |
-| Testing | Vitest 4, Testing Library |
-| Backend | Express 5, TypeScript 6 |
-| ORM | Prisma 7 (PostgreSQL) |
-| Containerisation | Docker, nginx |
+| Layer            | Technology                |
+| ---------------- | ------------------------- |
+| Package manager  | pnpm workspaces           |
+| Task runner      | Turborepo                 |
+| Frontend         | React 19, Vite 8, MUI v9  |
+| Testing          | Vitest 4, Testing Library |
+| Backend          | Express 5, TypeScript 6   |
+| ORM              | Prisma 7 (PostgreSQL)     |
+| Containerisation | Docker, nginx             |

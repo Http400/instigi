@@ -6,10 +6,10 @@
     "outDir": "dist",
     "rootDir": "src",
     "declaration": false,
-    "declarationMap": false
+    "declarationMap": false,
+    "types": ["vitest/globals"]
   },
   "include": ["src"],
-  "references": [
-    { "path": "../../packages/types" }
-  ]
+  "exclude": [],
+  "references": [{ "path": "../../packages/types" }]
 }

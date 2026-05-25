@@ -9,7 +9,9 @@ export default function HomePage() {
           Welcome to Instigi
         </Typography>
         <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
-          <Button component={Link} to="/auth" variant="contained">Sign In / Sign Up</Button>
+          <Button component={Link} to="/auth" variant="contained">
+            Sign In / Sign Up
+          </Button>
         </Box>
       </Box>
     </Container>

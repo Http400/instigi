@@ -16,12 +16,7 @@ export interface AuthFormProps {
   error?: string;
 }
 
-const validate = (
-  email: string,
-  password: string,
-  confirmPassword: string,
-  isSignUp: boolean,
-) => ({
+const validate = (email: string, password: string, confirmPassword: string, isSignUp: boolean) => ({
   emailError: !email
     ? 'Email is required'
     : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -83,8 +78,11 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    const { emailError: eErr, passwordError: pErr, confirmPasswordError: cErr } =
-      validate(email, password, confirmPassword, !isSignIn);
+    const {
+      emailError: eErr,
+      passwordError: pErr,
+      confirmPasswordError: cErr,
+    } = validate(email, password, confirmPassword, !isSignIn);
     setEmailError(eErr);
     setPasswordError(pErr);
     setConfirmPasswordError(cErr);
@@ -159,13 +157,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
         </Alert>
       )}
 
-      <Button
-        type="submit"
-        variant="contained"
-        fullWidth
-        loading={loading}
-        sx={{ mb: 2 }}
-      >
+      <Button type="submit" variant="contained" fullWidth loading={loading} sx={{ mb: 2 }}>
         {isSignIn ? 'Sign In' : 'Sign Up'}
       </Button>
 

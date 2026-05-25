@@ -6,7 +6,11 @@ import HomePage from './pages/HomePage';
 
 describe('HomePage', () => {
   it('renders home heading', () => {
-    render(<MemoryRouter><HomePage /></MemoryRouter>);
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
     expect(screen.getByRole('heading', { name: /welcome to instigi/i })).toBeInTheDocument();
   });
 });
