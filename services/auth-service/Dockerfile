@@ -3,7 +3,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 FROM base AS builder
 WORKDIR /app
-COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* .npmrc ./
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* .npmrc tsconfig.base.json ./
 COPY packages/types/package.json ./packages/types/
 COPY services/auth-service/package.json ./services/auth-service/
 RUN pnpm install --frozen-lockfile --filter @instigi/types --filter @instigi/auth-service
