@@ -1,7 +1,6 @@
 services:
   postgres:
     image: postgres:17-alpine
-    container_name: instigi_postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -17,7 +16,6 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: instigi_pgadmin
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
@@ -29,7 +27,6 @@ services:
     build:
       context: .
       dockerfile: services/auth-service/Dockerfile
-    container_name: instigi_auth
     restart: unless-stopped
     environment:
       NODE_ENV: production
@@ -47,7 +44,6 @@ services:
     build:
       context: .
       dockerfile: apps/web-app/Dockerfile
-    container_name: instigi_web
     restart: unless-stopped
     depends_on:
       - auth-service
@@ -56,14 +52,12 @@ services:
     build:
       context: .
       dockerfile: apps/admin-app/Dockerfile
-    container_name: instigi_admin
     restart: unless-stopped
     depends_on:
       - auth-service
 
   nginx:
     image: nginx:alpine
-    container_name: instigi_nginx
     restart: unless-stopped
     ports:
       - '80:80'
