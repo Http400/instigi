@@ -2,6 +2,8 @@ FROM node:24-alpine AS base
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 FROM base AS builder
+ARG DATABASE_URL=postgresql://placeholder:placeholder@localhost:5432/placeholder
+ENV DATABASE_URL=$DATABASE_URL
 WORKDIR /app
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* .npmrc tsconfig.base.json ./
 COPY packages/types/package.json ./packages/types/
