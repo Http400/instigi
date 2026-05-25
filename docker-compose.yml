@@ -2,33 +2,43 @@ services:
   postgres:
     image: postgres:17-alpine
     container_name: instigi_postgres
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: instigi
-      POSTGRES_PASSWORD: instigi_password
-      POSTGRES_DB: instigi_db
-    ports:
-      - '5432:5432'
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U instigi -d instigi_db']
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
       interval: 10s
       timeout: 5s
       retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: instigi_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - postgres
 
   auth-service:
     build:
       context: .
       dockerfile: services/auth-service/Dockerfile
     container_name: instigi_auth
+    restart: unless-stopped
     environment:
       NODE_ENV: production
       PORT: 4000
-      DATABASE_URL: postgresql://instigi:instigi_password@postgres:5432/instigi_db?search_path=auth
-      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
-      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change-me-refresh-in-production}
-    ports:
-      - '4000:4000'
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?search_path=auth
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-3600}
+    command: sh -c "node_modules/.bin/prisma migrate deploy && node dist/index.js"
     depends_on:
       postgres:
         condition: service_healthy
@@ -38,8 +48,7 @@ services:
       context: .
       dockerfile: apps/web-app/Dockerfile
     container_name: instigi_web
-    ports:
-      - '3000:80'
+    restart: unless-stopped
     depends_on:
       - auth-service
 
@@ -48,10 +57,23 @@ services:
       context: .
       dockerfile: apps/admin-app/Dockerfile
     container_name: instigi_admin
-    ports:
-      - '3001:80'
+    restart: unless-stopped
     depends_on:
       - auth-service
+
+  nginx:
+    image: nginx:alpine
+    container_name: instigi_nginx
+    restart: unless-stopped
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web-app
+      - admin-app
+      - auth-service
+      - pgadmin
 
 volumes:
   postgres_data:

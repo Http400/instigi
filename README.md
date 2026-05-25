@@ -113,7 +113,7 @@ pnpm dev --filter @instigi/auth-service
 
 ## Docker (full stack)
 
-To run everything in containers:
+To run everything in containers locally:
 
 ```bash
 # Copy and configure env for Docker
@@ -127,7 +127,74 @@ docker compose up --build
 | web-app      | http://localhost:3000 |
 | admin-app    | http://localhost:3001 |
 | auth-service | http://localhost:4000 |
-| PostgreSQL   | localhost:5432        |
+| PostgreSQL   | http://localhost:5432 |
+
+## Deployment (VPS)
+
+The app is deployed via Docker Compose behind a single nginx reverse proxy. All traffic enters on port 80 and is routed by subdomain.
+
+### Subdomain routing
+
+| Subdomain                        | Service      |
+| -------------------------------- | ------------ |
+| `www.instigi.com`, `instigi.com` | web-app      |
+| `admin.instigi.com`              | admin-app    |
+| `api.instigi.com`                | auth-service |
+| `pgadmin.instigi.com`            | pgAdmin      |
+
+### Deploy steps
+
+**1. Point DNS** — create A records for `instigi.com`, `www`, `admin`, `api`, and `pgadmin` pointing to your VPS IP.
+
+**2. SSH into the VPS and clone the repo**
+
+```bash
+git clone https://github.com/Http400/instigi.git
+cd instigi
+```
+
+**3. Create the `.env` file**
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and fill in secure values for all variables:
+
+```env
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_DB=
+JWT_SECRET=
+JWT_REFRESH_SECRET=
+JWT_EXPIRES_IN=3600
+PGADMIN_DEFAULT_EMAIL=
+PGADMIN_DEFAULT_PASSWORD=
+```
+
+**4. Build and start all services**
+
+```bash
+docker compose up -d --build
+```
+
+On first start, `auth-service` automatically runs `prisma migrate deploy` before the Node.js process begins.
+
+### Useful commands on the VPS
+
+```bash
+# View logs
+docker compose logs -f
+
+# Restart a single service
+docker compose restart auth-service
+
+# Pull latest code and redeploy
+git pull && docker compose up -d --build
+
+# Stop everything
+docker compose down
+```
 
 ## Auth Service API
 
