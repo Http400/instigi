@@ -14,6 +14,7 @@ COPY packages/types ./packages/types
 COPY services/auth-service ./services/auth-service
 RUN pnpm --filter @instigi/types build
 RUN pnpm --filter @instigi/auth-service build
+RUN cd services/auth-service && npx prisma generate
 
 FROM base AS runner
 WORKDIR /app
@@ -27,7 +28,5 @@ COPY --from=builder /app/services/auth-service/prisma.config.ts ./services/auth-
 COPY --from=builder /app/services/auth-service/node_modules ./services/auth-service/node_modules
 
 WORKDIR /app/services/auth-service
-RUN npx prisma generate
-
 EXPOSE 4000
 CMD ["node", "dist/index.js"]
