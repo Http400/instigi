@@ -3,7 +3,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 FROM base AS builder
 WORKDIR /app
-COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* .npmrc ./
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* .npmrc tsconfig.base.json ./
 COPY packages/types/package.json ./packages/types/
 COPY packages/ui/package.json ./packages/ui/
 COPY apps/web-app/package.json ./apps/web-app/
