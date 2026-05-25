@@ -23,6 +23,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages/types ./packages/types
 COPY --from=builder /app/services/auth-service/dist ./services/auth-service/dist
 COPY --from=builder /app/services/auth-service/prisma ./services/auth-service/prisma
+COPY --from=builder /app/services/auth-service/prisma.config.ts ./services/auth-service/prisma.config.ts
 COPY --from=builder /app/services/auth-service/node_modules ./services/auth-service/node_modules
 
 WORKDIR /app/services/auth-service
