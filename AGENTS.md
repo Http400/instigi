@@ -20,18 +20,11 @@ Full setup and Docker instructions: `@README.md`.
 
 ## Build, Test & Dev Commands
 
-| Command | Purpose |
-|---|---|
-| `pnpm dev` | Start all services in watch mode |
-| `pnpm build` | Build all packages via Turborepo |
-| `pnpm test` | Run all tests |
-| `pnpm lint && pnpm typecheck` | ESLint + tsc --noEmit (run before pushing) |
-| `pnpm format` | Format all files with Prettier |
-| `pnpm --filter @instigi/ui storybook` | Open Storybook for UI component development |
+Scripts live in `@package.json`. Run `pnpm lint && pnpm typecheck` before pushing.
 
 ## Coding Style & Conventions
 
-Formatter config: `@.prettierrc` (2-space indent, single quotes, semicolons, 100-char width). Key non-defaults in `@tsconfig.base.json`:
+Formatter config: `@.prettierrc`. Key non-defaults in `@tsconfig.base.json`:
 
 - `noUncheckedIndexedAccess` — array access returns `T | undefined`; guard before use.
 - `exactOptionalPropertyTypes` — optional properties cannot be assigned `undefined` explicitly.
