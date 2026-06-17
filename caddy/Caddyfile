@@ -1,0 +1,23 @@
+{
+	email {$CADDY_ACME_EMAIL}
+}
+
+instigi.com, www.instigi.com {
+	reverse_proxy web-app:80
+}
+
+admin.instigi.com {
+	reverse_proxy admin-app:80
+}
+
+api.instigi.com {
+	reverse_proxy auth-service:4000
+}
+
+pgadmin.instigi.com {
+	basic_auth {
+		{$PGADMIN_BASIC_AUTH_USER} {$PGADMIN_BASIC_AUTH_HASH}
+	}
+
+	reverse_proxy pgadmin:80
+}
