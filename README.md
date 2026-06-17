@@ -186,8 +186,10 @@ docker run --rm caddy caddy hash-password --plaintext 'your-password'
 **4. Build and start all services**
 
 ```bash
-docker compose up -d --build
+COMPOSE_PARALLEL_LIMIT=1 docker compose up -d --build
 ```
+
+`COMPOSE_PARALLEL_LIMIT=1` keeps small VPS hosts from building both frontend images at the same time. If a build fails with `ERR_PNPM_ENOSPC`, free Docker build cache first with `docker builder prune -af`, then rerun the deploy command above.
 
 On first start, `auth-service` automatically runs `prisma migrate deploy` before the Node.js process begins.
 
@@ -215,7 +217,10 @@ docker compose logs -f
 docker compose restart auth-service
 
 # Pull latest code and redeploy
-git pull && docker compose up -d --build
+git pull && COMPOSE_PARALLEL_LIMIT=1 docker compose up -d --build
+
+# Free Docker build cache if the VPS reports ERR_PNPM_ENOSPC
+docker builder prune -af
 
 # Stop everything
 docker compose down
