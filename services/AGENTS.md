@@ -10,7 +10,7 @@ The `services/` directory holds backend REST services for Instigi, currently `au
 - `role` is stored uppercase (`USER`/`ADMIN`) in Postgres; call `.toLowerCase()` in the controller layer only.
 - Import Prisma client from `'./generated/prisma/client.js'`, not `@prisma/client` directly.
 - After any `prisma/schema.prisma` change, run `pnpm --filter @instigi/auth-service db:generate`.
-- `DATABASE_URL` must include `?search_path=auth`.
+- `DATABASE_URL` must include `?schema=auth`.
 
 ## Adding a New Route
 

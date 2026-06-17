@@ -122,12 +122,12 @@ cp .env.example .env
 docker compose up --build
 ```
 
-| Service      | URL                   |
-| ------------ | --------------------- |
-| web-app      | `https://instigi.com` |
+| Service      | URL                         |
+| ------------ | --------------------------- |
+| web-app      | `https://instigi.com`       |
 | admin-app    | `https://admin.instigi.com` |
-| auth-service | `https://api.instigi.com` |
-| PostgreSQL   | internal only         |
+| auth-service | `https://api.instigi.com`   |
+| PostgreSQL   | internal only               |
 
 ## Deployment (VPS)
 
@@ -174,7 +174,7 @@ PGADMIN_DEFAULT_EMAIL=
 PGADMIN_DEFAULT_PASSWORD=
 CADDY_ACME_EMAIL=admin@instigi.com
 PGADMIN_BASIC_AUTH_USER=admin
-PGADMIN_BASIC_AUTH_HASH=
+PGADMIN_BASIC_AUTH_HASH='$2a$14$paste-generated-caddy-hash-here'
 ```
 
 Generate `PGADMIN_BASIC_AUTH_HASH` with Caddy:
@@ -182,6 +182,10 @@ Generate `PGADMIN_BASIC_AUTH_HASH` with Caddy:
 ```bash
 docker run --rm caddy caddy hash-password --plaintext 'your-password'
 ```
+
+Keep the generated hash single-quoted in `.env`. Caddy password hashes contain `$`
+characters, and unquoted `$` characters can be interpreted by Docker Compose while
+it reads `.env`.
 
 **4. Build and start all services**
 
@@ -192,6 +196,24 @@ COMPOSE_PARALLEL_LIMIT=1 docker compose up -d --build
 `COMPOSE_PARALLEL_LIMIT=1` keeps small VPS hosts from building both frontend images at the same time. If a build fails with `ERR_PNPM_ENOSPC`, free Docker build cache first with `docker builder prune -af`, then rerun the deploy command above.
 
 On first start, `auth-service` automatically runs `prisma migrate deploy` before the Node.js process begins.
+
+If Postgres was already initialized once on the VPS, changing `POSTGRES_USER`,
+`POSTGRES_PASSWORD`, or `POSTGRES_DB` in `.env` does not update the existing
+database volume. If `auth-service` logs `P1000: Authentication failed`, either
+restore the old database credentials in `.env` or rotate the password inside the
+running database:
+
+```bash
+docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "ALTER USER \"$POSTGRES_USER\" WITH PASSWORD '\''$POSTGRES_PASSWORD'\'';"'
+docker compose restart auth-service
+```
+
+If the VPS database has no data to keep, recreate the Postgres volume instead:
+
+```bash
+docker compose down -v
+COMPOSE_PARALLEL_LIMIT=1 docker compose up -d --build
+```
 
 ### Production checks
 
