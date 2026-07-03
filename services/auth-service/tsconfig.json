@@ -11,5 +11,5 @@
   },
   "include": ["src"],
   "exclude": [],
-  "references": [{ "path": "../../packages/types" }]
+  "references": [{ "path": "../../packages/types" }, { "path": "../../packages/utils" }]
 }
