@@ -396,17 +396,17 @@ Make the service part of the container stack and document it.
 
 #### Automated
 
-- [x] 1.1 Dependencies install: `pnpm install`
-- [x] 1.2 utils package builds: `pnpm --filter @instigi/utils build`
-- [x] 1.3 auth-service typecheck passes: `pnpm --filter @instigi/auth-service typecheck`
-- [x] 1.4 auth-service lint passes: `pnpm --filter @instigi/auth-service lint`
-- [x] 1.5 auth-service tests pass unchanged: `pnpm --filter @instigi/auth-service test`
-- [x] 1.6 auth-service builds: `pnpm --filter @instigi/auth-service build`
-- [x] 1.7 No lingering local jwt/middleware imports in auth-service src
+- [x] 1.1 Dependencies install: `pnpm install` — 9e94ace
+- [x] 1.2 utils package builds: `pnpm --filter @instigi/utils build` — 9e94ace
+- [x] 1.3 auth-service typecheck passes: `pnpm --filter @instigi/auth-service typecheck` — 9e94ace
+- [x] 1.4 auth-service lint passes: `pnpm --filter @instigi/auth-service lint` — 9e94ace
+- [x] 1.5 auth-service tests pass unchanged: `pnpm --filter @instigi/auth-service test` — 9e94ace
+- [x] 1.6 auth-service builds: `pnpm --filter @instigi/auth-service build` — 9e94ace
+- [x] 1.7 No lingering local jwt/middleware imports in auth-service src — 9e94ace
 
 #### Manual
 
-- [x] 1.8 auth-service dev still serves login/register/refresh unchanged
+- [x] 1.8 auth-service dev still serves login/register/refresh unchanged — 9e94ace
 
 ### Phase 2: Scaffold `training-service` shell
 
