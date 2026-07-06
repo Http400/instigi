@@ -14,6 +14,7 @@ coverage
 
 # Generated files
 services/auth-service/src/generated
+services/training-service/src/generated
 
 # Editor
 .DS_Store

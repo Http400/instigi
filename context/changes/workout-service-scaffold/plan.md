@@ -412,16 +412,16 @@ Make the service part of the container stack and document it.
 
 #### Automated
 
-- [ ] 2.1 Install succeeds: `pnpm install`
-- [ ] 2.2 Prisma client generates: `pnpm --filter @instigi/training-service db:generate`
-- [ ] 2.3 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
-- [ ] 2.4 Lint passes: `pnpm --filter @instigi/training-service lint`
-- [ ] 2.5 Build succeeds: `pnpm --filter @instigi/training-service build`
+- [x] 2.1 Install succeeds: `pnpm install`
+- [x] 2.2 Prisma client generates: `pnpm --filter @instigi/training-service db:generate`
+- [x] 2.3 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
+- [x] 2.4 Lint passes: `pnpm --filter @instigi/training-service lint`
+- [x] 2.5 Build succeeds: `pnpm --filter @instigi/training-service build`
 
 #### Manual
 
-- [ ] 2.6 db:migrate creates empty `training` schema (verified in psql/pgAdmin)
-- [ ] 2.7 dev boots on 4001; `/health` returns the correct body
+- [x] 2.6 db:migrate creates empty `training` schema (verified in psql/pgAdmin)
+- [x] 2.7 dev boots on 4001; `/health` returns the correct body
 
 ### Phase 3: Wire JWT verification + tests
 
