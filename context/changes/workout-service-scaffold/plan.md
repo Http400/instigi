@@ -438,11 +438,11 @@ Make the service part of the container stack and document it.
 
 #### Automated
 
-- [x] 4.1 Whole workspace green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`
-- [x] 4.2 Image builds: `docker compose build training-service`
-- [x] 4.3 Caddyfile validates
+- [x] 4.1 Whole workspace green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build` — 6294b2a
+- [x] 4.2 Image builds: `docker compose build training-service` — 6294b2a
+- [x] 4.3 Caddyfile validates — 6294b2a
 
 #### Manual
 
-- [x] 4.4 `docker compose up` runs migrate-on-boot, creates `training` schema, `/health` ok
-- [x] 4.5 No regressions in auth-service / web-app / admin-app
+- [x] 4.4 `docker compose up` runs migrate-on-boot, creates `training` schema, `/health` ok — 6294b2a
+- [x] 4.5 No regressions in auth-service / web-app / admin-app — 6294b2a

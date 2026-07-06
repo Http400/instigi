@@ -1,7 +1,7 @@
 ---
 change_id: workout-service-scaffold
 title: Scaffold new workout data service with tables and JWT verification
-status: implementing
+status: implemented
 created: 2026-07-02
 updated: 2026-07-06
 archived_at: null
