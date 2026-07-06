@@ -51,6 +51,22 @@ Edit `services/auth-service/.env` and set secure values for `JWT_SECRET` and `JW
 docker compose up postgres -d
 ```
 
+Alternatively, for host-based development (`pnpm dev` on your machine), use the
+helper script — it runs a standalone Postgres that publishes port **5432** on
+`localhost` and matches the services' local `.env` `DATABASE_URL`:
+
+```bash
+./scripts/dev-postgres.sh          # start (create or resume) and wait until ready
+./scripts/dev-postgres.sh stop     # stop the container
+./scripts/dev-postgres.sh rm       # remove the container and its data volume
+./scripts/dev-postgres.sh logs     # follow logs
+```
+
+The script is idempotent and prints the resulting `DATABASE_URL` plus the next
+migrate/dev steps. Connection values are overridable via env vars
+(`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `PG_PORT`, `PG_CONTAINER`,
+`PG_IMAGE`).
+
 ### 4. Run database migrations
 
 ```bash
@@ -110,6 +126,7 @@ pnpm dev --filter @instigi/auth-service
 | `pnpm lint`                                      | Type-check all packages              |
 | `pnpm --filter @instigi/auth-service db:migrate` | Run Prisma migrations                |
 | `pnpm --filter @instigi/auth-service db:studio`  | Open Prisma Studio                   |
+| `./scripts/dev-postgres.sh`                      | Start a local dev Postgres (port 5432) |
 
 ## Docker (full stack)
 
