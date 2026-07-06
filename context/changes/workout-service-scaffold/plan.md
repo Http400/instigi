@@ -427,8 +427,8 @@ Make the service part of the container stack and document it.
 
 #### Automated
 
-- [x] 3.1 Tests pass: `pnpm --filter @instigi/training-service test`
-- [x] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
+- [x] 3.1 Tests pass: `pnpm --filter @instigi/training-service test` — 1c3d8ba
+- [x] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck` — 1c3d8ba
 
 #### Manual
 
@@ -438,11 +438,11 @@ Make the service part of the container stack and document it.
 
 #### Automated
 
-- [ ] 4.1 Whole workspace green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`
-- [ ] 4.2 Image builds: `docker compose build training-service`
-- [ ] 4.3 Caddyfile validates
+- [x] 4.1 Whole workspace green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`
+- [x] 4.2 Image builds: `docker compose build training-service`
+- [x] 4.3 Caddyfile validates
 
 #### Manual
 
-- [ ] 4.4 `docker compose up` runs migrate-on-boot, creates `training` schema, `/health` ok
-- [ ] 4.5 No regressions in auth-service / web-app / admin-app
+- [x] 4.4 `docker compose up` runs migrate-on-boot, creates `training` schema, `/health` ok
+- [x] 4.5 No regressions in auth-service / web-app / admin-app

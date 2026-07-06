@@ -14,7 +14,8 @@ instigi/
 │   ├── web-app/        # Vite + React 19 + MUI  (port 3000)
 │   └── admin-app/      # Vite + React 19 + MUI  (port 3001)
 ├── services/
-│   └── auth-service/   # Express 5 + Prisma 7 + PostgreSQL  (port 4000)
+│   ├── auth-service/   # Express 5 + Prisma 7 + PostgreSQL  (port 4000)
+│   └── training-service/ # Express 5 + Prisma 7 + PostgreSQL  (port 4001)
 ├── packages/
 │   ├── ui/             # Shared MUI component library
 │   └── types/          # Shared TypeScript types
@@ -86,6 +87,7 @@ This starts everything in parallel via Turborepo:
 | web-app      | http://localhost:3000 |
 | admin-app    | http://localhost:3001 |
 | auth-service | http://localhost:4000 |
+| training-service | http://localhost:4001 |
 
 ---
 
@@ -114,6 +116,9 @@ pnpm dev --filter @instigi/admin-app
 
 # Auth service only
 pnpm dev --filter @instigi/auth-service
+
+# Training service only
+pnpm dev --filter @instigi/training-service
 ```
 
 ## Common Commands
@@ -126,6 +131,7 @@ pnpm dev --filter @instigi/auth-service
 | `pnpm lint`                                      | Type-check all packages              |
 | `pnpm --filter @instigi/auth-service db:migrate` | Run Prisma migrations                |
 | `pnpm --filter @instigi/auth-service db:studio`  | Open Prisma Studio                   |
+| `pnpm --filter @instigi/training-service db:migrate` | Run training-service Prisma migrations |
 | `./scripts/dev-postgres.sh`                      | Start a local dev Postgres (port 5432) |
 
 ## Docker (full stack)
@@ -144,6 +150,7 @@ docker compose up --build
 | web-app      | `https://instigi.com`       |
 | admin-app    | `https://admin.instigi.com` |
 | auth-service | `https://api.instigi.com`   |
+| training-service | `https://training-api.instigi.com` |
 | PostgreSQL   | internal only               |
 
 ## Deployment (VPS)
@@ -159,6 +166,7 @@ Before starting the stack, make sure the VPS firewall allows inbound `80/tcp` an
 | `www.instigi.com`, `instigi.com` | web-app      |
 | `admin.instigi.com`              | admin-app    |
 | `api.instigi.com`                | auth-service |
+| `training-api.instigi.com`       | training-service |
 | `pgadmin.instigi.com`            | pgAdmin      |
 
 ### Deploy steps
@@ -212,7 +220,7 @@ COMPOSE_PARALLEL_LIMIT=1 docker compose up -d --build
 
 `COMPOSE_PARALLEL_LIMIT=1` keeps small VPS hosts from building both frontend images at the same time. If a build fails with `ERR_PNPM_ENOSPC`, free Docker build cache first with `docker builder prune -af`, then rerun the deploy command above.
 
-On first start, `auth-service` automatically runs `prisma migrate deploy` before the Node.js process begins.
+On first start, `auth-service` and `training-service` each automatically run `prisma migrate deploy` before their Node.js process begins.
 
 If Postgres was already initialized once on the VPS, changing `POSTGRES_USER`,
 `POSTGRES_PASSWORD`, or `POSTGRES_DB` in `.env` does not update the existing

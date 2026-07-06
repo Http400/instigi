@@ -40,6 +40,21 @@ services:
       postgres:
         condition: service_healthy
 
+  training-service:
+    build:
+      context: .
+      dockerfile: services/training-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4001
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=training
+      JWT_SECRET: ${JWT_SECRET}
+    command: sh -c "node_modules/.bin/prisma migrate deploy && node dist/index.js"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   web-app:
     build:
       context: .
@@ -47,6 +62,7 @@ services:
     restart: unless-stopped
     depends_on:
       - auth-service
+      - training-service
 
   admin-app:
     build:
@@ -74,6 +90,7 @@ services:
       - web-app
       - admin-app
       - auth-service
+      - training-service
       - pgadmin
 
 volumes:

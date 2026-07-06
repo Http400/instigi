@@ -14,6 +14,10 @@ api.instigi.com {
 	reverse_proxy auth-service:4000
 }
 
+training-api.instigi.com {
+	reverse_proxy training-service:4001
+}
+
 pgadmin.instigi.com {
 	basic_auth {
 		{$PGADMIN_BASIC_AUTH_USER} {$PGADMIN_BASIC_AUTH_HASH}
