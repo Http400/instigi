@@ -30,6 +30,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@fontsource/montserrat": "^5.0.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^9.0.1",
