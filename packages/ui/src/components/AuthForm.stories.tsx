@@ -63,7 +63,7 @@ export const SignUpWithPasswordMismatch: Story = {
     docs: {
       description: {
         story:
-          'Sign-up mode with the Confirm Password field visible. Fill in mismatched passwords and click "Sign Up" to see the inline "Passwords do not match" validation error.',
+          'Sign-up mode with the Confirm Password field visible. Fill in mismatched passwords and click "Create account" to see the inline "Passwords do not match" validation error.',
       },
     },
   },

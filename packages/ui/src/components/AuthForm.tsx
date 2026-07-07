@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
-import { Box, Typography, Link, Alert } from '@mui/material';
+import {
+  Box,
+  Stack,
+  Link,
+  Alert,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
+} from '@mui/material';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Button } from './Button';
 import { TextField } from './TextField';
 
@@ -46,6 +59,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const isSignIn = mode === 'signIn';
 
@@ -99,6 +113,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     setPasswordError('');
     setConfirmPasswordError('');
     setSubmitted(false);
+    setShowPassword(false);
     onModeChange?.(mode === 'signIn' ? 'signUp' : 'signIn');
   };
 
@@ -109,12 +124,8 @@ export const AuthForm: React.FC<AuthFormProps> = ({
       noValidate
       sx={{ width: '100%', maxWidth: 400, mx: 'auto' }}
     >
-      <Typography variant="h5" sx={{ textAlign: 'center', mb: 3 }}>
-        {isSignIn ? 'Sign In' : 'Sign Up'}
-      </Typography>
-
       <TextField
-        label="Email"
+        label="Email address"
         type="email"
         value={email}
         onChange={handleEmailChange}
@@ -122,34 +133,90 @@ export const AuthForm: React.FC<AuthFormProps> = ({
         helperText={emailError}
         disabled={loading}
         autoComplete="email"
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <EmailOutlinedIcon fontSize="small" />
+              </InputAdornment>
+            ),
+          },
+        }}
         sx={{ mb: 2 }}
       />
 
       <TextField
         label="Password"
-        type="password"
+        type={showPassword ? 'text' : 'password'}
         value={password}
         onChange={handlePasswordChange}
         error={Boolean(passwordError)}
         helperText={passwordError}
         disabled={loading}
         autoComplete={isSignIn ? 'current-password' : 'new-password'}
-        sx={{ mb: isSignIn ? 3 : 2 }}
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <LockOutlinedIcon fontSize="small" />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  edge="end"
+                  disabled={loading}
+                >
+                  {showPassword ? (
+                    <VisibilityOffIcon fontSize="small" />
+                  ) : (
+                    <VisibilityIcon fontSize="small" />
+                  )}
+                </IconButton>
+              </InputAdornment>
+            ),
+          },
+        }}
+        sx={{ mb: 2 }}
       />
 
       {!isSignIn && (
         <TextField
           label="Confirm Password"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           value={confirmPassword}
           onChange={handleConfirmPasswordChange}
           error={Boolean(confirmPasswordError)}
           helperText={confirmPasswordError}
           disabled={loading}
           autoComplete="new-password"
-          sx={{ mb: 3 }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockOutlinedIcon fontSize="small" />
+                </InputAdornment>
+              ),
+            },
+          }}
+          sx={{ mb: 2 }}
         />
       )}
+
+      <Stack
+        direction="row"
+        sx={{ mb: 2, alignItems: 'center', justifyContent: 'space-between' }}
+      >
+        <FormControlLabel
+          control={<Checkbox size="small" disabled={loading} />}
+          label="Remember me"
+        />
+        <Link href="#" underline="hover" color="primary">
+          Forgot password?
+        </Link>
+      </Stack>
 
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
@@ -157,16 +224,37 @@ export const AuthForm: React.FC<AuthFormProps> = ({
         </Alert>
       )}
 
-      <Button type="submit" variant="contained" fullWidth loading={loading} sx={{ mb: 2 }}>
-        {isSignIn ? 'Sign In' : 'Sign Up'}
-      </Button>
-
-      <Typography variant="body2" sx={{ textAlign: 'center' }}>
-        {isSignIn ? "Don't have an account? " : 'Already have an account? '}
-        <Link href="#" onClick={handleModeToggle} underline="hover">
-          {isSignIn ? 'Sign up' : 'Sign in'}
-        </Link>
-      </Typography>
+      {isSignIn ? (
+        <Stack spacing={2}>
+          <Button type="submit" variant="contained" fullWidth loading={loading}>
+            Log in
+          </Button>
+          <Button
+            type="button"
+            variant="outlined"
+            fullWidth
+            disabled={loading}
+            onClick={handleModeToggle}
+          >
+            Create account
+          </Button>
+        </Stack>
+      ) : (
+        <Stack spacing={2}>
+          <Button type="submit" variant="contained" fullWidth loading={loading}>
+            Create account
+          </Button>
+          <Button
+            type="button"
+            variant="outlined"
+            fullWidth
+            disabled={loading}
+            onClick={handleModeToggle}
+          >
+            Back to log in
+          </Button>
+        </Stack>
+      )}
     </Box>
   );
 };
