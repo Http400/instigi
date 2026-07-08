@@ -306,6 +306,65 @@ Cover the load-bearing logic: auth slice reducers (including rehydration) and th
 
 ---
 
+## Phase 5: Redesign the auth page (responsive branded layout)
+
+### Overview
+
+Redesign `AuthPage` to match the two provided mockups (`auth-page-resources/auth-page-wide.png`, `auth-page-mobile.png`): a responsive, branded, dark-themed auth experience. Desktop (md+) is a two-column split — a left branding panel (logo, "Track. Analyze. Progress." headline, description, three feature highlights) and a right card holding the form. Mobile collapses to a single centered column (logo on top, then the form card content). The existing shared `AuthForm` (fields + Log in / Create account buttons + Alert) is reused unchanged; new page chrome (heading/subtitle, an "or" divider, a decorative "Continue with Google" button, and a Terms/Privacy footer) lives in `AuthPage`. Purely presentational — no auth logic, store, or API changes.
+
+### Changes Required:
+
+#### 1. AuthPage responsive redesign
+
+**File**: `apps/web-app/src/pages/AuthPage.tsx`
+
+**Intent**: Compose the branded, responsive layout around the existing `AuthForm` without altering submit/redirect/error logic.
+
+**Contract**: Keep all existing behavior (mode state, `handleSubmit`, mutations, `credentialsReceived` dispatch, redirect, `authErrorMessage`, `loading`/`error` props). Wrap the page in a full-viewport dark container. On `md+`, render a two-column layout: left branding panel (using the shared `Logo`, the "Track. Analyze. Progress." headline, the descriptive paragraph, and three feature items — Track / Analyze / Progress — each with an MUI icon + label + caption) and a right `Paper` card. On `xs`, hide the left panel and render a single centered column with the vertical `Logo` above the card content. Card content order: mode-aware heading (`Welcome back` for signIn / `Create your account` for signUp) + subtitle, `<AuthForm ...>` (unchanged props), an "or" `Divider`, a full-width **disabled** "Continue with Google" `Button` with a Google glyph, and a Terms of Service / Privacy Policy footer (decorative links). Use theme palette values (no hard-coded brand hex where a theme token exists). Respect `exactOptionalPropertyTypes` (keep the existing conditional `error` spread).
+
+#### 2. Google glyph asset
+
+**File**: `apps/web-app/src/components/GoogleIcon.tsx` (new)
+
+**Intent**: Provide the multi-color Google "G" mark for the decorative button (MUI has no built-in colored Google logo).
+
+**Contract**: A small stateless SVG component (MUI `SvgIcon` or raw `<svg>`) rendering the four-color Google "G". No props beyond standard sizing. Used only by the "Continue with Google" button.
+
+#### 3. Decorative background (optional helper)
+
+**File**: `apps/web-app/src/pages/AuthPage.tsx` (inline) — no separate asset required
+
+**Intent**: Approximate the mockup's subtle dark background texture.
+
+**Contract**: Use CSS gradients / a faint dotted radial pattern via `sx` on the page container to evoke the mockup's depth. Do not add binary image assets; the exact topographic lines from the mockup need not be reproduced pixel-perfectly.
+
+#### 4. Suppress the shell chrome on the auth route
+
+**File**: `apps/web-app/src/layouts/RootLayout.tsx`
+
+**Intent**: The mockups are full-screen with no top navigation; hide the `AppBar` on `/auth` so the redesigned page fills the viewport.
+
+**Contract**: Use `useLocation` to detect the `/auth` path and skip rendering the `AppBar`/`Toolbar` there, rendering only the `<Outlet />` inside the existing `ThemeProvider`/`CssBaseline`. All other routes keep the current auth-aware AppBar (Sign In vs name + Sign Out) untouched.
+
+### Success Criteria:
+
+#### Automated Verification:
+
+- Type checking passes: `pnpm --filter @instigi/web-app typecheck`
+- Linting passes: `pnpm --filter @instigi/web-app lint`
+- Production build succeeds: `pnpm --filter @instigi/web-app build`
+- Existing web-app tests still pass: `pnpm --filter @instigi/web-app test`
+
+#### Manual Verification:
+
+- At desktop width, the page matches `auth-page-wide.png`: left branding panel + right form card, orange "Log in", outlined "Create account", "or" divider, disabled "Continue with Google", and the Terms/Privacy footer.
+- At mobile width, the page matches `auth-page-mobile.png`: single centered column, logo on top, no left panel, everything stacked and readable.
+- Toggling to sign-up still shows Name + Confirm Password (from Phase 2) and the heading/subtitle update; all auth flows (login, register, error messages, redirect) still work exactly as before.
+
+**Implementation Note**: After completing this phase and all automated verification passes, pause here for manual confirmation from the human.
+
+---
+
 ## Testing Strategy
 
 ### Unit Tests:
@@ -397,12 +456,27 @@ No data migration. Purely additive frontend changes plus a widened optional `nam
 
 #### Automated
 
-- [x] 4.1 Web-app tests pass: `pnpm --filter @instigi/web-app test`
-- [x] 4.2 Type checking passes: `pnpm --filter @instigi/web-app typecheck`
-- [x] 4.3 Linting passes: `pnpm --filter @instigi/web-app lint`
-- [x] 4.4 Full monorepo checks pass: `pnpm lint && pnpm typecheck && pnpm test`
+- [x] 4.1 Web-app tests pass: `pnpm --filter @instigi/web-app test` — 0a9bcb5
+- [x] 4.2 Type checking passes: `pnpm --filter @instigi/web-app typecheck` — 0a9bcb5
+- [x] 4.3 Linting passes: `pnpm --filter @instigi/web-app lint` — 0a9bcb5
+- [x] 4.4 Full monorepo checks pass: `pnpm lint && pnpm typecheck && pnpm test` — 0a9bcb5
 
 #### Manual
 
-- [x] 4.5 New test files run within the existing Vitest config
-- [x] 4.6 Tests are deterministic across repeated runs
+- [x] 4.5 New test files run within the existing Vitest config — 0a9bcb5
+- [x] 4.6 Tests are deterministic across repeated runs — 0a9bcb5
+
+### Phase 5: Redesign the auth page (responsive branded layout)
+
+#### Automated
+
+- [x] 5.1 Type checking passes: `pnpm --filter @instigi/web-app typecheck`
+- [x] 5.2 Linting passes: `pnpm --filter @instigi/web-app lint`
+- [x] 5.3 Production build succeeds: `pnpm --filter @instigi/web-app build`
+- [x] 5.4 Existing web-app tests still pass: `pnpm --filter @instigi/web-app test`
+
+#### Manual
+
+- [x] 5.5 Desktop width matches `auth-page-wide.png` (branding panel + form card, divider, disabled Google, footer)
+- [x] 5.6 Mobile width matches `auth-page-mobile.png` (single centered column, logo on top, no left panel)
+- [x] 5.7 Sign-up still shows Name + Confirm; heading/subtitle update; all auth flows still work
