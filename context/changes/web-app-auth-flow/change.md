@@ -1,7 +1,7 @@
 ---
 change_id: web-app-auth-flow
 title: Rebuild the web-app sign in / sign up flow with Redux Toolkit + RTK Query
-status: planned
+status: implementing
 created: 2026-07-08
 updated: 2026-07-08
 archived_at: null

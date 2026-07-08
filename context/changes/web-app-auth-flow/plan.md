@@ -355,14 +355,14 @@ No data migration. Purely additive frontend changes plus a widened optional `nam
 
 #### Automated
 
-- [ ] 1.1 Type checking passes: `pnpm --filter @instigi/web-app typecheck`
-- [ ] 1.2 Linting passes: `pnpm --filter @instigi/web-app lint`
-- [ ] 1.3 Production build succeeds: `pnpm --filter @instigi/web-app build`
+- [x] 1.1 Type checking passes: `pnpm --filter @instigi/web-app typecheck`
+- [x] 1.2 Linting passes: `pnpm --filter @instigi/web-app lint`
+- [x] 1.3 Production build succeeds: `pnpm --filter @instigi/web-app build`
 
 #### Manual
 
-- [ ] 1.4 App renders at localhost:3000 with no console errors (store present but unused by UI)
-- [ ] 1.5 Redux DevTools shows the `auth` slice initialized from empty localStorage
+- [x] 1.4 App renders at localhost:3000 with no console errors (store present but unused by UI)
+- [x] 1.5 Redux DevTools shows the `auth` slice initialized from empty localStorage
 
 ### Phase 2: Add the name field to the shared AuthForm
 
