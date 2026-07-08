@@ -368,30 +368,30 @@ No data migration. Purely additive frontend changes plus a widened optional `nam
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `pnpm --filter @instigi/ui typecheck`
-- [x] 2.2 Linting passes: `pnpm --filter @instigi/ui lint`
-- [x] 2.3 UI package tests pass: `pnpm --filter @instigi/ui test`
-- [x] 2.4 UI package builds: `pnpm --filter @instigi/ui build`
+- [x] 2.1 Type checking passes: `pnpm --filter @instigi/ui typecheck` — 5985f76
+- [x] 2.2 Linting passes: `pnpm --filter @instigi/ui lint` — 5985f76
+- [x] 2.3 UI package tests pass: `pnpm --filter @instigi/ui test` — 5985f76
+- [x] 2.4 UI package builds: `pnpm --filter @instigi/ui build` — 5985f76
 
 #### Manual
 
-- [x] 2.5 Storybook: SignUp shows Email/Name/Password/Confirm; SignIn shows only Email/Password
-- [x] 2.6 Empty name in signUp shows "Name is required"; toggling to sign-in hides the field
+- [x] 2.5 Storybook: SignUp shows Email/Name/Password/Confirm; SignIn shows only Email/Password — 5985f76
+- [x] 2.6 Empty name in signUp shows "Name is required"; toggling to sign-in hides the field — 5985f76
 
 ### Phase 3: Wire AuthPage, auth-aware shell, and route guard
 
 #### Automated
 
-- [ ] 3.1 Type checking passes: `pnpm --filter @instigi/web-app typecheck`
-- [ ] 3.2 Linting passes: `pnpm --filter @instigi/web-app lint`
-- [ ] 3.3 Production build succeeds: `pnpm --filter @instigi/web-app build`
+- [x] 3.1 Type checking passes: `pnpm --filter @instigi/web-app typecheck`
+- [x] 3.2 Linting passes: `pnpm --filter @instigi/web-app lint`
+- [x] 3.3 Production build succeeds: `pnpm --filter @instigi/web-app build`
 
 #### Manual
 
-- [ ] 3.4 Register → redirected to `/`, shell shows name + Sign Out; reload → still signed in
-- [ ] 3.5 Sign Out → shell shows Sign In; `/dashboard` redirects to `/auth` when signed out, renders when signed in
-- [ ] 3.6 Wrong password, duplicate email, and server-down each show their friendly message
-- [ ] 3.7 Idle past access-token expiry then act → still signed in (silent `/refresh` observed in Network tab)
+- [x] 3.4 Register → redirected to `/`, shell shows name + Sign Out; reload → still signed in
+- [x] 3.5 Sign Out → shell shows Sign In; `/dashboard` redirects to `/auth` when signed out, renders when signed in
+- [x] 3.6 Wrong password, duplicate email, and server-down each show their friendly message
+- [x] 3.7 Idle past access-token expiry then act → still signed in (silent `/refresh` observed in Network tab)
 
 ### Phase 4: Tests
 

@@ -1,9 +1,32 @@
-import { Outlet, Link } from 'react-router';
+import { Outlet, Link, useNavigate } from 'react-router';
 import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline, AppBar, Toolbar, Typography, Button } from '@mui/material';
+import {
+  CssBaseline,
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Stack,
+} from '@mui/material';
 import { theme } from '@instigi/ui';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import {
+  loggedOut,
+  selectCurrentUser,
+  selectIsAuthenticated,
+} from '../features/auth/authSlice';
 
 export default function RootLayout() {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const user = useAppSelector(selectCurrentUser);
+
+  const handleSignOut = () => {
+    dispatch(loggedOut());
+    navigate('/auth', { replace: true });
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -14,9 +37,18 @@ export default function RootLayout() {
               Instigi
             </Link>
           </Typography>
-          <Button component={Link} to="/auth">
-            Sign In / Sign Up
-          </Button>
+          {isAuthenticated ? (
+            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+              <Typography variant="body2" color="text.secondary">
+                {user?.name ?? user?.email}
+              </Typography>
+              <Button onClick={handleSignOut}>Sign Out</Button>
+            </Stack>
+          ) : (
+            <Button component={Link} to="/auth">
+              Sign In / Sign Up
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
       <Outlet />

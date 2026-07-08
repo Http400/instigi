@@ -11,7 +11,7 @@ import type {
   LoginRequest,
   LoginResponse,
 } from '@instigi/types';
-import { credentialsReceived, loggedOut, tokensRefreshed } from './authSlice';
+import { loggedOut, tokensRefreshed } from './authSlice';
 
 interface RegisterRequest {
   email: string;
@@ -109,27 +109,11 @@ export const authApi = createApi({
       query: (body) => ({ url: '/login', method: 'POST', body }),
       transformResponse: (response: ApiResponse<LoginResponse>) =>
         response.data,
-      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          dispatch(credentialsReceived({ user: data.user, tokens: data.tokens }));
-        } catch {
-          // Error surfaced to the caller via the mutation result.
-        }
-      },
     }),
     register: builder.mutation<LoginResponse, RegisterRequest>({
       query: (body) => ({ url: '/register', method: 'POST', body }),
       transformResponse: (response: ApiResponse<LoginResponse>) =>
         response.data,
-      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          dispatch(credentialsReceived({ user: data.user, tokens: data.tokens }));
-        } catch {
-          // Error surfaced to the caller via the mutation result.
-        }
-      },
     }),
     refresh: builder.mutation<RefreshResponse, { refreshToken: string }>({
       query: (body) => ({ url: '/refresh', method: 'POST', body }),
