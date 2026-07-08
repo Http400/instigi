@@ -470,13 +470,13 @@ No data migration. Purely additive frontend changes plus a widened optional `nam
 
 #### Automated
 
-- [x] 5.1 Type checking passes: `pnpm --filter @instigi/web-app typecheck`
-- [x] 5.2 Linting passes: `pnpm --filter @instigi/web-app lint`
-- [x] 5.3 Production build succeeds: `pnpm --filter @instigi/web-app build`
-- [x] 5.4 Existing web-app tests still pass: `pnpm --filter @instigi/web-app test`
+- [x] 5.1 Type checking passes: `pnpm --filter @instigi/web-app typecheck` — c5cd98e
+- [x] 5.2 Linting passes: `pnpm --filter @instigi/web-app lint` — c5cd98e
+- [x] 5.3 Production build succeeds: `pnpm --filter @instigi/web-app build` — c5cd98e
+- [x] 5.4 Existing web-app tests still pass: `pnpm --filter @instigi/web-app test` — c5cd98e
 
 #### Manual
 
-- [x] 5.5 Desktop width matches `auth-page-wide.png` (branding panel + form card, divider, disabled Google, footer)
-- [x] 5.6 Mobile width matches `auth-page-mobile.png` (single centered column, logo on top, no left panel)
-- [x] 5.7 Sign-up still shows Name + Confirm; heading/subtitle update; all auth flows still work
+- [x] 5.5 Desktop width matches `auth-page-wide.png` (branding panel + form card, divider, disabled Google, footer) — c5cd98e
+- [x] 5.6 Mobile width matches `auth-page-mobile.png` (single centered column, logo on top, no left panel) — c5cd98e
+- [x] 5.7 Sign-up still shows Name + Confirm; heading/subtitle update; all auth flows still work — c5cd98e
