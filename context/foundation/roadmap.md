@@ -30,7 +30,8 @@ Instigi is a pre-launch workout tracker whose authentication is built and workin
 | ID | Change ID | Outcome (user can …) | Prerequisites | PRD refs | Status |
 |---|---|---|---|---|---|
 | F-01 | workout-service-scaffold | (foundation) new workout data service stands up with its own tables and verifies auth-service tokens | — | Constraints (new dedicated service), Access Control | ready |
-| S-01 | exercise-library-browse | search and browse the predefined exercise library, each exercise pre-configured with its metric types | F-01 | US-01, FR-008 | proposed |
+| F-02 | exercises-page-layout | (foundation) exercises page shell, route, and layout regions stand up in the web app, ready for S-01 to fill with data | — | US-01, FR-008 | ready |
+| S-01 | exercise-library-browse | search and browse the predefined exercise library, each exercise pre-configured with its metric types | F-01, F-02 | US-01, FR-008 | proposed |
 | S-02 | start-session-add-exercises | start a named workout session and add exercises to it from the library | S-01, F-01 | US-01, FR-003, FR-004 | proposed |
 | S-03 | log-sets-finish-workout | log sets capturing exactly each exercise's configured metrics, then finish and save the workout | S-02 | US-01, FR-005, FR-006 | proposed |
 | S-04 | workout-history-list | view a reverse-chronological list of past completed workouts | S-03 | US-01, FR-010 | proposed |
@@ -45,7 +46,7 @@ Navigation aid — groups items that share a Prerequisites chain. Canonical orde
 
 | Stream | Theme | Chain | Note |
 |---|---|---|---|
-| A | Core logging loop | `F-01` → `S-01` → `S-02` → `S-03` → `S-04` | The must-have slices leading to the north star, in a strict speed-first sequence. |
+| A | Core logging loop | `F-01` / `F-02` → `S-01` → `S-02` → `S-03` → `S-04` | The must-have slices leading to the north star, in a strict speed-first sequence. `F-02` (exercises page layout) is a parallel enabler that joins the chain at `S-01`. |
 | B | Enhancements & dashboard | `S-05` (parallel with `S-03`/`S-04`, joins Stream A at `S-02`) → `S-06` / `S-07` (parallel, join at `S-04`) | Nice-to-have PRD FRs; park candidates under the speed goal. Parallelizable to spend the capacity blocker well. |
 | C | Account access (web) | `S-08` | Frontend auth experience against the unchanged auth-service; independent of the workout track, runs fully parallel with Stream A. |
 
@@ -77,6 +78,19 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** Sequenced first because no user-facing workout slice can persist data or identify its owner without it. Kept minimal (progressive disclosure) so most schema grows inside the slices that consume it; over-scoping this into a "whole data layer" would starve the 2-week budget.
 - **Status:** ready
 
+### F-02: Exercises page layout scaffold
+
+- **Outcome:** (foundation) the exercises page shell exists in the web app — its route entry, page layout, and layout regions (search area, list/grid region, empty and loading states) — ready for a data-browsing slice to fill in, with no data fetching or business logic beyond what S-01 needs.
+- **Change ID:** exercises-page-layout
+- **PRD refs:** US-01, FR-008 (the surface this scaffolds is the exercise library browse experience)
+- **Unlocks:** S-01 — the exercise-library browse slice fills this scaffold with real, searchable, metric-configured exercise data; without the page shell in place S-01 would have to build layout and browse behaviour in one step.
+- **Prerequisites:** — (builds on the present web-app router/shell and `packages/ui` baseline)
+- **Parallel with:** F-01 and S-08 (web-app frontend only; independent of the workout service and auth track)
+- **Blockers:** —
+- **Unknowns:** —
+- **Risk:** Kept minimal (progressive disclosure) — layout regions only, no data or domain logic, so it can't drift into a "build the whole exercises UI" horizontal project. S-01 still integrates and exercises the page through a real user capability. Under the speed goal this is a small, low-risk enabler that can run in parallel to spend the capacity blocker well.
+- **Status:** ready
+
 ## Slices
 
 ### S-01: Browse the exercise library
@@ -84,7 +98,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Outcome:** user can search and browse the predefined exercise list, each exercise pre-configured with its metric types.
 - **Change ID:** exercise-library-browse
 - **PRD refs:** US-01, FR-008
-- **Prerequisites:** F-01
+- **Prerequisites:** F-01, F-02
 - **Parallel with:** —
 - **Blockers:** —
 - **Unknowns:**
@@ -182,7 +196,8 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | Roadmap ID | Change ID | Suggested issue title | Ready for `/10x-plan` | Notes |
 |---|---|---|---|---|
 | F-01 | workout-service-scaffold | Scaffold new workout data service (tables + JWT verification) | yes | Run `/10x-plan workout-service-scaffold` |
-| S-01 | exercise-library-browse | Browse & search the predefined exercise library | no | Needs F-01 done |
+| F-02 | exercises-page-layout | Scaffold the exercises page layout in the web app | yes | Run `/10x-plan exercises-page-layout`; web-app frontend only, unlocks S-01 |
+| S-01 | exercise-library-browse | Browse & search the predefined exercise library | no | Needs F-01 and F-02 done |
 | S-02 | start-session-add-exercises | Start a workout session and add exercises | no | Needs S-01 done |
 | S-03 | log-sets-finish-workout | Log sets with per-exercise metrics and finish workout | no | North star; needs S-02 done |
 | S-04 | workout-history-list | View reverse-chronological workout history | no | Needs S-03 done |
