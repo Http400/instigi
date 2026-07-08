@@ -382,27 +382,27 @@ No data migration. Purely additive frontend changes plus a widened optional `nam
 
 #### Automated
 
-- [x] 3.1 Type checking passes: `pnpm --filter @instigi/web-app typecheck`
-- [x] 3.2 Linting passes: `pnpm --filter @instigi/web-app lint`
-- [x] 3.3 Production build succeeds: `pnpm --filter @instigi/web-app build`
+- [x] 3.1 Type checking passes: `pnpm --filter @instigi/web-app typecheck` — f4d0f9d
+- [x] 3.2 Linting passes: `pnpm --filter @instigi/web-app lint` — f4d0f9d
+- [x] 3.3 Production build succeeds: `pnpm --filter @instigi/web-app build` — f4d0f9d
 
 #### Manual
 
-- [x] 3.4 Register → redirected to `/`, shell shows name + Sign Out; reload → still signed in
-- [x] 3.5 Sign Out → shell shows Sign In; `/dashboard` redirects to `/auth` when signed out, renders when signed in
-- [x] 3.6 Wrong password, duplicate email, and server-down each show their friendly message
-- [x] 3.7 Idle past access-token expiry then act → still signed in (silent `/refresh` observed in Network tab)
+- [x] 3.4 Register → redirected to `/`, shell shows name + Sign Out; reload → still signed in — f4d0f9d
+- [x] 3.5 Sign Out → shell shows Sign In; `/dashboard` redirects to `/auth` when signed out, renders when signed in — f4d0f9d
+- [x] 3.6 Wrong password, duplicate email, and server-down each show their friendly message — f4d0f9d
+- [x] 3.7 Idle past access-token expiry then act → still signed in (silent `/refresh` observed in Network tab) — f4d0f9d
 
 ### Phase 4: Tests
 
 #### Automated
 
-- [ ] 4.1 Web-app tests pass: `pnpm --filter @instigi/web-app test`
-- [ ] 4.2 Type checking passes: `pnpm --filter @instigi/web-app typecheck`
-- [ ] 4.3 Linting passes: `pnpm --filter @instigi/web-app lint`
-- [ ] 4.4 Full monorepo checks pass: `pnpm lint && pnpm typecheck && pnpm test`
+- [x] 4.1 Web-app tests pass: `pnpm --filter @instigi/web-app test`
+- [x] 4.2 Type checking passes: `pnpm --filter @instigi/web-app typecheck`
+- [x] 4.3 Linting passes: `pnpm --filter @instigi/web-app lint`
+- [x] 4.4 Full monorepo checks pass: `pnpm lint && pnpm typecheck && pnpm test`
 
 #### Manual
 
-- [ ] 4.5 New test files run within the existing Vitest config
-- [ ] 4.6 Tests are deterministic across repeated runs
+- [x] 4.5 New test files run within the existing Vitest config
+- [x] 4.6 Tests are deterministic across repeated runs
