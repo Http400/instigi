@@ -210,17 +210,17 @@ None — additive. Existing routes/pages are untouched; the sidebar shell is int
 
 #### Automated
 
-- [ ] 1.1 Type checking passes: `pnpm --filter web-app typecheck`
-- [ ] 1.2 Linting passes: `pnpm lint`
-- [ ] 1.3 Web-app tests pass: `pnpm --filter web-app test`
-- [ ] 1.4 Test asserts authed `/exercises` shows sidebar nav and unauthenticated redirects to `/auth`
+- [x] 1.1 Type checking passes: `pnpm --filter web-app typecheck`
+- [x] 1.2 Linting passes: `pnpm lint`
+- [x] 1.3 Web-app tests pass: `pnpm --filter web-app test`
+- [x] 1.4 Test asserts authed `/exercises` shows sidebar nav and unauthenticated redirects to `/auth`
 
 #### Manual
 
-- [ ] 1.5 Authed `/exercises` shows the sidebar (logo, nav, user card) with Exercises highlighted
-- [ ] 1.6 Unauthenticated `/exercises` redirects to `/auth`
-- [ ] 1.7 Disabled nav items inert; sidebar Sign Out works
-- [ ] 1.8 Shell matches design structure using theme colors (no hardcoded palette)
+- [x] 1.5 Authed `/exercises` shows the sidebar (logo, nav, user card) with Exercises highlighted
+- [x] 1.6 Unauthenticated `/exercises` redirects to `/auth`
+- [x] 1.7 Disabled nav items inert; sidebar Sign Out works
+- [x] 1.8 Shell matches design structure using theme colors (no hardcoded palette)
 
 ### Phase 2: Exercises page content region
 
