@@ -3,7 +3,7 @@ project: Instigi
 version: 1
 status: draft
 created: 2026-07-01
-updated: 2026-07-01
+updated: 2026-07-08
 prd_version: 1
 main_goal: speed
 top_blocker: capacity
@@ -37,6 +37,7 @@ Instigi is a pre-launch workout tracker whose authentication is built and workin
 | S-05 | discard-session | discard an in-progress workout session | S-02 | FR-007 | proposed |
 | S-06 | workout-detail-view | view the full detail of a past workout (all exercises, sets, values) | S-04 | FR-011 | proposed |
 | S-07 | progress-dashboard | view a dashboard with total workouts completed and recent activity | S-04 | FR-012 | proposed |
+| S-08 | web-app-auth-flow | sign up, sign in, stay signed in across reloads, and sign out from the web app | — | US-01, FR-001, FR-002 | ready |
 
 ## Streams
 
@@ -46,6 +47,7 @@ Navigation aid — groups items that share a Prerequisites chain. Canonical orde
 |---|---|---|---|
 | A | Core logging loop | `F-01` → `S-01` → `S-02` → `S-03` → `S-04` | The must-have slices leading to the north star, in a strict speed-first sequence. |
 | B | Enhancements & dashboard | `S-05` (parallel with `S-03`/`S-04`, joins Stream A at `S-02`) → `S-06` / `S-07` (parallel, join at `S-04`) | Nice-to-have PRD FRs; park candidates under the speed goal. Parallelizable to spend the capacity blocker well. |
+| C | Account access (web) | `S-08` | Frontend auth experience against the unchanged auth-service; independent of the workout track, runs fully parallel with Stream A. |
 
 ## Baseline
 
@@ -163,6 +165,18 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** Nice-to-have (Secondary Success Criterion); largely duplicates recency already visible in history. Park candidate under the speed goal.
 - **Status:** proposed
 
+### S-08: Rebuild the web-app sign in / sign up flow
+
+- **Outcome:** user can sign up, sign in, stay signed in across browser reloads, and sign out directly from the web app.
+- **Change ID:** web-app-auth-flow
+- **PRD refs:** US-01 (enables the "logged-in user on the home screen" precondition), FR-001, FR-002
+- **Prerequisites:** — (builds on the present Auth backend and the present web-app router/shell baseline)
+- **Parallel with:** F-01 and the entire workout track (independent — touches only the web app and the unchanged auth-service API)
+- **Blockers:** —
+- **Unknowns:** —
+- **Risk:** The auth-service is already built and its API contracts must NOT change (PRD guardrail) — this slice is purely web-app frontend work: replace the current shell `AuthPage` with a real auth experience and wire client-side session/token handling and data fetching against the existing endpoints. Low backend risk; the load-bearing care is preserving session persistence across reloads and clean sign-out. Sequenced independently and can go first under the speed goal since a real user must be able to sign in before any workout slice is usable end-to-end. (Client state + data-fetching approach is a user-chosen implementation detail — Redux Toolkit + RTK Query — to be confirmed and detailed in `/10x-plan`.)
+- **Status:** ready
+
 ## Backlog Handoff
 
 | Roadmap ID | Change ID | Suggested issue title | Ready for `/10x-plan` | Notes |
@@ -175,6 +189,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | S-05 | discard-session | Discard an in-progress session | no | Nice-to-have; needs S-02 done |
 | S-06 | workout-detail-view | View full detail of a past workout | no | Nice-to-have; needs S-04 done |
 | S-07 | progress-dashboard | Progress dashboard (totals + recent activity) | no | Nice-to-have; needs S-04 done |
+| S-08 | web-app-auth-flow | Rebuild web-app sign in / sign up flow (client session + data fetching) | yes | Run `/10x-plan web-app-auth-flow`; independent of the workout track. Chosen approach: Redux Toolkit + RTK Query |
 
 This table is the clean handoff to Jira/Linear or any MCP-backed backlog. One row per `F-NN` / `S-NN`.
 
