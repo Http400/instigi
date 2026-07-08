@@ -10,6 +10,7 @@ import {
   InputAdornment,
 } from '@mui/material';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -19,6 +20,7 @@ import { TextField } from './TextField';
 export interface AuthFormData {
   email: string;
   password: string;
+  name?: string;
 }
 
 export interface AuthFormProps {
@@ -29,7 +31,13 @@ export interface AuthFormProps {
   error?: string;
 }
 
-const validate = (email: string, password: string, confirmPassword: string, isSignUp: boolean) => ({
+const validate = (
+  email: string,
+  password: string,
+  confirmPassword: string,
+  name: string,
+  isSignUp: boolean
+) => ({
   emailError: !email
     ? 'Email is required'
     : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -43,6 +51,7 @@ const validate = (email: string, password: string, confirmPassword: string, isSi
         ? 'Passwords do not match'
         : ''
     : '',
+  nameError: isSignUp && !name.trim() ? 'Name is required' : '',
 });
 
 export const AuthForm: React.FC<AuthFormProps> = ({
@@ -55,19 +64,29 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [nameError, setNameError] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const isSignIn = mode === 'signIn';
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setName(value);
+    if (submitted) {
+      setNameError(validate(email, password, confirmPassword, value, !isSignIn).nameError);
+    }
+  };
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
     if (submitted) {
-      setEmailError(validate(value, password, confirmPassword, !isSignIn).emailError);
+      setEmailError(validate(value, password, confirmPassword, name, !isSignIn).emailError);
     }
   };
 
@@ -75,7 +94,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     const value = e.target.value;
     setPassword(value);
     if (submitted) {
-      const v = validate(email, value, confirmPassword, !isSignIn);
+      const v = validate(email, value, confirmPassword, name, !isSignIn);
       setPasswordError(v.passwordError);
       setConfirmPasswordError(v.confirmPasswordError);
     }
@@ -85,7 +104,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     const value = e.target.value;
     setConfirmPassword(value);
     if (submitted) {
-      setConfirmPasswordError(validate(email, password, value, !isSignIn).confirmPasswordError);
+      setConfirmPasswordError(validate(email, password, value, name, !isSignIn).confirmPasswordError);
     }
   };
 
@@ -96,12 +115,14 @@ export const AuthForm: React.FC<AuthFormProps> = ({
       emailError: eErr,
       passwordError: pErr,
       confirmPasswordError: cErr,
-    } = validate(email, password, confirmPassword, !isSignIn);
+      nameError: nErr,
+    } = validate(email, password, confirmPassword, name, !isSignIn);
     setEmailError(eErr);
     setPasswordError(pErr);
     setConfirmPasswordError(cErr);
-    if (eErr || pErr || cErr) return;
-    onSubmit({ email, password });
+    setNameError(nErr);
+    if (eErr || pErr || cErr || nErr) return;
+    onSubmit(isSignIn ? { email, password } : { email, password, name });
   };
 
   const handleModeToggle = (e: React.MouseEvent) => {
@@ -109,9 +130,11 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     setEmail('');
     setPassword('');
     setConfirmPassword('');
+    setName('');
     setEmailError('');
     setPasswordError('');
     setConfirmPasswordError('');
+    setNameError('');
     setSubmitted(false);
     setShowPassword(false);
     onModeChange?.(mode === 'signIn' ? 'signUp' : 'signIn');
@@ -124,6 +147,29 @@ export const AuthForm: React.FC<AuthFormProps> = ({
       noValidate
       sx={{ width: '100%', maxWidth: 400, mx: 'auto' }}
     >
+      {!isSignIn && (
+        <TextField
+          label="Name"
+          type="text"
+          value={name}
+          onChange={handleNameChange}
+          error={Boolean(nameError)}
+          helperText={nameError}
+          disabled={loading}
+          autoComplete="name"
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonOutlinedIcon fontSize="small" />
+                </InputAdornment>
+              ),
+            },
+          }}
+          sx={{ mb: 2 }}
+        />
+      )}
+
       <TextField
         label="Email address"
         type="email"

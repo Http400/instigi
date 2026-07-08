@@ -69,6 +69,20 @@ export const SignUpWithPasswordMismatch: Story = {
   },
 };
 
+export const SignUpNameRequired: Story = {
+  args: {
+    mode: 'signUp',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Sign-up mode shows the Name field (before Email). Submit with an empty name to see the inline "Name is required" validation error. Toggling to sign-in hides the field.',
+      },
+    },
+  },
+};
+
 export const Interactive: Story = {
   render: (args) => {
     const [mode, setMode] = useState<'signIn' | 'signUp'>('signIn');

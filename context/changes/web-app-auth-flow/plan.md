@@ -355,28 +355,28 @@ No data migration. Purely additive frontend changes plus a widened optional `nam
 
 #### Automated
 
-- [x] 1.1 Type checking passes: `pnpm --filter @instigi/web-app typecheck`
-- [x] 1.2 Linting passes: `pnpm --filter @instigi/web-app lint`
-- [x] 1.3 Production build succeeds: `pnpm --filter @instigi/web-app build`
+- [x] 1.1 Type checking passes: `pnpm --filter @instigi/web-app typecheck` — 6bd2491
+- [x] 1.2 Linting passes: `pnpm --filter @instigi/web-app lint` — 6bd2491
+- [x] 1.3 Production build succeeds: `pnpm --filter @instigi/web-app build` — 6bd2491
 
 #### Manual
 
-- [x] 1.4 App renders at localhost:3000 with no console errors (store present but unused by UI)
-- [x] 1.5 Redux DevTools shows the `auth` slice initialized from empty localStorage
+- [x] 1.4 App renders at localhost:3000 with no console errors (store present but unused by UI) — 6bd2491
+- [x] 1.5 Redux DevTools shows the `auth` slice initialized from empty localStorage — 6bd2491
 
 ### Phase 2: Add the name field to the shared AuthForm
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `pnpm --filter @instigi/ui typecheck`
-- [ ] 2.2 Linting passes: `pnpm --filter @instigi/ui lint`
-- [ ] 2.3 UI package tests pass: `pnpm --filter @instigi/ui test`
-- [ ] 2.4 UI package builds: `pnpm --filter @instigi/ui build`
+- [x] 2.1 Type checking passes: `pnpm --filter @instigi/ui typecheck`
+- [x] 2.2 Linting passes: `pnpm --filter @instigi/ui lint`
+- [x] 2.3 UI package tests pass: `pnpm --filter @instigi/ui test`
+- [x] 2.4 UI package builds: `pnpm --filter @instigi/ui build`
 
 #### Manual
 
-- [ ] 2.5 Storybook: SignUp shows Email/Name/Password/Confirm; SignIn shows only Email/Password
-- [ ] 2.6 Empty name in signUp shows "Name is required"; toggling to sign-in hides the field
+- [x] 2.5 Storybook: SignUp shows Email/Name/Password/Confirm; SignIn shows only Email/Password
+- [x] 2.6 Empty name in signUp shows "Name is required"; toggling to sign-in hides the field
 
 ### Phase 3: Wire AuthPage, auth-aware shell, and route guard
 
