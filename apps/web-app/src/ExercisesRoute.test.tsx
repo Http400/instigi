@@ -80,12 +80,26 @@ describe('Exercises route shell', () => {
     renderAt(store, '/exercises');
 
     expect(
-      screen.getByRole('button', { name: /exercises/i })
-    ).toBeInTheDocument();
+      screen.getAllByRole('button', { name: /exercises/i }).length
+    ).toBeGreaterThanOrEqual(1);
     expect(
-      screen.getByRole('button', { name: /workouts/i })
-    ).toBeInTheDocument();
+      screen.getAllByRole('button', { name: /workouts/i }).length
+    ).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Ada Lovelace')).toBeInTheDocument();
+  });
+
+  it('renders the mobile bottom navigation for an authenticated user', () => {
+    const store = makeStore(authedState);
+    renderAt(store, '/exercises');
+
+    // "More" is unique to the bottom navigation (not in the sidebar list).
+    expect(
+      screen.getByRole('button', { name: /more/i })
+    ).toBeInTheDocument();
+    // Exercises appears in both the sidebar and the bottom nav.
+    expect(
+      screen.getAllByRole('button', { name: /exercises/i }).length
+    ).toBeGreaterThanOrEqual(2);
   });
 
   it('redirects an unauthenticated user to /auth', () => {

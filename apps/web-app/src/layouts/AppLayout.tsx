@@ -3,12 +3,15 @@ import { Outlet, useLocation, useNavigate } from 'react-router';
 import {
   Avatar,
   Box,
+  BottomNavigation,
+  BottomNavigationAction,
   Drawer,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Paper,
   Stack,
   Toolbar,
   Tooltip,
@@ -20,12 +23,14 @@ import ShowChartIcon from '@mui/icons-material/ShowChart';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SettingsIcon from '@mui/icons-material/Settings';
+import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Logo } from '@instigi/ui';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { loggedOut, selectCurrentUser } from '../features/auth/authSlice';
 
 const DRAWER_WIDTH = 260;
+const BOTTOM_NAV_HEIGHT = 64;
 
 interface NavItem {
   label: string;
@@ -41,6 +46,13 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Calendar', icon: <CalendarMonthIcon />, disabled: true },
   { label: 'Statistics', icon: <BarChartIcon />, disabled: true },
   { label: 'Settings', icon: <SettingsIcon />, disabled: true },
+];
+
+const BOTTOM_NAV_ITEMS: NavItem[] = [
+  { label: 'Workouts', icon: <FitnessCenterIcon />, disabled: true },
+  { label: 'Exercises', icon: <LibraryBooksIcon />, to: '/exercises' },
+  { label: 'Progress', icon: <ShowChartIcon />, disabled: true },
+  { label: 'More', icon: <MenuIcon />, disabled: true },
 ];
 
 function initialsFor(name?: string | null, email?: string | null): string {
@@ -68,6 +80,11 @@ export default function AppLayout() {
 
   const displayName = user?.name ?? user?.email ?? 'Signed in';
 
+  const activeBottomNav = BOTTOM_NAV_ITEMS.find(
+    (item) => item.to != null && location.pathname === item.to
+  );
+  const currentBottomNavValue = activeBottomNav?.label ?? false;
+
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <Drawer
@@ -75,6 +92,7 @@ export default function AppLayout() {
         sx={{
           width: DRAWER_WIDTH,
           flexShrink: 0,
+          display: { xs: 'none', md: 'block' },
           '& .MuiDrawer-paper': {
             width: DRAWER_WIDTH,
             boxSizing: 'border-box',
@@ -154,9 +172,46 @@ export default function AppLayout() {
         </Box>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 4, minWidth: 0 }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: { xs: 2, md: 4 },
+          pb: { xs: `${BOTTOM_NAV_HEIGHT + 16}px`, md: 4 },
+          minWidth: 0,
+        }}
+      >
         <Outlet />
       </Box>
+
+      <Paper
+        elevation={3}
+        sx={{
+          display: { xs: 'block', md: 'none' },
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: (t) => t.zIndex.appBar,
+        }}
+      >
+        <BottomNavigation
+          showLabels
+          value={currentBottomNavValue}
+          sx={{ height: BOTTOM_NAV_HEIGHT }}
+        >
+          {BOTTOM_NAV_ITEMS.map((item) => (
+            <BottomNavigationAction
+              key={item.label}
+              label={item.label}
+              icon={item.icon}
+              value={item.label}
+              disabled={item.disabled ?? false}
+              onClick={item.to ? () => navigate(item.to!) : undefined}
+            />
+          ))}
+        </BottomNavigation>
+      </Paper>
     </Box>
   );
 }

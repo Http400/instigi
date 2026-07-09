@@ -42,7 +42,7 @@ An authenticated user navigating to `/exercises` sees a page matching the design
 - No backend, schema, or workout-service work.
 - No theme changes and no promotion of components into `packages/ui`.
 - No migration of existing pages (Home/Dashboard) into the new sidebar shell — the shell is introduced for the authed exercises route only.
-- No responsive/mobile-drawer collapse behaviour beyond what MUI defaults give for free (desktop-first, matching the design).
+- No responsive polish beyond the two provided designs — desktop sidebar shell (`exercises-page.png`) and the mobile layout (`exercises-page-mobile.png`) with a bottom navigation bar. Intermediate/tablet breakpoints get MUI defaults only.
 
 ## Implementation Approach
 
@@ -148,6 +148,14 @@ Fill the Exercises page main region to match the design: header + New exercise b
 
 **Contract**: Default-export page rendering a header row (`Typography` h4 "Exercises" + secondary subtitle "Manage your exercise definitions and metrics." on the left; a contained `Button` with `AddIcon` "New exercise" on the right, inert/disabled). Below: `<ExercisesToolbar />`, then `<ExercisesTable rows={PLACEHOLDER_EXERCISES} />` inside a `Paper`, then a centered footer `Typography` showing `` `${PLACEHOLDER_EXERCISES.length} exercises` ``. Spacing via `sx`; no data fetching.
 
+#### 6. Responsive / mobile layout
+
+**Files**: `apps/web-app/src/layouts/AppLayout.tsx`, `apps/web-app/src/pages/exercises/ExercisesToolbar.tsx`, `apps/web-app/src/pages/ExercisesPage.tsx`
+
+**Intent**: Match the mobile design (`exercises-page-mobile.png`) — replace the permanent left sidebar with a bottom navigation bar on small viewports, and reflow the page controls.
+
+**Contract**: In `AppLayout`, hide the permanent `Drawer` on `xs`/`sm` (`display: { xs: 'none', md: 'block' }`) and render a fixed MUI `BottomNavigation` (Workouts, **Exercises** selected, Progress, More) shown only below `md`; main content gains bottom padding so it isn't obscured. In `ExercisesToolbar`, the category chip row scrolls horizontally on mobile (`flexWrap: nowrap` + `overflowX: auto`) and the "All status" select is hidden on `xs`/`sm`. In `ExercisesPage`, the top-right "New exercise" button is hidden on mobile and a full-width inert "New exercise" button renders after the count footer. All via responsive `sx` breakpoints and theme tokens; controls remain inert.
+
 ### Success Criteria:
 
 #### Automated Verification:
@@ -210,29 +218,31 @@ None — additive. Existing routes/pages are untouched; the sidebar shell is int
 
 #### Automated
 
-- [x] 1.1 Type checking passes: `pnpm --filter web-app typecheck`
-- [x] 1.2 Linting passes: `pnpm lint`
-- [x] 1.3 Web-app tests pass: `pnpm --filter web-app test`
-- [x] 1.4 Test asserts authed `/exercises` shows sidebar nav and unauthenticated redirects to `/auth`
+- [x] 1.1 Type checking passes: `pnpm --filter web-app typecheck` — b64e99c
+- [x] 1.2 Linting passes: `pnpm lint` — b64e99c
+- [x] 1.3 Web-app tests pass: `pnpm --filter web-app test` — b64e99c
+- [x] 1.4 Test asserts authed `/exercises` shows sidebar nav and unauthenticated redirects to `/auth` — b64e99c
 
 #### Manual
 
-- [x] 1.5 Authed `/exercises` shows the sidebar (logo, nav, user card) with Exercises highlighted
-- [x] 1.6 Unauthenticated `/exercises` redirects to `/auth`
-- [x] 1.7 Disabled nav items inert; sidebar Sign Out works
-- [x] 1.8 Shell matches design structure using theme colors (no hardcoded palette)
+- [x] 1.5 Authed `/exercises` shows the sidebar (logo, nav, user card) with Exercises highlighted — b64e99c
+- [x] 1.6 Unauthenticated `/exercises` redirects to `/auth` — b64e99c
+- [x] 1.7 Disabled nav items inert; sidebar Sign Out works — b64e99c
+- [x] 1.8 Shell matches design structure using theme colors (no hardcoded palette) — b64e99c
 
 ### Phase 2: Exercises page content region
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `pnpm --filter web-app typecheck`
-- [ ] 2.2 Linting passes: `pnpm lint`
-- [ ] 2.3 Web-app tests pass: `pnpm --filter web-app test`
-- [ ] 2.4 Test asserts search, filter chips, table headers, a placeholder row, and "5 exercises" footer render
+- [x] 2.1 Type checking passes: `pnpm --filter web-app typecheck`
+- [x] 2.2 Linting passes: `pnpm lint`
+- [x] 2.3 Web-app tests pass: `pnpm --filter web-app test`
+- [x] 2.4 Test asserts search, filter chips, table headers, a placeholder row, and "5 exercises" footer render
+- [x] 2.5 Test asserts the mobile bottom-navigation renders (Workouts/Exercises/Progress/More)
 
 #### Manual
 
-- [ ] 2.5 Rendered page visually matches `exercises-page.png`
-- [ ] 2.6 Built from MUI components with the dark theme; no meaningful custom CSS
-- [ ] 2.7 Inert controls render but perform no action (ready for S-01)
+- [x] 2.6 Rendered page visually matches `exercises-page.png`
+- [x] 2.7 Built from MUI components with the dark theme; no meaningful custom CSS
+- [x] 2.8 Inert controls render but perform no action (ready for S-01)
+- [x] 2.9 Mobile viewport matches `exercises-page-mobile.png` (bottom nav, scrolling chips, full-width New exercise)
