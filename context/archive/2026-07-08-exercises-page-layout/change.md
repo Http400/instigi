@@ -1,10 +1,10 @@
 ---
 change_id: exercises-page-layout
 title: Exercises page layout scaffold
-status: implemented
+status: archived
 created: 2026-07-08
 updated: 2026-07-09
-archived_at: null
+archived_at: 2026-07-09T09:50:40Z
 ---
 
 ## Notes

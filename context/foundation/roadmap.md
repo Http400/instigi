@@ -3,7 +3,7 @@ project: Instigi
 version: 1
 status: draft
 created: 2026-07-01
-updated: 2026-07-08
+updated: 2026-07-09
 prd_version: 1
 main_goal: speed
 top_blocker: capacity
@@ -30,7 +30,7 @@ Instigi is a pre-launch workout tracker whose authentication is built and workin
 | ID | Change ID | Outcome (user can …) | Prerequisites | PRD refs | Status |
 |---|---|---|---|---|---|
 | F-01 | workout-service-scaffold | (foundation) new workout data service stands up with its own tables and verifies auth-service tokens | — | Constraints (new dedicated service), Access Control | ready |
-| F-02 | exercises-page-layout | (foundation) exercises page shell, route, and layout regions stand up in the web app, ready for S-01 to fill with data | — | US-01, FR-008 | ready |
+| F-02 | exercises-page-layout | (foundation) exercises page shell, route, and layout regions stand up in the web app, ready for S-01 to fill with data | — | US-01, FR-008 | done |
 | S-01 | exercise-library-browse | search and browse the predefined exercise library, each exercise pre-configured with its metric types | F-01, F-02 | US-01, FR-008 | proposed |
 | S-02 | start-session-add-exercises | start a named workout session and add exercises to it from the library | S-01, F-01 | US-01, FR-003, FR-004 | proposed |
 | S-03 | log-sets-finish-workout | log sets capturing exactly each exercise's configured metrics, then finish and save the workout | S-02 | US-01, FR-005, FR-006 | proposed |
@@ -89,7 +89,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Kept minimal (progressive disclosure) — layout regions only, no data or domain logic, so it can't drift into a "build the whole exercises UI" horizontal project. S-01 still integrates and exercises the page through a real user capability. Under the speed goal this is a small, low-risk enabler that can run in parallel to spend the capacity blocker well.
-- **Status:** ready
+- **Status:** done
 
 ## Slices
 
@@ -227,3 +227,5 @@ This table is the clean handoff to Jira/Linear or any MCP-backed backlog. One ro
 ## Done
 
 (Empty on first generation. `/10x-archive` appends here — and flips the item's `Status` to `done` — when a change whose `Change ID` matches an item is archived. Do NOT pre-populate.)
+
+- **F-02: (foundation) the exercises page shell exists in the web app — its route entry, page layout, and layout regions (search area, list/grid region, empty and loading states) — ready for a data-browsing slice to fill in, with no data fetching or business logic beyond what S-01 needs.** — Archived 2026-07-09 → `context/archive/2026-07-08-exercises-page-layout/`. Lesson: —.
