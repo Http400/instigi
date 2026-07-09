@@ -234,15 +234,15 @@ None — additive. Existing routes/pages are untouched; the sidebar shell is int
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `pnpm --filter web-app typecheck`
-- [x] 2.2 Linting passes: `pnpm lint`
-- [x] 2.3 Web-app tests pass: `pnpm --filter web-app test`
-- [x] 2.4 Test asserts search, filter chips, table headers, a placeholder row, and "5 exercises" footer render
-- [x] 2.5 Test asserts the mobile bottom-navigation renders (Workouts/Exercises/Progress/More)
+- [x] 2.1 Type checking passes: `pnpm --filter web-app typecheck` — 155ea45
+- [x] 2.2 Linting passes: `pnpm lint` — 155ea45
+- [x] 2.3 Web-app tests pass: `pnpm --filter web-app test` — 155ea45
+- [x] 2.4 Test asserts search, filter chips, table headers, a placeholder row, and "5 exercises" footer render — 155ea45
+- [x] 2.5 Test asserts the mobile bottom-navigation renders (Workouts/Exercises/Progress/More) — 155ea45
 
 #### Manual
 
-- [x] 2.6 Rendered page visually matches `exercises-page.png`
-- [x] 2.7 Built from MUI components with the dark theme; no meaningful custom CSS
-- [x] 2.8 Inert controls render but perform no action (ready for S-01)
-- [x] 2.9 Mobile viewport matches `exercises-page-mobile.png` (bottom nav, scrolling chips, full-width New exercise)
+- [x] 2.6 Rendered page visually matches `exercises-page.png` — 155ea45
+- [x] 2.7 Built from MUI components with the dark theme; no meaningful custom CSS — 155ea45
+- [x] 2.8 Inert controls render but perform no action (ready for S-01) — 155ea45
+- [x] 2.9 Mobile viewport matches `exercises-page-mobile.png` (bottom nav, scrolling chips, full-width New exercise) — 155ea45
