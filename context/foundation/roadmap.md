@@ -38,7 +38,7 @@ Instigi is a pre-launch workout tracker whose authentication is built and workin
 | S-05 | discard-session | discard an in-progress workout session | S-02 | FR-007 | proposed |
 | S-06 | workout-detail-view | view the full detail of a past workout (all exercises, sets, values) | S-04 | FR-011 | proposed |
 | S-07 | progress-dashboard | view a dashboard with total workouts completed and recent activity | S-04 | FR-012 | proposed |
-| S-08 | web-app-auth-flow | sign up, sign in, stay signed in across reloads, and sign out from the web app | — | US-01, FR-001, FR-002 | ready |
+| S-08 | web-app-auth-flow | sign up, sign in, stay signed in across reloads, and sign out from the web app | — | US-01, FR-001, FR-002 | done |
 
 ## Streams
 
@@ -189,7 +189,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** The auth-service is already built and its API contracts must NOT change (PRD guardrail) — this slice is purely web-app frontend work: replace the current shell `AuthPage` with a real auth experience and wire client-side session/token handling and data fetching against the existing endpoints. Low backend risk; the load-bearing care is preserving session persistence across reloads and clean sign-out. Sequenced independently and can go first under the speed goal since a real user must be able to sign in before any workout slice is usable end-to-end. (Client state + data-fetching approach is a user-chosen implementation detail — Redux Toolkit + RTK Query — to be confirmed and detailed in `/10x-plan`.)
-- **Status:** ready
+- **Status:** done
 
 ## Backlog Handoff
 
@@ -230,3 +230,4 @@ This table is the clean handoff to Jira/Linear or any MCP-backed backlog. One ro
 
 - **F-02: (foundation) the exercises page shell exists in the web app — its route entry, page layout, and layout regions (search area, list/grid region, empty and loading states) — ready for a data-browsing slice to fill in, with no data fetching or business logic beyond what S-01 needs.** — Archived 2026-07-09 → `context/archive/2026-07-08-exercises-page-layout/`. Lesson: —.
 - **F-01: (foundation) a new dedicated workout service is stood up alongside the auth service, connected to its own Postgres tables, able to verify auth-service-issued JWTs, and reachable through the existing container/compose wiring — no workout tables prebuilt beyond what S-01 needs.** — Archived 2026-07-10 → `context/archive/2026-07-02-workout-service-scaffold/`. Lesson: —.
+- **S-08: user can sign up, sign in, stay signed in across browser reloads, and sign out directly from the web app.** — Archived 2026-07-10 → `context/archive/2026-07-08-web-app-auth-flow/`. Lesson: —.
