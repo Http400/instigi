@@ -374,29 +374,29 @@ First model in `training-service`. `db:migrate` creates `training.exercise_defin
 
 #### Automated
 
-- [x] 1.1 Types package builds: `pnpm --filter @instigi/types build`
-- [x] 1.2 Utils package builds: `pnpm --filter @instigi/utils build`
-- [x] 1.3 Utils tests pass (if present): `pnpm --filter @instigi/utils test`
-- [x] 1.4 Workspace typecheck passes: `pnpm typecheck`
+- [x] 1.1 Types package builds: `pnpm --filter @instigi/types build` — 7715c1e
+- [x] 1.2 Utils package builds: `pnpm --filter @instigi/utils build` — 7715c1e
+- [x] 1.3 Utils tests pass (if present): `pnpm --filter @instigi/utils test` — 7715c1e
+- [x] 1.4 Workspace typecheck passes: `pnpm typecheck` — 7715c1e
 
 #### Manual
 
-- [x] 1.5 `metricCatalog` labels/units match `context/foundation/data-model.md`
+- [x] 1.5 `metricCatalog` labels/units match `context/foundation/data-model.md` — 7715c1e
 
 ### Phase 2: training-service data model — `ExerciseDefinition` + migration + seed
 
 #### Automated
 
-- [ ] 2.1 Prisma client generates: `pnpm --filter @instigi/training-service db:generate`
-- [ ] 2.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
-- [ ] 2.3 Lint passes: `pnpm --filter @instigi/training-service lint`
-- [ ] 2.4 Build succeeds: `pnpm --filter @instigi/training-service build`
+- [x] 2.1 Prisma client generates: `pnpm --filter @instigi/training-service db:generate`
+- [x] 2.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
+- [x] 2.3 Lint passes: `pnpm --filter @instigi/training-service lint`
+- [x] 2.4 Build succeeds: `pnpm --filter @instigi/training-service build`
 
 #### Manual
 
-- [ ] 2.5 `db:migrate` creates `training.exercise_definitions` (psql/pgAdmin)
-- [ ] 2.6 `db:seed` inserts 8 rows with `user_id IS NULL`; re-running does not duplicate
-- [ ] 2.7 Seeded categories/metrics match the data-model summary (swimming = cardio)
+- [x] 2.5 `db:migrate` creates `training.exercise_definitions` (psql/pgAdmin)
+- [x] 2.6 `db:seed` inserts 8 rows with `user_id IS NULL`; re-running does not duplicate
+- [x] 2.7 Seeded categories/metrics match the data-model summary (swimming = cardio)
 
 ### Phase 3: training-service browse endpoint — `GET /api/exercises`
 

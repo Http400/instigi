@@ -10,3 +10,22 @@ datasource db {
   provider = "postgresql"
   schemas  = ["training"]
 }
+
+model ExerciseDefinition {
+  id                String   @id @default(uuid())
+  userId            String?  @map("user_id")
+  name              String   @db.VarChar(120)
+  category          String   @db.VarChar(40)
+  metrics           Json
+  allowedEntryTypes Json     @map("allowed_entry_types")
+  defaultEntryType  String   @map("default_entry_type") @db.VarChar(40)
+  isArchived        Boolean  @default(false) @map("is_archived")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@index([userId, isArchived])
+  @@map("exercise_definitions")
+  @@schema("training")
+}

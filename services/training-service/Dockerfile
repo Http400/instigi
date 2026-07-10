@@ -27,6 +27,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages/types ./packages/types
 COPY --from=builder /app/packages/utils ./packages/utils
 COPY --from=builder /app/services/training-service/dist ./services/training-service/dist
+COPY --from=builder /app/services/training-service/src/generated ./services/training-service/src/generated
 COPY --from=builder /app/services/training-service/prisma ./services/training-service/prisma
 COPY --from=builder /app/services/training-service/prisma.config.ts ./services/training-service/prisma.config.ts
 COPY --from=builder /app/services/training-service/node_modules ./services/training-service/node_modules
