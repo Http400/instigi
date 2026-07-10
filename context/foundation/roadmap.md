@@ -3,7 +3,7 @@ project: Instigi
 version: 1
 status: draft
 created: 2026-07-01
-updated: 2026-07-09
+updated: 2026-07-10
 prd_version: 1
 main_goal: speed
 top_blocker: capacity
@@ -29,7 +29,7 @@ Instigi is a pre-launch workout tracker whose authentication is built and workin
 
 | ID | Change ID | Outcome (user can …) | Prerequisites | PRD refs | Status |
 |---|---|---|---|---|---|
-| F-01 | workout-service-scaffold | (foundation) new workout data service stands up with its own tables and verifies auth-service tokens | — | Constraints (new dedicated service), Access Control | ready |
+| F-01 | workout-service-scaffold | (foundation) new workout data service stands up with its own tables and verifies auth-service tokens | — | Constraints (new dedicated service), Access Control | done |
 | F-02 | exercises-page-layout | (foundation) exercises page shell, route, and layout regions stand up in the web app, ready for S-01 to fill with data | — | US-01, FR-008 | done |
 | S-01 | exercise-library-browse | search and browse the predefined exercise library, each exercise pre-configured with its metric types | F-01, F-02 | US-01, FR-008 | proposed |
 | S-02 | start-session-add-exercises | start a named workout session and add exercises to it from the library | S-01, F-01 | US-01, FR-003, FR-004 | proposed |
@@ -76,7 +76,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - How does the workout service verify auth-service JWTs (shared secret vs. public key / introspection)? — Owner: team. Block: no (auth-service already mints tokens; standard verification pattern).
 - **Risk:** Sequenced first because no user-facing workout slice can persist data or identify its owner without it. Kept minimal (progressive disclosure) so most schema grows inside the slices that consume it; over-scoping this into a "whole data layer" would starve the 2-week budget.
-- **Status:** ready
+- **Status:** done
 
 ### F-02: Exercises page layout scaffold
 
@@ -229,3 +229,4 @@ This table is the clean handoff to Jira/Linear or any MCP-backed backlog. One ro
 (Empty on first generation. `/10x-archive` appends here — and flips the item's `Status` to `done` — when a change whose `Change ID` matches an item is archived. Do NOT pre-populate.)
 
 - **F-02: (foundation) the exercises page shell exists in the web app — its route entry, page layout, and layout regions (search area, list/grid region, empty and loading states) — ready for a data-browsing slice to fill in, with no data fetching or business logic beyond what S-01 needs.** — Archived 2026-07-09 → `context/archive/2026-07-08-exercises-page-layout/`. Lesson: —.
+- **F-01: (foundation) a new dedicated workout service is stood up alongside the auth service, connected to its own Postgres tables, able to verify auth-service-issued JWTs, and reachable through the existing container/compose wiring — no workout tables prebuilt beyond what S-01 needs.** — Archived 2026-07-10 → `context/archive/2026-07-02-workout-service-scaffold/`. Lesson: —.
