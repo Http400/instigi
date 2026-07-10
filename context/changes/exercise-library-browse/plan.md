@@ -374,14 +374,14 @@ First model in `training-service`. `db:migrate` creates `training.exercise_defin
 
 #### Automated
 
-- [ ] 1.1 Types package builds: `pnpm --filter @instigi/types build`
-- [ ] 1.2 Utils package builds: `pnpm --filter @instigi/utils build`
-- [ ] 1.3 Utils tests pass (if present): `pnpm --filter @instigi/utils test`
-- [ ] 1.4 Workspace typecheck passes: `pnpm typecheck`
+- [x] 1.1 Types package builds: `pnpm --filter @instigi/types build`
+- [x] 1.2 Utils package builds: `pnpm --filter @instigi/utils build`
+- [x] 1.3 Utils tests pass (if present): `pnpm --filter @instigi/utils test`
+- [x] 1.4 Workspace typecheck passes: `pnpm typecheck`
 
 #### Manual
 
-- [ ] 1.5 `metricCatalog` labels/units match `context/foundation/data-model.md`
+- [x] 1.5 `metricCatalog` labels/units match `context/foundation/data-model.md`
 
 ### Phase 2: training-service data model — `ExerciseDefinition` + migration + seed
 

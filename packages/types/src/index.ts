@@ -51,3 +51,27 @@ export interface PaginatedResponse<T> {
   limit: number;
   totalPages: number;
 }
+
+// Exercise domain types
+export type ExerciseCategory = 'strength' | 'cardio' | 'mobility' | 'custom';
+
+export type MetricKey = 'reps' | 'load' | 'distance' | 'duration';
+
+export type EntryType = 'set' | 'single' | 'lap' | 'interval';
+
+export interface ExerciseMetric {
+  key: MetricKey;
+  required?: boolean;
+}
+
+/** Browse-facing exercise DTO. Never exposes the owning userId. */
+export interface Exercise {
+  id: string;
+  name: string;
+  category: ExerciseCategory;
+  metrics: ExerciseMetric[];
+  allowedEntryTypes: EntryType[];
+  defaultEntryType: EntryType;
+  /** True when this is a global predefined exercise (userId === null). */
+  isPredefined: boolean;
+}

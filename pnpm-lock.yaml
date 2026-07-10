@@ -236,6 +236,9 @@ importers:
 
   packages/utils:
     dependencies:
+      '@instigi/types':
+        specifier: workspace:*
+        version: link:../types
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3

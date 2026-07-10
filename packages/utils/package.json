@@ -26,6 +26,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@instigi/types": "workspace:*",
     "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
