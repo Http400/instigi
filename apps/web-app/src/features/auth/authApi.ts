@@ -1,9 +1,5 @@
 import {
   createApi,
-  fetchBaseQuery,
-  type BaseQueryFn,
-  type FetchArgs,
-  type FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
 import type {
   ApiResponse,
@@ -11,7 +7,7 @@ import type {
   LoginRequest,
   LoginResponse,
 } from '@instigi/types';
-import { loggedOut, tokensRefreshed } from './authSlice';
+import { createBaseQueryWithReauth } from '../api/baseQuery';
 
 interface RegisterRequest {
   email: string;
@@ -27,83 +23,11 @@ interface RefreshResponse {
 
 export type { RefreshResponse };
 
-/** Minimal shape of the store state this baseQuery needs to read. */
-interface AuthRootStateSlice {
-  auth: {
-    accessToken: string | null;
-    refreshToken: string | null;
-  };
-}
-
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:4000';
-
-const rawBaseQuery = fetchBaseQuery({
-  baseUrl: `${API_BASE}/api/auth`,
-  prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as AuthRootStateSlice).auth.accessToken;
-    if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
-    }
-    return headers;
-  },
-});
-
-// Module-level mutex: concurrent 401s await a single in-flight refresh.
-let refreshPromise: Promise<AuthTokens | null> | null = null;
-
-const baseQueryWithReauth: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-  const endpoint = api.endpoint;
-  let result = await rawBaseQuery(args, api, extraOptions);
-
-  const isAuthEntryPoint = endpoint === 'login' || endpoint === 'register';
-
-  if (result.error?.status === 401 && !isAuthEntryPoint) {
-    if (!refreshPromise) {
-      refreshPromise = (async (): Promise<AuthTokens | null> => {
-        const refreshToken = (api.getState() as AuthRootStateSlice).auth
-          .refreshToken;
-        if (!refreshToken) return null;
-        const refreshResult = await rawBaseQuery(
-          {
-            url: '/refresh',
-            method: 'POST',
-            body: { refreshToken },
-          },
-          api,
-          extraOptions
-        );
-        const payload = refreshResult.data as
-          | ApiResponse<RefreshResponse>
-          | undefined;
-        return payload?.data.tokens ?? null;
-      })();
-    }
-
-    let tokens: AuthTokens | null;
-    try {
-      tokens = await refreshPromise;
-    } finally {
-      refreshPromise = null;
-    }
-
-    if (tokens) {
-      api.dispatch(tokensRefreshed(tokens));
-      result = await rawBaseQuery(args, api, extraOptions);
-    } else {
-      api.dispatch(loggedOut());
-    }
-  }
-
-  return result;
-};
 
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: baseQueryWithReauth,
+  baseQuery: createBaseQueryWithReauth(`${API_BASE}/api/auth`),
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (body) => ({ url: '/login', method: 'POST', body }),

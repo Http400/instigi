@@ -402,24 +402,24 @@ First model in `training-service`. `db:migrate` creates `training.exercise_defin
 
 #### Automated
 
-- [x] 3.1 Tests pass: `pnpm --filter @instigi/training-service test`
-- [x] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
-- [x] 3.3 Lint passes: `pnpm --filter @instigi/training-service lint`
+- [x] 3.1 Tests pass: `pnpm --filter @instigi/training-service test` — 56d059a
+- [x] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck` — 56d059a
+- [x] 3.3 Lint passes: `pnpm --filter @instigi/training-service lint` — 56d059a
 
 #### Manual
 
-- [x] 3.4 `GET /api/exercises` with a valid token returns `{ data: [...8] }`; no `userId` in items
-- [x] 3.5 `?search=press` and `?category=cardio` narrow results correctly
-- [x] 3.6 Missing/invalid token returns 401
+- [x] 3.4 `GET /api/exercises` with a valid token returns `{ data: [...8] }`; no `userId` in items — 56d059a
+- [x] 3.5 `?search=press` and `?category=cardio` narrow results correctly — 56d059a
+- [x] 3.6 Missing/invalid token returns 401 — 56d059a
 
 ### Phase 4: web-app data layer — `exercisesApi` slice + reusable reauth base query
 
 #### Automated
 
-- [ ] 4.1 Typecheck passes: `pnpm --filter @instigi/web-app typecheck`
-- [ ] 4.2 Lint passes: `pnpm --filter @instigi/web-app lint`
-- [ ] 4.3 Existing web-app tests still pass: `pnpm --filter @instigi/web-app test`
-- [ ] 4.4 Build succeeds: `pnpm --filter @instigi/web-app build`
+- [x] 4.1 Typecheck passes: `pnpm --filter @instigi/web-app typecheck`
+- [x] 4.2 Lint passes: `pnpm --filter @instigi/web-app lint`
+- [x] 4.3 Existing web-app tests still pass: `pnpm --filter @instigi/web-app test`
+- [x] 4.4 Build succeeds: `pnpm --filter @instigi/web-app build`
 
 #### Manual
 
