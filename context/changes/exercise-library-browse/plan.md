@@ -387,30 +387,30 @@ First model in `training-service`. `db:migrate` creates `training.exercise_defin
 
 #### Automated
 
-- [x] 2.1 Prisma client generates: `pnpm --filter @instigi/training-service db:generate`
-- [x] 2.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
-- [x] 2.3 Lint passes: `pnpm --filter @instigi/training-service lint`
-- [x] 2.4 Build succeeds: `pnpm --filter @instigi/training-service build`
+- [x] 2.1 Prisma client generates: `pnpm --filter @instigi/training-service db:generate` — c946504
+- [x] 2.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck` — c946504
+- [x] 2.3 Lint passes: `pnpm --filter @instigi/training-service lint` — c946504
+- [x] 2.4 Build succeeds: `pnpm --filter @instigi/training-service build` — c946504
 
 #### Manual
 
-- [x] 2.5 `db:migrate` creates `training.exercise_definitions` (psql/pgAdmin)
-- [x] 2.6 `db:seed` inserts 8 rows with `user_id IS NULL`; re-running does not duplicate
-- [x] 2.7 Seeded categories/metrics match the data-model summary (swimming = cardio)
+- [x] 2.5 `db:migrate` creates `training.exercise_definitions` (psql/pgAdmin) — c946504
+- [x] 2.6 `db:seed` inserts 8 rows with `user_id IS NULL`; re-running does not duplicate — c946504
+- [x] 2.7 Seeded categories/metrics match the data-model summary (swimming = cardio) — c946504
 
 ### Phase 3: training-service browse endpoint — `GET /api/exercises`
 
 #### Automated
 
-- [ ] 3.1 Tests pass: `pnpm --filter @instigi/training-service test`
-- [ ] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
-- [ ] 3.3 Lint passes: `pnpm --filter @instigi/training-service lint`
+- [x] 3.1 Tests pass: `pnpm --filter @instigi/training-service test`
+- [x] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
+- [x] 3.3 Lint passes: `pnpm --filter @instigi/training-service lint`
 
 #### Manual
 
-- [ ] 3.4 `GET /api/exercises` with a valid token returns `{ data: [...8] }`; no `userId` in items
-- [ ] 3.5 `?search=press` and `?category=cardio` narrow results correctly
-- [ ] 3.6 Missing/invalid token returns 401
+- [x] 3.4 `GET /api/exercises` with a valid token returns `{ data: [...8] }`; no `userId` in items
+- [x] 3.5 `?search=press` and `?category=cardio` narrow results correctly
+- [x] 3.6 Missing/invalid token returns 401
 
 ### Phase 4: web-app data layer — `exercisesApi` slice + reusable reauth base query
 
