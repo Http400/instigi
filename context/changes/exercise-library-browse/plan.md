@@ -416,30 +416,30 @@ First model in `training-service`. `db:migrate` creates `training.exercise_defin
 
 #### Automated
 
-- [x] 4.1 Typecheck passes: `pnpm --filter @instigi/web-app typecheck`
-- [x] 4.2 Lint passes: `pnpm --filter @instigi/web-app lint`
-- [x] 4.3 Existing web-app tests still pass: `pnpm --filter @instigi/web-app test`
-- [x] 4.4 Build succeeds: `pnpm --filter @instigi/web-app build`
+- [x] 4.1 Typecheck passes: `pnpm --filter @instigi/web-app typecheck` — f5f92cd
+- [x] 4.2 Lint passes: `pnpm --filter @instigi/web-app lint` — f5f92cd
+- [x] 4.3 Existing web-app tests still pass: `pnpm --filter @instigi/web-app test` — f5f92cd
+- [x] 4.4 Build succeeds: `pnpm --filter @instigi/web-app build` — f5f92cd
 
 #### Manual
 
-- [ ] 4.5 Redux DevTools shows an `exercisesApi` slice after the page mounts
-- [ ] 4.6 `listExercises` query resolves with 8 items, no console errors
+- [x] 4.5 Redux DevTools shows an `exercisesApi` slice after the page mounts
+- [x] 4.6 `listExercises` query resolves with 8 items, no console errors
 
 ### Phase 5: Wire the exercises page to real data
 
 #### Automated
 
-- [ ] 5.1 Web-app tests pass: `pnpm --filter @instigi/web-app test`
-- [ ] 5.2 Typecheck passes: `pnpm --filter @instigi/web-app typecheck`
-- [ ] 5.3 Lint passes: `pnpm --filter @instigi/web-app lint`
-- [ ] 5.4 Build succeeds: `pnpm --filter @instigi/web-app build`
-- [ ] 5.5 Full monorepo green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`
+- [x] 5.1 Web-app tests pass: `pnpm --filter @instigi/web-app test`
+- [x] 5.2 Typecheck passes: `pnpm --filter @instigi/web-app typecheck`
+- [x] 5.3 Lint passes: `pnpm --filter @instigi/web-app lint`
+- [x] 5.4 Build succeeds: `pnpm --filter @instigi/web-app build`
+- [x] 5.5 Full monorepo green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`
 
 #### Manual
 
-- [ ] 5.6 Signed-in user sees 8 seeded exercises with correct chips + metric labels
-- [ ] 5.7 Search filters by name; category chip filters by category; clearing shows all
-- [ ] 5.8 No-match shows empty state; backend failure shows error state + working retry
-- [ ] 5.9 No Swimming chip, no status select, New disabled
-- [ ] 5.10 `docker compose up` migrates + seeds and the page works end-to-end; no auth/web-app regressions
+- [x] 5.6 Signed-in user sees 8 seeded exercises with correct chips + metric labels
+- [x] 5.7 Search filters by name; category chip filters by category; clearing shows all
+- [x] 5.8 No-match shows empty state; backend failure shows error state + working retry
+- [x] 5.9 No Swimming chip, no status select, New disabled
+- [x] 5.10 `docker compose up` migrates + seeds and the page works end-to-end; no auth/web-app regressions

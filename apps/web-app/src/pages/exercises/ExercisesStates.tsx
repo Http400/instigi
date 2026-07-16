@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Skeleton,
   Stack,
   Table,
@@ -9,6 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutlined';
 
 export function ExercisesEmptyState() {
   return (
@@ -21,6 +23,28 @@ export function ExercisesEmptyState() {
       <Typography variant="body2" color="text.secondary">
         Try adjusting your search or filters.
       </Typography>
+    </Stack>
+  );
+}
+
+export interface ExercisesErrorStateProps {
+  onRetry: () => void;
+}
+
+export function ExercisesErrorState({ onRetry }: ExercisesErrorStateProps) {
+  return (
+    <Stack
+      spacing={1.5}
+      sx={{ alignItems: 'center', justifyContent: 'center', py: 8 }}
+    >
+      <ErrorOutlineIcon color="error" sx={{ fontSize: 48 }} />
+      <Typography variant="h6">Couldn&apos;t load exercises</Typography>
+      <Typography variant="body2" color="text.secondary">
+        Something went wrong while fetching your exercises.
+      </Typography>
+      <Button variant="outlined" onClick={onRetry} sx={{ mt: 1 }}>
+        Retry
+      </Button>
     </Stack>
   );
 }

@@ -18,29 +18,43 @@ import PoolIcon from '@mui/icons-material/Pool';
 import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
 import TuneIcon from '@mui/icons-material/Tune';
 import StraightenIcon from '@mui/icons-material/Straighten';
-import type {
-  ExerciseCategory,
-  PlaceholderExercise,
-} from './placeholderExercises';
+import type { Exercise, ExerciseCategory } from '@instigi/types';
+import { metricCatalog } from '@instigi/utils/client';
 
 const CATEGORY_CHIP_COLOR: Record<ExerciseCategory, ChipProps['color']> = {
-  Strength: 'primary',
-  Cardio: 'error',
-  Swimming: 'info',
-  Mobility: 'success',
-  Custom: 'secondary',
+  strength: 'primary',
+  cardio: 'error',
+  mobility: 'success',
+  custom: 'secondary',
 };
 
-const EXERCISE_ICON: Record<PlaceholderExercise['icon'], ReactNode> = {
+const CATEGORY_ICON: Record<ExerciseCategory, ReactNode> = {
   strength: <FitnessCenterIcon fontSize="small" color="action" />,
   cardio: <DirectionsRunIcon fontSize="small" color="action" />,
-  swimming: <PoolIcon fontSize="small" color="action" />,
   mobility: <SelfImprovementIcon fontSize="small" color="action" />,
   custom: <TuneIcon fontSize="small" color="action" />,
 };
 
+function categoryLabel(category: ExerciseCategory): string {
+  return category.charAt(0).toUpperCase() + category.slice(1);
+}
+
+function leadingIcon(row: Exercise): ReactNode {
+  // Swimming folds into cardio in the data model; surface a Pool glyph by name.
+  if (/swim/i.test(row.name)) {
+    return <PoolIcon fontSize="small" color="action" />;
+  }
+  return CATEGORY_ICON[row.category];
+}
+
+function metricLabels(row: Exercise): string {
+  return row.metrics
+    .map((metric) => metricCatalog[metric.key]?.label ?? metric.key)
+    .join(', ');
+}
+
 export interface ExercisesTableProps {
-  rows: PlaceholderExercise[];
+  rows: Exercise[];
 }
 
 export default function ExercisesTable({ rows }: ExercisesTableProps) {
@@ -56,20 +70,20 @@ export default function ExercisesTable({ rows }: ExercisesTableProps) {
       </TableHead>
       <TableBody>
         {rows.map((row) => (
-          <TableRow key={row.name} hover>
+          <TableRow key={row.id} hover>
             <TableCell>
               <Stack
                 direction="row"
                 spacing={1.5}
                 sx={{ alignItems: 'center' }}
               >
-                {EXERCISE_ICON[row.icon]}
+                {leadingIcon(row)}
                 <Typography variant="body2">{row.name}</Typography>
               </Stack>
             </TableCell>
             <TableCell>
               <Chip
-                label={row.category}
+                label={categoryLabel(row.category)}
                 size="small"
                 color={CATEGORY_CHIP_COLOR[row.category]}
                 variant="outlined"
@@ -83,7 +97,7 @@ export default function ExercisesTable({ rows }: ExercisesTableProps) {
               >
                 <StraightenIcon fontSize="small" color="action" />
                 <Typography variant="body2" color="text.secondary">
-                  {row.metrics.join(', ')}
+                  {metricLabels(row)}
                 </Typography>
               </Stack>
             </TableCell>
