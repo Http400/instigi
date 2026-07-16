@@ -1,7 +1,7 @@
 ---
 change_id: exercise-library-browse
 title: Browse the predefined exercise library (search + category filter) served by training-service
-status: implementing
+status: implemented
 created: 2026-07-10
 updated: 2026-07-16
 archived_at: null
