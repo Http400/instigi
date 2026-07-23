@@ -29,3 +29,41 @@ model ExerciseDefinition {
   @@map("exercise_definitions")
   @@schema("training")
 }
+
+model WorkoutSession {
+  id        String            @id @default(uuid())
+  userId    String            @map("user_id")
+  title     String?           @db.VarChar(160)
+  notes     String?
+  startedAt DateTime          @default(now()) @map("started_at")
+  endedAt   DateTime?         @map("ended_at")
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+  exercises SessionExercise[]
+
+  @@index([userId])
+  @@index([userId, endedAt])
+  @@map("workout_sessions")
+  @@schema("training")
+}
+
+model SessionExercise {
+  id                        String         @id @default(uuid())
+  sessionId                 String         @map("session_id")
+  // Soft reference to the source definition (no FK): snapshot below preserves history.
+  exerciseDefinitionId      String?        @map("exercise_definition_id")
+  exerciseNameSnapshot      String         @map("exercise_name_snapshot") @db.VarChar(120)
+  categorySnapshot          String         @map("category_snapshot") @db.VarChar(40)
+  metricsSnapshot           Json           @map("metrics_snapshot")
+  allowedEntryTypesSnapshot Json           @map("allowed_entry_types_snapshot")
+  defaultEntryTypeSnapshot  String         @map("default_entry_type_snapshot") @db.VarChar(40)
+  position                  Int
+  notes                     String?
+  createdAt                 DateTime       @default(now()) @map("created_at")
+  updatedAt                 DateTime       @updatedAt @map("updated_at")
+  session                   WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, position])
+  @@map("session_exercises")
+  @@schema("training")
+}

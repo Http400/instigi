@@ -503,25 +503,25 @@ in the `training` schema. No data backfill. `exercise_definitions` is untouched.
 
 #### Automated
 
-- [x] 1.1 Typecheck passes: `pnpm --filter @instigi/types typecheck`
-- [x] 1.2 Package builds: `pnpm --filter @instigi/types build`
-- [x] 1.3 Monorepo lint passes: `pnpm lint`
+- [x] 1.1 Typecheck passes: `pnpm --filter @instigi/types typecheck` — 80c1a1e
+- [x] 1.2 Package builds: `pnpm --filter @instigi/types build` — 80c1a1e
+- [x] 1.3 Monorepo lint passes: `pnpm lint` — 80c1a1e
 
 #### Manual
 
-- [x] 1.4 New types are importable from `@instigi/types`
+- [x] 1.4 New types are importable from `@instigi/types` — 80c1a1e
 
 ### Phase 2: Data model + migration (`training-service`)
 
 #### Automated
 
-- [ ] 2.1 Migration applies cleanly: `pnpm --filter @instigi/training-service db:migrate`
-- [ ] 2.2 Client regenerates: `pnpm --filter @instigi/training-service db:generate`
-- [ ] 2.3 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
+- [x] 2.1 Migration applies cleanly: `pnpm --filter @instigi/training-service db:migrate`
+- [x] 2.2 Client regenerates: `pnpm --filter @instigi/training-service db:generate`
+- [x] 2.3 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
 
 #### Manual
 
-- [ ] 2.4 `workout_sessions` and `session_exercises` exist in the `training` schema with expected columns/indexes
+- [x] 2.4 `workout_sessions` and `session_exercises` exist in the `training` schema with expected columns/indexes
 
 ### Phase 3: Sessions endpoints (`training-service`)
 
