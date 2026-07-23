@@ -527,27 +527,27 @@ in the `training` schema. No data backfill. `exercise_definitions` is untouched.
 
 #### Automated
 
-- [x] 3.1 Tests pass: `pnpm --filter @instigi/training-service test`
-- [x] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
-- [x] 3.3 Lint passes: `pnpm --filter @instigi/training-service lint`
+- [x] 3.1 Tests pass: `pnpm --filter @instigi/training-service test` — 16ebb6a
+- [x] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck` — 16ebb6a
+- [x] 3.3 Lint passes: `pnpm --filter @instigi/training-service lint` — 16ebb6a
 
 #### Manual
 
-- [x] 3.4 Create → add two exercises → get active shows both in order → remove one → 409 on second create
-- [x] 3.5 A second user cannot read/mutate the first user's session (404)
+- [x] 3.4 Create → add two exercises → get active shows both in order → remove one → 409 on second create — 16ebb6a
+- [x] 3.5 A second user cannot read/mutate the first user's session (404) — 16ebb6a
 
 ### Phase 4: Web-app data layer (`sessionsApi`)
 
 #### Automated
 
-- [ ] 4.1 Typecheck passes: `pnpm --filter @instigi/web-app typecheck`
-- [ ] 4.2 Lint passes: `pnpm --filter @instigi/web-app lint`
-- [ ] 4.3 Tests pass: `pnpm --filter @instigi/web-app test`
-- [ ] 4.4 Build succeeds: `pnpm --filter @instigi/web-app build`
+- [x] 4.1 Typecheck passes: `pnpm --filter @instigi/web-app typecheck`
+- [x] 4.2 Lint passes: `pnpm --filter @instigi/web-app lint`
+- [x] 4.3 Tests pass: `pnpm --filter @instigi/web-app test`
+- [x] 4.4 Build succeeds: `pnpm --filter @instigi/web-app build`
 
 #### Manual
 
-- [ ] 4.5 Redux DevTools shows a `sessionsApi` slice once a session view mounts
+- [x] 4.5 Redux DevTools shows a `sessionsApi` slice once a session view mounts
 
 ### Phase 5: Workouts UI
 
