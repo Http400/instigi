@@ -75,3 +75,47 @@ export interface Exercise {
   /** True when this is a global predefined exercise (userId === null). */
   isPredefined: boolean;
 }
+
+// Workout session domain types
+
+/**
+ * An exercise added to a workout session. Definition fields are snapshotted at
+ * add-time, so a later edit or archive of the source definition can't rewrite
+ * session history. `exerciseDefinitionId` is a soft reference (no DB FK).
+ */
+export interface SessionExercise {
+  id: string;
+  sessionId: string;
+  /** Soft reference to the source definition; null if the definition is gone. */
+  exerciseDefinitionId: string | null;
+  name: string;
+  category: ExerciseCategory;
+  metrics: ExerciseMetric[];
+  allowedEntryTypes: EntryType[];
+  defaultEntryType: EntryType;
+  position: number;
+}
+
+/**
+ * A workout session. Timestamps cross the wire as ISO strings (not Date) so the
+ * RTK Query cache stays serializable.
+ */
+export interface WorkoutSession {
+  id: string;
+  title: string;
+  startedAt: string;
+  endedAt: string | null;
+  exercises: SessionExercise[];
+}
+
+export interface CreateSessionRequest {
+  title?: string;
+}
+
+export interface UpdateSessionRequest {
+  title: string;
+}
+
+export interface AddSessionExerciseRequest {
+  exerciseDefinitionId: string;
+}
