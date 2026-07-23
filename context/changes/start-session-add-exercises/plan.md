@@ -515,26 +515,26 @@ in the `training` schema. No data backfill. `exercise_definitions` is untouched.
 
 #### Automated
 
-- [x] 2.1 Migration applies cleanly: `pnpm --filter @instigi/training-service db:migrate`
-- [x] 2.2 Client regenerates: `pnpm --filter @instigi/training-service db:generate`
-- [x] 2.3 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
+- [x] 2.1 Migration applies cleanly: `pnpm --filter @instigi/training-service db:migrate` — a7dd4f1
+- [x] 2.2 Client regenerates: `pnpm --filter @instigi/training-service db:generate` — a7dd4f1
+- [x] 2.3 Typecheck passes: `pnpm --filter @instigi/training-service typecheck` — a7dd4f1
 
 #### Manual
 
-- [x] 2.4 `workout_sessions` and `session_exercises` exist in the `training` schema with expected columns/indexes
+- [x] 2.4 `workout_sessions` and `session_exercises` exist in the `training` schema with expected columns/indexes — a7dd4f1
 
 ### Phase 3: Sessions endpoints (`training-service`)
 
 #### Automated
 
-- [ ] 3.1 Tests pass: `pnpm --filter @instigi/training-service test`
-- [ ] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
-- [ ] 3.3 Lint passes: `pnpm --filter @instigi/training-service lint`
+- [x] 3.1 Tests pass: `pnpm --filter @instigi/training-service test`
+- [x] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
+- [x] 3.3 Lint passes: `pnpm --filter @instigi/training-service lint`
 
 #### Manual
 
-- [ ] 3.4 Create → add two exercises → get active shows both in order → remove one → 409 on second create
-- [ ] 3.5 A second user cannot read/mutate the first user's session (404)
+- [x] 3.4 Create → add two exercises → get active shows both in order → remove one → 409 on second create
+- [x] 3.5 A second user cannot read/mutate the first user's session (404)
 
 ### Phase 4: Web-app data layer (`sessionsApi`)
 

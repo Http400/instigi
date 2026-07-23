@@ -15,12 +15,12 @@ interface SeedExercise {
 
 /**
  * Predefined, global exercise library (userId = null) from
- * context/foundation/data-model.md. Stable ids keep the upsert idempotent
- * regardless of Postgres NULL-in-unique semantics.
+ * context/foundation/data-model.md. Stable UUID ids keep the seed idempotent
+ * and match the uuid format the API validates on write.
  */
 const PREDEFINED_EXERCISES: SeedExercise[] = [
   {
-    id: 'seed-bench-press',
+    id: '11111111-1111-4111-8111-111111111111',
     name: 'Bench Press',
     category: 'strength',
     metrics: [
@@ -31,7 +31,7 @@ const PREDEFINED_EXERCISES: SeedExercise[] = [
     defaultEntryType: 'set',
   },
   {
-    id: 'seed-squat',
+    id: '22222222-2222-4222-8222-222222222222',
     name: 'Squat',
     category: 'strength',
     metrics: [
@@ -42,7 +42,7 @@ const PREDEFINED_EXERCISES: SeedExercise[] = [
     defaultEntryType: 'set',
   },
   {
-    id: 'seed-deadlift',
+    id: '33333333-3333-4333-8333-333333333333',
     name: 'Deadlift',
     category: 'strength',
     metrics: [
@@ -53,7 +53,7 @@ const PREDEFINED_EXERCISES: SeedExercise[] = [
     defaultEntryType: 'set',
   },
   {
-    id: 'seed-pull-up',
+    id: '44444444-4444-4444-8444-444444444444',
     name: 'Pull-up',
     category: 'strength',
     metrics: [
@@ -64,7 +64,7 @@ const PREDEFINED_EXERCISES: SeedExercise[] = [
     defaultEntryType: 'set',
   },
   {
-    id: 'seed-plank',
+    id: '55555555-5555-4555-8555-555555555555',
     name: 'Plank',
     category: 'strength',
     metrics: [{ key: 'duration', required: true }],
@@ -72,7 +72,7 @@ const PREDEFINED_EXERCISES: SeedExercise[] = [
     defaultEntryType: 'set',
   },
   {
-    id: 'seed-running',
+    id: '66666666-6666-4666-8666-666666666666',
     name: 'Running',
     category: 'cardio',
     metrics: [
@@ -83,7 +83,7 @@ const PREDEFINED_EXERCISES: SeedExercise[] = [
     defaultEntryType: 'single',
   },
   {
-    id: 'seed-cycling',
+    id: '77777777-7777-4777-8777-777777777777',
     name: 'Cycling',
     category: 'cardio',
     metrics: [
@@ -94,7 +94,7 @@ const PREDEFINED_EXERCISES: SeedExercise[] = [
     defaultEntryType: 'single',
   },
   {
-    id: 'seed-swimming',
+    id: '88888888-8888-4888-8888-888888888888',
     name: 'Swimming',
     category: 'cardio',
     metrics: [
@@ -113,6 +113,12 @@ async function main(): Promise<void> {
   const prisma = new PrismaClient({ adapter });
 
   try {
+    // Clear existing global (predefined) definitions so re-seeding with new ids
+    // never leaves stale rows. userId IS NULL means user-created exercises are
+    // untouched; session_exercises keep their snapshots (exerciseDefinitionId is
+    // a soft ref, no FK).
+    await prisma.exerciseDefinition.deleteMany({ where: { userId: null } });
+
     for (const exercise of PREDEFINED_EXERCISES) {
       const data = {
         userId: null,
