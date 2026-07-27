@@ -35,6 +35,7 @@ const activeSession: WorkoutSession = {
       allowedEntryTypes: ['set'],
       defaultEntryType: 'set',
       position: 0,
+      entries: [],
     },
   ],
 };

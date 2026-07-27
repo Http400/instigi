@@ -94,6 +94,23 @@ export interface SessionExercise {
   allowedEntryTypes: EntryType[];
   defaultEntryType: EntryType;
   position: number;
+  entries: ExerciseEntry[];
+}
+
+/** Per-metric values captured for one logged entry. Base units: load=kg, distance=m, duration=s. */
+export type ExerciseEntryValues = Partial<Record<MetricKey, number>>;
+
+/**
+ * One logged result under a session exercise — a set, lap, interval, or single
+ * activity block. Captures only the metrics the exercise is configured for.
+ */
+export interface ExerciseEntry {
+  id: string;
+  sessionExerciseId: string;
+  position: number;
+  entryType: EntryType;
+  values: ExerciseEntryValues;
+  isCompleted: boolean;
 }
 
 /**
@@ -118,4 +135,14 @@ export interface UpdateSessionRequest {
 
 export interface AddSessionExerciseRequest {
   exerciseDefinitionId: string;
+}
+
+export interface LogSetRequest {
+  /** Defaults to the exercise's defaultEntryType when omitted. */
+  entryType?: EntryType;
+  values: ExerciseEntryValues;
+}
+
+export interface UpdateSetRequest {
+  values: ExerciseEntryValues;
 }

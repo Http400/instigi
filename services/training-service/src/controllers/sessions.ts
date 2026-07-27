@@ -53,6 +53,7 @@ function toSessionExerciseDto(row: SessionExerciseRow): SessionExercise {
     metrics: row.metricsSnapshot as ExerciseMetric[],
     allowedEntryTypes: row.allowedEntryTypesSnapshot as EntryType[],
     defaultEntryType: row.defaultEntryTypeSnapshot as EntryType,
+    entries: [],
     position: row.position,
   };
 }

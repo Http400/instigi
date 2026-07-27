@@ -38,6 +38,7 @@ const session: WorkoutSession = {
       allowedEntryTypes: ['set'],
       defaultEntryType: 'set',
       position: 1,
+      entries: [],
     },
     {
       id: 'se-1',
@@ -49,6 +50,7 @@ const session: WorkoutSession = {
       allowedEntryTypes: ['single'],
       defaultEntryType: 'single',
       position: 0,
+      entries: [],
     },
   ],
 };
