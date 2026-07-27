@@ -3,10 +3,14 @@ import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/materia
 
 export type ButtonProps = MuiButtonProps;
 
-export const Button: React.FC<ButtonProps> = ({ children, ...props }) => {
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  loading,
+  ...props
+}) => {
   return (
-    <MuiButton loadingPosition="start" {...props}>
-      {children}
+    <MuiButton loading={loading} loadingPosition="start" {...props}>
+      {loading ? 'Loading...' : children}
     </MuiButton>
   );
 };
