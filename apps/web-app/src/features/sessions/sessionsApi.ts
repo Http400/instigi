@@ -51,6 +51,10 @@ interface FinishSessionArgs {
   id: string;
 }
 
+interface DiscardSessionArgs {
+  id: string;
+}
+
 export type {
   UpdateSessionArgs,
   AddSessionExerciseArgs,
@@ -59,6 +63,7 @@ export type {
   UpdateSetArgs,
   DeleteSetArgs,
   FinishSessionArgs,
+  DiscardSessionArgs,
 };
 
 export const sessionsApi = createApi({
@@ -182,6 +187,15 @@ export const sessionsApi = createApi({
         'History',
       ],
     }),
+    discardSession: builder.mutation<{ id: string }, DiscardSessionArgs>({
+      query: ({ id }) => ({ url: `/${id}`, method: 'DELETE' }),
+      transformResponse: (response: ApiResponse<{ id: string }>) =>
+        response.data,
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: 'Session', id },
+        'ActiveSession',
+      ],
+    }),
   }),
 });
 
@@ -197,4 +211,5 @@ export const {
   useUpdateSetMutation,
   useDeleteSetMutation,
   useFinishSessionMutation,
+  useDiscardSessionMutation,
 } = sessionsApi;
