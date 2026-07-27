@@ -33,8 +33,8 @@ Instigi is a pre-launch workout tracker whose authentication is built and workin
 | F-02 | exercises-page-layout | (foundation) exercises page shell, route, and layout regions stand up in the web app, ready for S-01 to fill with data | — | US-01, FR-008 | done |
 | S-01 | exercise-library-browse | search and browse the predefined exercise library, each exercise pre-configured with its metric types | F-01, F-02 | US-01, FR-008 | done |
 | S-02 | start-session-add-exercises | start a named workout session and add exercises to it from the library | S-01, F-01 | US-01, FR-003, FR-004 | done |
-| S-03 | log-sets-finish-workout | log sets capturing exactly each exercise's configured metrics, then finish and save the workout | S-02 | US-01, FR-005, FR-006 | proposed |
-| S-04 | workout-history-list | view a reverse-chronological list of past completed workouts | S-03 | US-01, FR-010 | proposed |
+| S-03 | log-sets-finish-workout | log sets capturing exactly each exercise's configured metrics, then finish and save the workout | S-02 | US-01, FR-005, FR-006 | done |
+| S-04 | workout-history-list | view a reverse-chronological list of past completed workouts | S-03 | US-01, FR-010 | done |
 | S-05 | discard-session | discard an in-progress workout session | S-02 | FR-007 | proposed |
 | S-06 | workout-detail-view | view the full detail of a past workout (all exercises, sets, values) | S-04 | FR-011 | proposed |
 | S-07 | progress-dashboard | view a dashboard with total workouts completed and recent activity | S-04 | FR-012 | proposed |
@@ -129,7 +129,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - How are per-exercise metric types (WEIGHT, REPETITIONS, DURATION, DISTANCE) modelled so set values are complete and correctly typed per exercise? — Owner: team. Block: no (resolvable during `/10x-plan`).
 - **Risk:** North-star slice and the one genuinely non-trivial part — the metric-completeness domain rule lives here. A session cannot be saved empty (acceptance criterion). This is where the modest data/domain-model investment is spent; everything upstream exists to make this slice real.
-- **Status:** proposed
+- **Status:** done
 
 ### S-04: View workout history
 
@@ -141,7 +141,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Closes the north-star loop — a completed workout must appear in history immediately after saving (acceptance criterion). Low risk read-over-saved-data; sequenced last in the core chain because it needs saved workouts to list.
-- **Status:** proposed
+- **Status:** done
 
 ### S-05: Discard an in-progress session
 
