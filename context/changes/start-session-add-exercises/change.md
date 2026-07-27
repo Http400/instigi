@@ -1,9 +1,9 @@
 ---
 change_id: start-session-add-exercises
 title: Start session add exercises
-status: implementing
+status: implemented
 created: 2026-07-16
-updated: 2026-07-23
+updated: 2026-07-27
 archived_at: null
 ---
 

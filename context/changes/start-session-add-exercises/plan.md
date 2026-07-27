@@ -553,16 +553,16 @@ in the `training` schema. No data backfill. `exercise_definitions` is untouched.
 
 #### Automated
 
-- [x] 5.1 Tests pass: `pnpm --filter @instigi/web-app test`
-- [x] 5.2 Typecheck passes: `pnpm --filter @instigi/web-app typecheck`
-- [x] 5.3 Lint passes: `pnpm --filter @instigi/web-app lint`
-- [x] 5.4 Build succeeds: `pnpm --filter @instigi/web-app build`
+- [x] 5.1 Tests pass: `pnpm --filter @instigi/web-app test` — 51b8f03
+- [x] 5.2 Typecheck passes: `pnpm --filter @instigi/web-app typecheck` — 51b8f03
+- [x] 5.3 Lint passes: `pnpm --filter @instigi/web-app lint` — 51b8f03
+- [x] 5.4 Build succeeds: `pnpm --filter @instigi/web-app build` — 51b8f03
 - [ ] 5.5 Full monorepo green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`
 
 #### Manual
 
-- [x] 5.6 Start a workout from the Workouts nav → active session with today's-date title
-- [x] 5.7 Add several exercises (incl. a duplicate) in order; remove one
-- [x] 5.8 Edit title; reload → title + exercise list persist
-- [x] 5.9 Re-open Workouts resumes the same session; second start is prevented
-- [x] 5.10 No regressions in auth or the exercises page; no console errors
+- [x] 5.6 Start a workout from the Workouts nav → active session with today's-date title — 51b8f03
+- [x] 5.7 Add several exercises (incl. a duplicate) in order; remove one — 51b8f03
+- [x] 5.8 Edit title; reload → title + exercise list persist — 51b8f03
+- [x] 5.9 Re-open Workouts resumes the same session; second start is prevented — 51b8f03
+- [x] 5.10 No regressions in auth or the exercises page; no console errors — 51b8f03
