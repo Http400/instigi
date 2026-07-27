@@ -362,4 +362,36 @@ describe('SessionPage', () => {
     ).toBeNull();
     expect(screen.getByLabelText('Session title')).toBeDisabled();
   });
+
+  it('shows a back-to-history button that navigates when finished', () => {
+    useGetSessionQuery.mockReturnValue({
+      data: { ...sessionWithSet, endedAt: '2026-07-27T09:00:00.000Z' },
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    render(<SessionPage />);
+
+    const backButton = screen.getByRole('button', { name: /back to history/i });
+    fireEvent.click(backButton);
+    expect(navigate).toHaveBeenCalledWith('/workouts/history');
+  });
+
+  it('shows the workout summary and drops the old alert when finished', () => {
+    useGetSessionQuery.mockReturnValue({
+      data: { ...sessionWithSet, endedAt: '2026-07-27T09:00:00.000Z' },
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    render(<SessionPage />);
+
+    expect(screen.getByText(/^Finished /)).toBeInTheDocument();
+    expect(screen.getByText(/exercises · .* set/)).toBeInTheDocument();
+    expect(
+      screen.queryByText('This workout is finished and saved.')
+    ).toBeNull();
+  });
 });

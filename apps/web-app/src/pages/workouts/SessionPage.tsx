@@ -20,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutlined';
 import { useNavigate, useParams } from 'react-router';
@@ -34,6 +35,7 @@ import {
 } from '../../features/sessions/sessionsApi';
 import AddExerciseDialog from './AddExerciseDialog';
 import ExerciseSetList from './ExerciseSetList';
+import WorkoutSummary from './WorkoutSummary';
 
 function metricLabels(exercise: SessionExercise): string {
   return exercise.metrics
@@ -140,6 +142,17 @@ export default function SessionPage() {
 
   return (
     <Box sx={{ maxWidth: 720, mx: 'auto' }}>
+      {readOnly && (
+        <Button
+          variant="text"
+          startIcon={<ArrowBackIcon />}
+          onClick={() => void navigate('/workouts/history')}
+          sx={{ mb: 1 }}
+        >
+          Back to history
+        </Button>
+      )}
+
       <TextField
         variant="standard"
         fullWidth
@@ -161,11 +174,7 @@ export default function SessionPage() {
         sx={{ mb: 3 }}
       />
 
-      {readOnly && (
-        <Alert severity="success" sx={{ mb: 2 }}>
-          This workout is finished and saved.
-        </Alert>
-      )}
+      {readOnly && <WorkoutSummary session={session} />}
 
       {finishError && (
         <Alert severity="error" sx={{ mb: 2 }} onClose={() => setFinishError(null)}>
