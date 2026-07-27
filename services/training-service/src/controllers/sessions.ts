@@ -250,6 +250,32 @@ export async function updateSession(req: AuthRequest, res: Response): Promise<vo
   res.json({ data: toSessionDto(session) });
 }
 
+export async function discardSession(req: AuthRequest, res: Response): Promise<void> {
+  const userId = req.user!.userId;
+  const id = req.params['id'] as string;
+
+  const session = await prisma.workoutSession.findFirst({
+    where: { id, userId },
+    select: { id: true, endedAt: true },
+  });
+  if (!session) {
+    res.status(404).json({ message: 'Session not found', code: 'NOT_FOUND', statusCode: 404 });
+    return;
+  }
+  if (session.endedAt !== null) {
+    res.status(409).json({
+      message: 'Session is already finished',
+      code: 'SESSION_ALREADY_FINISHED',
+      statusCode: 409,
+    });
+    return;
+  }
+
+  await prisma.workoutSession.delete({ where: { id } });
+
+  res.json({ data: { id } });
+}
+
 export async function addSessionExercise(req: AuthRequest, res: Response): Promise<void> {
   const result = addExerciseSchema.safeParse(req.body);
   if (!result.success) {

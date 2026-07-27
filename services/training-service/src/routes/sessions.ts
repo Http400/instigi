@@ -6,6 +6,7 @@ import {
   listHistory,
   getSession,
   updateSession,
+  discardSession,
   addSessionExercise,
   removeSessionExercise,
   logSet,
@@ -21,6 +22,7 @@ sessionsRouter.get('/active', requireAuth, getActiveSession);
 sessionsRouter.get('/history', requireAuth, listHistory);
 sessionsRouter.get('/:id', requireAuth, getSession);
 sessionsRouter.patch('/:id', requireAuth, updateSession);
+sessionsRouter.delete('/:id', requireAuth, discardSession);
 sessionsRouter.post('/:id/finish', requireAuth, finishSession);
 sessionsRouter.post('/:id/exercises', requireAuth, addSessionExercise);
 sessionsRouter.delete('/:id/exercises/:sessionExerciseId', requireAuth, removeSessionExercise);

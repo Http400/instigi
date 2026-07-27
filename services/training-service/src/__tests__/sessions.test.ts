@@ -11,6 +11,7 @@ vi.mock('../db.js', () => ({
       findMany: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
+      delete: vi.fn(),
     },
     sessionExercise: {
       findFirst: vi.fn(),
@@ -113,6 +114,7 @@ beforeEach(() => {
   vi.mocked(prisma.workoutSession.findMany).mockReset();
   vi.mocked(prisma.workoutSession.create).mockReset();
   vi.mocked(prisma.workoutSession.update).mockReset();
+  vi.mocked(prisma.workoutSession.delete).mockReset();
   vi.mocked(prisma.sessionExercise.findFirst).mockReset();
   vi.mocked(prisma.sessionExercise.create).mockReset();
   vi.mocked(prisma.sessionExercise.delete).mockReset();
@@ -555,5 +557,57 @@ describe('GET /api/sessions/history', () => {
 
     expect(res.status).toBe(401);
     expect(prisma.workoutSession.findMany).not.toHaveBeenCalled();
+  });
+});
+
+describe('DELETE /api/sessions/:id', () => {
+  it('discards an in-progress owned session', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.workoutSession.delete).mockResolvedValueOnce({ id: 'session-1' } as never);
+
+    const res = await request(app)
+      .delete('/api/sessions/session-1')
+      .set('Authorization', `Bearer ${signToken()}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ data: { id: 'session-1' } });
+    expect(prisma.workoutSession.delete).toHaveBeenCalledWith({ where: { id: 'session-1' } });
+  });
+
+  it('rejects discarding a finished session with 409', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: new Date('2026-07-16T11:00:00.000Z'),
+    } as never);
+
+    const res = await request(app)
+      .delete('/api/sessions/session-1')
+      .set('Authorization', `Bearer ${signToken()}`);
+
+    expect(res.status).toBe(409);
+    expect(res.body.code).toBe('SESSION_ALREADY_FINISHED');
+    expect(prisma.workoutSession.delete).not.toHaveBeenCalled();
+  });
+
+  it('returns 404 for an unknown or non-owned session', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce(null as never);
+
+    const res = await request(app)
+      .delete('/api/sessions/session-x')
+      .set('Authorization', `Bearer ${signToken()}`);
+
+    expect(res.status).toBe(404);
+    expect(res.body.code).toBe('NOT_FOUND');
+    expect(prisma.workoutSession.delete).not.toHaveBeenCalled();
+  });
+
+  it('rejects an unauthenticated request with 401', async () => {
+    const res = await request(app).delete('/api/sessions/session-1');
+
+    expect(res.status).toBe(401);
+    expect(prisma.workoutSession.delete).not.toHaveBeenCalled();
   });
 });
