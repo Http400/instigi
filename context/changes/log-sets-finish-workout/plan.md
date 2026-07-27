@@ -459,22 +459,22 @@ before `db:migrate`.
 
 #### Automated
 
-- [x] 3.1 Tests pass: `pnpm --filter @instigi/training-service test`
-- [x] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
-- [x] 3.3 Lint passes: `pnpm --filter @instigi/training-service lint`
+- [x] 3.1 Tests pass: `pnpm --filter @instigi/training-service test` — 0afbc2f
+- [x] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck` — 0afbc2f
+- [x] 3.3 Lint passes: `pnpm --filter @instigi/training-service lint` — 0afbc2f
 
 #### Manual
 
-- [x] 3.4 `POST /:id/exercises/:seId/sets` with valid values returns 201 and the entry
-- [x] 3.5 `POST /:id/finish` with ≥1 set returns 200 + `endedAt`; subsequent set-write → 409; second finish → 409
+- [x] 3.4 `POST /:id/exercises/:seId/sets` with valid values returns 201 and the entry — 0afbc2f
+- [x] 3.5 `POST /:id/finish` with ≥1 set returns 200 + `endedAt`; subsequent set-write → 409; second finish → 409 — 0afbc2f
 
 ### Phase 4: Web-App Data Layer
 
 #### Automated
 
-- [ ] 4.1 Typecheck passes: `pnpm --filter @instigi/web-app typecheck`
-- [ ] 4.2 Lint passes: `pnpm --filter @instigi/web-app lint`
-- [ ] 4.3 Existing tests pass: `pnpm --filter @instigi/web-app test`
+- [x] 4.1 Typecheck passes: `pnpm --filter @instigi/web-app typecheck`
+- [x] 4.2 Lint passes: `pnpm --filter @instigi/web-app lint`
+- [x] 4.3 Existing tests pass: `pnpm --filter @instigi/web-app test`
 
 ### Phase 5: Set-Logging & Finish UI
 

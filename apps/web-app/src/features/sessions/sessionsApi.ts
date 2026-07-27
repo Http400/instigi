@@ -3,6 +3,8 @@ import type {
   AddSessionExerciseRequest,
   ApiResponse,
   CreateSessionRequest,
+  ExerciseEntry,
+  ExerciseEntryValues,
   SessionExercise,
   UpdateSessionRequest,
   WorkoutSession,
@@ -25,10 +27,37 @@ interface RemoveSessionExerciseArgs {
   sessionExerciseId: string;
 }
 
+interface LogSetArgs {
+  sessionId: string;
+  sessionExerciseId: string;
+  values: ExerciseEntryValues;
+}
+
+interface UpdateSetArgs {
+  sessionId: string;
+  sessionExerciseId: string;
+  entryId: string;
+  values: ExerciseEntryValues;
+}
+
+interface DeleteSetArgs {
+  sessionId: string;
+  sessionExerciseId: string;
+  entryId: string;
+}
+
+interface FinishSessionArgs {
+  id: string;
+}
+
 export type {
   UpdateSessionArgs,
   AddSessionExerciseArgs,
   RemoveSessionExerciseArgs,
+  LogSetArgs,
+  UpdateSetArgs,
+  DeleteSetArgs,
+  FinishSessionArgs,
 };
 
 export const sessionsApi = createApi({
@@ -98,6 +127,53 @@ export const sessionsApi = createApi({
         'ActiveSession',
       ],
     }),
+    logSet: builder.mutation<ExerciseEntry, LogSetArgs>({
+      query: ({ sessionId, sessionExerciseId, values }) => ({
+        url: `/${sessionId}/exercises/${sessionExerciseId}/sets`,
+        method: 'POST',
+        body: { values },
+      }),
+      transformResponse: (response: ApiResponse<ExerciseEntry>) =>
+        response.data,
+      invalidatesTags: (_result, _error, { sessionId }) => [
+        { type: 'Session', id: sessionId },
+        'ActiveSession',
+      ],
+    }),
+    updateSet: builder.mutation<ExerciseEntry, UpdateSetArgs>({
+      query: ({ sessionId, sessionExerciseId, entryId, values }) => ({
+        url: `/${sessionId}/exercises/${sessionExerciseId}/sets/${entryId}`,
+        method: 'PATCH',
+        body: { values },
+      }),
+      transformResponse: (response: ApiResponse<ExerciseEntry>) =>
+        response.data,
+      invalidatesTags: (_result, _error, { sessionId }) => [
+        { type: 'Session', id: sessionId },
+        'ActiveSession',
+      ],
+    }),
+    deleteSet: builder.mutation<{ id: string }, DeleteSetArgs>({
+      query: ({ sessionId, sessionExerciseId, entryId }) => ({
+        url: `/${sessionId}/exercises/${sessionExerciseId}/sets/${entryId}`,
+        method: 'DELETE',
+      }),
+      transformResponse: (response: ApiResponse<{ id: string }>) =>
+        response.data,
+      invalidatesTags: (_result, _error, { sessionId }) => [
+        { type: 'Session', id: sessionId },
+        'ActiveSession',
+      ],
+    }),
+    finishSession: builder.mutation<WorkoutSession, FinishSessionArgs>({
+      query: ({ id }) => ({ url: `/${id}/finish`, method: 'POST' }),
+      transformResponse: (response: ApiResponse<WorkoutSession>) =>
+        response.data,
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: 'Session', id },
+        'ActiveSession',
+      ],
+    }),
   }),
 });
 
@@ -108,4 +184,8 @@ export const {
   useUpdateSessionMutation,
   useAddSessionExerciseMutation,
   useRemoveSessionExerciseMutation,
+  useLogSetMutation,
+  useUpdateSetMutation,
+  useDeleteSetMutation,
+  useFinishSessionMutation,
 } = sessionsApi;
