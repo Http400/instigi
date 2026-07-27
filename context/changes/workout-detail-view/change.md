@@ -1,7 +1,7 @@
 ---
 change_id: workout-detail-view
 title: Enhance the read-only past-workout detail view
-status: implementing
+status: implemented
 created: 2026-07-27
 updated: 2026-07-27
 archived_at: null

@@ -114,14 +114,14 @@ Vitest + Testing Library (no router/api mocks needed — pure presentational):
 ### Phase 1: Read-only detail enhancement
 
 #### Automated
-- [x] 1.1 Create `WorkoutSummary.tsx` (finished-date + exercises·sets·duration, plural-aware, null-safe)
-- [x] 1.2 Wire `SessionPage` read-only branch: add `Back to history` button + replace success Alert with `WorkoutSummary`
-- [x] 1.3 Add `WorkoutSummary.test.tsx` (date, counts, duration formats, plural, null-safe)
-- [x] 1.4 Extend `SessionPage.test.tsx` (back-to-history nav + summary shown when finished)
-- [x] 1.5 `pnpm --filter @instigi/web-app test` green
-- [x] 1.6 `pnpm lint && pnpm typecheck` clean
+- [x] 1.1 Create `WorkoutSummary.tsx` (finished-date + exercises·sets·duration, plural-aware, null-safe) — 7631dc8
+- [x] 1.2 Wire `SessionPage` read-only branch: add `Back to history` button + replace success Alert with `WorkoutSummary` — 7631dc8
+- [x] 1.3 Add `WorkoutSummary.test.tsx` (date, counts, duration formats, plural, null-safe) — 7631dc8
+- [x] 1.4 Extend `SessionPage.test.tsx` (back-to-history nav + summary shown when finished) — 7631dc8
+- [x] 1.5 `pnpm --filter @instigi/web-app test` green — 7631dc8
+- [x] 1.6 `pnpm lint && pnpm typecheck` clean — 7631dc8
 
 #### Manual
-- [x] 1.7 Back-to-history button navigates to `/workouts/history` from a finished workout
-- [x] 1.8 Finished date + summary render; old success alert gone
-- [x] 1.9 Active session visually unchanged (no back button / summary; editing intact)
+- [x] 1.7 Back-to-history button navigates to `/workouts/history` from a finished workout — 7631dc8
+- [x] 1.8 Finished date + summary render; old success alert gone — 7631dc8
+- [x] 1.9 Active session visually unchanged (no back button / summary; editing intact) — 7631dc8
