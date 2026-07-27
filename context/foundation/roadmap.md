@@ -3,7 +3,7 @@ project: Instigi
 version: 1
 status: draft
 created: 2026-07-01
-updated: 2026-07-16
+updated: 2026-07-27
 prd_version: 1
 main_goal: speed
 top_blocker: capacity
@@ -32,7 +32,7 @@ Instigi is a pre-launch workout tracker whose authentication is built and workin
 | F-01 | workout-service-scaffold | (foundation) new workout data service stands up with its own tables and verifies auth-service tokens | — | Constraints (new dedicated service), Access Control | done |
 | F-02 | exercises-page-layout | (foundation) exercises page shell, route, and layout regions stand up in the web app, ready for S-01 to fill with data | — | US-01, FR-008 | done |
 | S-01 | exercise-library-browse | search and browse the predefined exercise library, each exercise pre-configured with its metric types | F-01, F-02 | US-01, FR-008 | done |
-| S-02 | start-session-add-exercises | start a named workout session and add exercises to it from the library | S-01, F-01 | US-01, FR-003, FR-004 | proposed |
+| S-02 | start-session-add-exercises | start a named workout session and add exercises to it from the library | S-01, F-01 | US-01, FR-003, FR-004 | done |
 | S-03 | log-sets-finish-workout | log sets capturing exactly each exercise's configured metrics, then finish and save the workout | S-02 | US-01, FR-005, FR-006 | proposed |
 | S-04 | workout-history-list | view a reverse-chronological list of past completed workouts | S-03 | US-01, FR-010 | proposed |
 | S-05 | discard-session | discard an in-progress workout session | S-02 | FR-007 | proposed |
@@ -116,7 +116,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Establishes the active-session model and the session↔exercise relationship the rest of the loop builds on. Sequenced after the library because adding exercises requires a browsable library.
-- **Status:** proposed
+- **Status:** done
 
 ### S-03: Log sets with per-exercise metrics and finish the workout
 
@@ -232,3 +232,4 @@ This table is the clean handoff to Jira/Linear or any MCP-backed backlog. One ro
 - **F-01: (foundation) a new dedicated workout service is stood up alongside the auth service, connected to its own Postgres tables, able to verify auth-service-issued JWTs, and reachable through the existing container/compose wiring — no workout tables prebuilt beyond what S-01 needs.** — Archived 2026-07-10 → `context/archive/2026-07-02-workout-service-scaffold/`. Lesson: —.
 - **S-08: user can sign up, sign in, stay signed in across browser reloads, and sign out directly from the web app.** — Archived 2026-07-10 → `context/archive/2026-07-08-web-app-auth-flow/`. Lesson: —.
 - **S-01: user can search and browse the predefined exercise list, each exercise pre-configured with its metric types.** — Archived 2026-07-16 → `context/archive/2026-07-10-exercise-library-browse/`. Lesson: —.
+- **S-02: user can start a named workout session (defaulting to the current date) and add exercises to it from the library.** — Archived 2026-07-27 → `context/archive/2026-07-16-start-session-add-exercises/`. Lesson: —.
