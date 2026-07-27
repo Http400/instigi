@@ -27,6 +27,7 @@ import type { SessionExercise } from '@instigi/types';
 import { metricCatalog } from '@instigi/utils/client';
 import {
   useFinishSessionMutation,
+  useDiscardSessionMutation,
   useGetSessionQuery,
   useRemoveSessionExerciseMutation,
   useUpdateSessionMutation,
@@ -54,12 +55,16 @@ export default function SessionPage() {
   const [updateSession] = useUpdateSessionMutation();
   const [removeExercise] = useRemoveSessionExerciseMutation();
   const [finishSession, { isLoading: isFinishing }] = useFinishSessionMutation();
+  const [discardSession, { isLoading: isDiscarding }] =
+    useDiscardSessionMutation();
 
   const [title, setTitle] = useState('');
   const [syncedTitle, setSyncedTitle] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [discardOpen, setDiscardOpen] = useState(false);
   const [finishError, setFinishError] = useState<string | null>(null);
+  const [discardError, setDiscardError] = useState<string | null>(null);
 
   if (session && session.title !== syncedTitle) {
     setSyncedTitle(session.title);
@@ -119,6 +124,20 @@ export default function SessionPage() {
       });
   };
 
+  const handleDiscard = () => {
+    setDiscardError(null);
+    void discardSession({ id })
+      .unwrap()
+      .then(() => {
+        setDiscardOpen(false);
+        void navigate('/workouts');
+      })
+      .catch(() => {
+        setDiscardOpen(false);
+        setDiscardError('Could not discard this workout. Please try again.');
+      });
+  };
+
   return (
     <Box sx={{ maxWidth: 720, mx: 'auto' }}>
       <TextField
@@ -151,6 +170,16 @@ export default function SessionPage() {
       {finishError && (
         <Alert severity="error" sx={{ mb: 2 }} onClose={() => setFinishError(null)}>
           {finishError}
+        </Alert>
+      )}
+
+      {discardError && (
+        <Alert
+          severity="error"
+          sx={{ mb: 2 }}
+          onClose={() => setDiscardError(null)}
+        >
+          {discardError}
         </Alert>
       )}
 
@@ -235,7 +264,18 @@ export default function SessionPage() {
       </Paper>
 
       {!readOnly && (
-        <Stack direction="row" sx={{ justifyContent: 'flex-end', mt: 3 }}>
+        <Stack
+          direction="row"
+          sx={{ justifyContent: 'space-between', mt: 3 }}
+        >
+          <Button
+            variant="text"
+            color="error"
+            disabled={isDiscarding}
+            onClick={() => setDiscardOpen(true)}
+          >
+            Discard workout
+          </Button>
           <Button
             variant="contained"
             color="success"
@@ -264,6 +304,27 @@ export default function SessionPage() {
             onClick={handleFinish}
           >
             Finish
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={discardOpen} onClose={() => setDiscardOpen(false)}>
+        <DialogTitle>Discard workout?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This permanently deletes the workout and all its logged sets. This
+            action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDiscardOpen(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="error"
+            disabled={isDiscarding}
+            onClick={handleDiscard}
+          >
+            Discard
           </Button>
         </DialogActions>
       </Dialog>

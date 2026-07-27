@@ -16,6 +16,7 @@ const logSet = vi.fn();
 const updateSet = vi.fn();
 const deleteSet = vi.fn();
 const finishSession = vi.fn();
+const discardSession = vi.fn();
 
 vi.mock('../../features/sessions/sessionsApi', () => ({
   useGetSessionQuery: (...args: unknown[]) => useGetSessionQuery(...args),
@@ -25,6 +26,7 @@ vi.mock('../../features/sessions/sessionsApi', () => ({
   useUpdateSetMutation: () => [updateSet, { isLoading: false }],
   useDeleteSetMutation: () => [deleteSet, { isLoading: false }],
   useFinishSessionMutation: () => [finishSession, { isLoading: false }],
+  useDiscardSessionMutation: () => [discardSession, { isLoading: false }],
 }));
 
 vi.mock('./AddExerciseDialog', () => ({
@@ -95,9 +97,11 @@ beforeEach(() => {
   updateSet.mockReset();
   deleteSet.mockReset();
   finishSession.mockReset();
+  discardSession.mockReset();
   logSet.mockReturnValue({ unwrap: () => Promise.resolve({}) });
   updateSet.mockReturnValue({ unwrap: () => Promise.resolve({}) });
   finishSession.mockReturnValue({ unwrap: () => Promise.resolve({}) });
+  discardSession.mockReturnValue({ unwrap: () => Promise.resolve({}) });
 });
 
 describe('SessionPage', () => {
@@ -295,6 +299,23 @@ describe('SessionPage', () => {
     await waitFor(() => expect(navigate).toHaveBeenCalledWith('/workouts'));
   });
 
+  it('discards the session and navigates on confirm', async () => {
+    useGetSessionQuery.mockReturnValue({
+      data: session,
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    render(<SessionPage />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Discard workout' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Discard' }));
+
+    expect(discardSession).toHaveBeenCalledWith({ id: 'sess-1' });
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/workouts'));
+  });
+
   it('deletes a logged set via the mutation', () => {
     useGetSessionQuery.mockReturnValue({
       data: sessionWithSet,
@@ -332,6 +353,9 @@ describe('SessionPage', () => {
     expect(screen.queryByRole('button', { name: /add exercise/i })).toBeNull();
     expect(
       screen.queryByRole('button', { name: 'Finish workout' })
+    ).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'Discard workout' })
     ).toBeNull();
     expect(
       screen.queryByRole('button', { name: 'Add set to Squat' })

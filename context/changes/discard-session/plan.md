@@ -280,23 +280,23 @@ add a sibling assertion).
 
 #### Automated
 
-- [x] 2.1 Web-app typecheck: `pnpm --filter @instigi/web-app typecheck`
-- [x] 2.2 Web-app lint: `pnpm --filter @instigi/web-app lint`
-- [x] 2.3 Web-app tests pass: `pnpm --filter @instigi/web-app test`
+- [x] 2.1 Web-app typecheck: `pnpm --filter @instigi/web-app typecheck` — 6881869
+- [x] 2.2 Web-app lint: `pnpm --filter @instigi/web-app lint` — 6881869
+- [x] 2.3 Web-app tests pass: `pnpm --filter @instigi/web-app test` — 6881869
 
 ### Phase 3: Web-app — discard UI
 
 #### Automated
 
-- [ ] 3.1 Web-app typecheck: `pnpm --filter @instigi/web-app typecheck`
-- [ ] 3.2 Web-app lint: `pnpm --filter @instigi/web-app lint`
-- [ ] 3.3 Web-app tests pass: `pnpm --filter @instigi/web-app test`
-- [ ] 3.4 Web-app build: `pnpm --filter @instigi/web-app build`
-- [ ] 3.5 Full monorepo green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`
+- [x] 3.1 Web-app typecheck: `pnpm --filter @instigi/web-app typecheck`
+- [x] 3.2 Web-app lint: `pnpm --filter @instigi/web-app lint`
+- [x] 3.3 Web-app tests pass: `pnpm --filter @instigi/web-app test`
+- [x] 3.4 Web-app build: `pnpm --filter @instigi/web-app build`
+- [x] 3.5 Full monorepo green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`
 
 #### Manual
 
-- [ ] 3.6 The "Discard workout" button appears only on an in-progress session and opens a confirmation dialog
-- [ ] 3.7 Confirming discard deletes the session and lands on /workouts with no active session; the discarded workout does not appear in history
-- [ ] 3.8 Cancelling the dialog leaves the session untouched
-- [ ] 3.9 A finished (read-only) session shows no Discard button
+- [x] 3.6 The "Discard workout" button appears only on an in-progress session and opens a confirmation dialog
+- [x] 3.7 Confirming discard deletes the session and lands on /workouts with no active session; the discarded workout does not appear in history
+- [x] 3.8 Cancelling the dialog leaves the session untouched
+- [x] 3.9 A finished (read-only) session shows no Discard button
