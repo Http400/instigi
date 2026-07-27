@@ -557,7 +557,7 @@ in the `training` schema. No data backfill. `exercise_definitions` is untouched.
 - [x] 5.2 Typecheck passes: `pnpm --filter @instigi/web-app typecheck` — 51b8f03
 - [x] 5.3 Lint passes: `pnpm --filter @instigi/web-app lint` — 51b8f03
 - [x] 5.4 Build succeeds: `pnpm --filter @instigi/web-app build` — 51b8f03
-- [ ] 5.5 Full monorepo green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`
+- [x] 5.5 Full monorepo green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build` — 03e924d
 
 #### Manual
 
