@@ -1,7 +1,7 @@
 ---
 change_id: log-sets-finish-workout
 title: Log sets with per-exercise metrics and finish a workout
-status: implementing
+status: implemented
 created: 2026-07-27
 updated: 2026-07-27
 archived_at: null

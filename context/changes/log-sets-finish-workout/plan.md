@@ -480,16 +480,16 @@ before `db:migrate`.
 
 #### Automated
 
-- [x] 5.1 Typecheck passes: `pnpm --filter @instigi/web-app typecheck`
-- [x] 5.2 Lint passes: `pnpm --filter @instigi/web-app lint`
-- [x] 5.3 Tests pass: `pnpm --filter @instigi/web-app test`
-- [x] 5.4 Build passes: `pnpm --filter @instigi/web-app build`
-- [x] 5.5 Full monorepo green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`
+- [x] 5.1 Typecheck passes: `pnpm --filter @instigi/web-app typecheck` — 54213e1
+- [x] 5.2 Lint passes: `pnpm --filter @instigi/web-app lint` — 54213e1
+- [x] 5.3 Tests pass: `pnpm --filter @instigi/web-app test` — 54213e1
+- [x] 5.4 Build passes: `pnpm --filter @instigi/web-app build` — 54213e1
+- [x] 5.5 Full monorepo green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build` — 54213e1
 
 #### Manual
 
-- [x] 5.6 Add/edit/delete sets on a strength exercise work inline
-- [x] 5.7 Duration input accepts and displays mm:ss (Plank)
-- [x] 5.8 Optional-metric exercise (Pull-up) accepts reps-only and reps+load
-- [x] 5.9 Finish gated until ≥1 set; confirm saves and navigates to Workouts landing
-- [x] 5.10 Finished session is read-only with sets intact on re-open
+- [x] 5.6 Add/edit/delete sets on a strength exercise work inline — 54213e1
+- [x] 5.7 Duration input accepts and displays mm:ss (Plank) — 54213e1
+- [x] 5.8 Optional-metric exercise (Pull-up) accepts reps-only and reps+load — 54213e1
+- [x] 5.9 Finish gated until ≥1 set; confirm saves and navigates to Workouts landing — 54213e1
+- [x] 5.10 Finished session is read-only with sets intact on re-open — 54213e1
