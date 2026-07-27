@@ -40,7 +40,7 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Workouts', icon: <FitnessCenterIcon />, disabled: true },
+  { label: 'Workouts', icon: <FitnessCenterIcon />, to: '/workouts' },
   { label: 'Exercises', icon: <LibraryBooksIcon />, to: '/exercises' },
   { label: 'Progress', icon: <ShowChartIcon />, disabled: true },
   { label: 'Calendar', icon: <CalendarMonthIcon />, disabled: true },
@@ -49,11 +49,18 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 const BOTTOM_NAV_ITEMS: NavItem[] = [
-  { label: 'Workouts', icon: <FitnessCenterIcon />, disabled: true },
+  { label: 'Workouts', icon: <FitnessCenterIcon />, to: '/workouts' },
   { label: 'Exercises', icon: <LibraryBooksIcon />, to: '/exercises' },
   { label: 'Progress', icon: <ShowChartIcon />, disabled: true },
   { label: 'More', icon: <MenuIcon />, disabled: true },
 ];
+
+function isActive(to: string | undefined, pathname: string): boolean {
+  if (to == null) {
+    return false;
+  }
+  return pathname === to || pathname.startsWith(`${to}/`);
+}
 
 function initialsFor(name?: string | null, email?: string | null): string {
   const source = name?.trim() || email?.trim() || '';
@@ -80,8 +87,8 @@ export default function AppLayout() {
 
   const displayName = user?.name ?? user?.email ?? 'Signed in';
 
-  const activeBottomNav = BOTTOM_NAV_ITEMS.find(
-    (item) => item.to != null && location.pathname === item.to
+  const activeBottomNav = BOTTOM_NAV_ITEMS.find((item) =>
+    isActive(item.to, location.pathname)
   );
   const currentBottomNavValue = activeBottomNav?.label ?? false;
 
@@ -107,7 +114,7 @@ export default function AppLayout() {
 
         <List sx={{ px: 1, flexGrow: 1 }}>
           {NAV_ITEMS.map((item) => {
-            const selected = item.to != null && location.pathname === item.to;
+            const selected = isActive(item.to, location.pathname);
             const button = (
               <ListItemButton
                 selected={selected}
