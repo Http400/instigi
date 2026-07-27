@@ -114,4 +114,18 @@ describe('WorkoutsPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /retry/i }));
     expect(refetch).toHaveBeenCalledTimes(1);
   });
+
+  it('navigates to history via the View history link', () => {
+    useGetActiveSessionQuery.mockReturnValue({
+      data: null,
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    render(<WorkoutsPage />);
+
+    fireEvent.click(screen.getByRole('button', { name: /view history/i }));
+    expect(navigate).toHaveBeenCalledWith('/workouts/history');
+  });
 });

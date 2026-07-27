@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import HistoryIcon from '@mui/icons-material/History';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutlined';
 import { useNavigate } from 'react-router';
 import {
@@ -36,6 +37,16 @@ export default function WorkoutsPage() {
       <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
         Start a new workout or continue where you left off.
       </Typography>
+
+      <Stack direction="row" sx={{ mb: 3 }}>
+        <Button
+          variant="text"
+          startIcon={<HistoryIcon />}
+          onClick={() => navigate('/workouts/history')}
+        >
+          View history
+        </Button>
+      </Stack>
 
       {isLoading ? (
         <Stack sx={{ alignItems: 'center', py: 8 }}>

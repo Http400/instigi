@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage';
 import ExercisesPage from './pages/ExercisesPage';
 import WorkoutsPage from './pages/WorkoutsPage';
 import SessionPage from './pages/workouts/SessionPage';
+import HistoryPage from './pages/workouts/HistoryPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -26,6 +27,7 @@ export const router = createBrowserRouter([
             children: [
               { path: 'exercises', Component: ExercisesPage },
               { path: 'workouts', Component: WorkoutsPage },
+              { path: 'workouts/history', Component: HistoryPage },
               { path: 'workouts/:sessionId', Component: SessionPage },
             ],
           },
