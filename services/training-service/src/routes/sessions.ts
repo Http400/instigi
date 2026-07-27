@@ -3,6 +3,7 @@ import { requireAuth } from '@instigi/utils';
 import {
   createSession,
   getActiveSession,
+  listHistory,
   getSession,
   updateSession,
   addSessionExercise,
@@ -17,6 +18,7 @@ export const sessionsRouter: ExpressRouter = Router();
 
 sessionsRouter.post('/', requireAuth, createSession);
 sessionsRouter.get('/active', requireAuth, getActiveSession);
+sessionsRouter.get('/history', requireAuth, listHistory);
 sessionsRouter.get('/:id', requireAuth, getSession);
 sessionsRouter.patch('/:id', requireAuth, updateSession);
 sessionsRouter.post('/:id/finish', requireAuth, finishSession);

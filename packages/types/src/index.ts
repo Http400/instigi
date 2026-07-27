@@ -129,6 +129,15 @@ export interface CreateSessionRequest {
   title?: string;
 }
 
+/** Lightweight summary of a finished workout for the history list. */
+export interface SessionSummary {
+  id: string;
+  title: string;
+  /** ISO string; always non-null since history lists only finished sessions. */
+  endedAt: string;
+  exerciseCount: number;
+}
+
 export interface UpdateSessionRequest {
   title: string;
 }

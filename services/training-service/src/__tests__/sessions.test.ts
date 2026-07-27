@@ -8,6 +8,7 @@ vi.mock('../db.js', () => ({
   prisma: {
     workoutSession: {
       findFirst: vi.fn(),
+      findMany: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
     },
@@ -109,6 +110,7 @@ const finishedSessionRow = {
 
 beforeEach(() => {
   vi.mocked(prisma.workoutSession.findFirst).mockReset();
+  vi.mocked(prisma.workoutSession.findMany).mockReset();
   vi.mocked(prisma.workoutSession.create).mockReset();
   vi.mocked(prisma.workoutSession.update).mockReset();
   vi.mocked(prisma.sessionExercise.findFirst).mockReset();
@@ -495,5 +497,63 @@ describe('POST /api/sessions/:id/finish', () => {
     expect(res.status).toBe(409);
     expect(res.body.code).toBe('SESSION_ALREADY_FINISHED');
     expect(prisma.workoutSession.update).not.toHaveBeenCalled();
+  });
+});
+
+describe('GET /api/sessions/history', () => {
+  it('returns finished sessions as summaries in the order Prisma yields', async () => {
+    vi.mocked(prisma.workoutSession.findMany).mockResolvedValueOnce([
+      {
+        id: 'session-2',
+        title: 'Jul 20 workout',
+        endedAt: new Date('2026-07-20T11:00:00.000Z'),
+        _count: { exercises: 3 },
+      },
+      {
+        id: 'session-1',
+        title: null,
+        endedAt: new Date('2026-07-16T11:00:00.000Z'),
+        _count: { exercises: 1 },
+      },
+    ] as never);
+
+    const res = await request(app)
+      .get('/api/sessions/history')
+      .set('Authorization', `Bearer ${signToken()}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.data).toEqual([
+      {
+        id: 'session-2',
+        title: 'Jul 20 workout',
+        endedAt: '2026-07-20T11:00:00.000Z',
+        exerciseCount: 3,
+      },
+      {
+        id: 'session-1',
+        title: '',
+        endedAt: '2026-07-16T11:00:00.000Z',
+        exerciseCount: 1,
+      },
+    ]);
+  });
+
+  it('scopes the query to the user, finished-only, newest-first', async () => {
+    vi.mocked(prisma.workoutSession.findMany).mockResolvedValueOnce([] as never);
+
+    await request(app)
+      .get('/api/sessions/history')
+      .set('Authorization', `Bearer ${signToken()}`);
+
+    const args = vi.mocked(prisma.workoutSession.findMany).mock.calls[0]?.[0];
+    expect(args?.where).toMatchObject({ userId: 'user-123', endedAt: { not: null } });
+    expect(args?.orderBy).toMatchObject({ endedAt: 'desc' });
+  });
+
+  it('rejects an unauthenticated request with 401', async () => {
+    const res = await request(app).get('/api/sessions/history');
+
+    expect(res.status).toBe(401);
+    expect(prisma.workoutSession.findMany).not.toHaveBeenCalled();
   });
 });

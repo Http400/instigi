@@ -4,6 +4,7 @@ import type { AuthRequest } from '@instigi/utils';
 import type {
   WorkoutSession,
   SessionExercise,
+  SessionSummary,
   ExerciseCategory,
   EntryType,
   ExerciseMetric,
@@ -71,6 +72,13 @@ interface SessionRow {
   startedAt: Date;
   endedAt: Date | null;
   exercises: SessionExerciseRow[];
+}
+
+interface SessionSummaryRow {
+  id: string;
+  title: string | null;
+  endedAt: Date | null;
+  _count: { exercises: number };
 }
 
 function toEntryDto(row: EntryRow): ExerciseEntry {
@@ -161,6 +169,15 @@ export async function createSession(req: AuthRequest, res: Response): Promise<vo
   res.status(201).json({ data: toSessionDto(session) });
 }
 
+function toSessionSummaryDto(row: SessionSummaryRow): SessionSummary {
+  return {
+    id: row.id,
+    title: row.title ?? '',
+    endedAt: (row.endedAt as Date).toISOString(),
+    exerciseCount: row._count.exercises,
+  };
+}
+
 export async function getActiveSession(req: AuthRequest, res: Response): Promise<void> {
   const userId = req.user!.userId;
 
@@ -170,6 +187,23 @@ export async function getActiveSession(req: AuthRequest, res: Response): Promise
   });
 
   res.json({ data: session ? toSessionDto(session) : null });
+}
+
+export async function listHistory(req: AuthRequest, res: Response): Promise<void> {
+  const userId = req.user!.userId;
+
+  const rows = await prisma.workoutSession.findMany({
+    where: { userId, endedAt: { not: null } },
+    orderBy: { endedAt: 'desc' },
+    select: {
+      id: true,
+      title: true,
+      endedAt: true,
+      _count: { select: { exercises: true } },
+    },
+  });
+
+  res.json({ data: (rows as SessionSummaryRow[]).map(toSessionSummaryDto) });
 }
 
 export async function getSession(req: AuthRequest, res: Response): Promise<void> {
