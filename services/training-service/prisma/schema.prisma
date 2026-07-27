@@ -62,8 +62,25 @@ model SessionExercise {
   createdAt                 DateTime       @default(now()) @map("created_at")
   updatedAt                 DateTime       @updatedAt @map("updated_at")
   session                   WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  entries                   ExerciseEntry[]
 
   @@index([sessionId, position])
   @@map("session_exercises")
+  @@schema("training")
+}
+
+model ExerciseEntry {
+  id                String          @id @default(uuid())
+  sessionExerciseId String          @map("session_exercise_id")
+  entryType         String          @map("entry_type") @db.VarChar(40)
+  values            Json
+  isCompleted       Boolean         @default(true) @map("is_completed")
+  position          Int
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+  sessionExercise   SessionExercise @relation(fields: [sessionExerciseId], references: [id], onDelete: Cascade)
+
+  @@index([sessionExerciseId, position])
+  @@map("exercise_entries")
   @@schema("training")
 }

@@ -441,19 +441,19 @@ before `db:migrate`.
 
 #### Automated
 
-- [x] 1.1 Types build: `pnpm --filter @instigi/types build`
-- [x] 1.2 Monorepo typecheck passes: `pnpm typecheck`
+- [x] 1.1 Types build: `pnpm --filter @instigi/types build` — 28da440
+- [x] 1.2 Monorepo typecheck passes: `pnpm typecheck` — 28da440
 
 ### Phase 2: Prisma Model & Migration
 
 #### Automated
 
-- [ ] 2.1 Prisma schema valid + client regenerated: `pnpm --filter @instigi/training-service db:generate`
-- [ ] 2.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
+- [x] 2.1 Prisma schema valid + client regenerated: `pnpm --filter @instigi/training-service db:generate`
+- [x] 2.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
 
 #### Manual
 
-- [ ] 2.3 Migration applies cleanly; `exercise_entries` table exists with expected columns and FK cascade
+- [x] 2.3 Migration applies cleanly; `exercise_entries` table exists with expected columns and FK cascade
 
 ### Phase 3: Training-Service Endpoints & Tests
 
