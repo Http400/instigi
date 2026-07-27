@@ -232,22 +232,22 @@ None — no schema changes; reads existing finished sessions.
 
 #### Automated
 
-- [x] 1.1 Types build: `pnpm --filter @instigi/types build`
-- [x] 1.2 Training-service typecheck: `pnpm --filter @instigi/training-service typecheck`
-- [x] 1.3 Training-service lint: `pnpm --filter @instigi/training-service lint`
-- [x] 1.4 Training-service tests pass: `pnpm --filter @instigi/training-service test`
+- [x] 1.1 Types build: `pnpm --filter @instigi/types build` — 1bc9c26
+- [x] 1.2 Training-service typecheck: `pnpm --filter @instigi/training-service typecheck` — 1bc9c26
+- [x] 1.3 Training-service lint: `pnpm --filter @instigi/training-service lint` — 1bc9c26
+- [x] 1.4 Training-service tests pass: `pnpm --filter @instigi/training-service test` — 1bc9c26
 
 #### Manual
 
-- [x] 1.5 `GET /api/sessions/history` returns finished sessions newest-first with correct exerciseCount; active sessions excluded
+- [x] 1.5 `GET /api/sessions/history` returns finished sessions newest-first with correct exerciseCount; active sessions excluded — 1bc9c26
 
 ### Phase 2: Web-app data layer
 
 #### Automated
 
-- [ ] 2.1 Web-app typecheck: `pnpm --filter @instigi/web-app typecheck`
-- [ ] 2.2 Web-app lint: `pnpm --filter @instigi/web-app lint`
-- [ ] 2.3 Web-app tests pass: `pnpm --filter @instigi/web-app test`
+- [x] 2.1 Web-app typecheck: `pnpm --filter @instigi/web-app typecheck`
+- [x] 2.2 Web-app lint: `pnpm --filter @instigi/web-app lint`
+- [x] 2.3 Web-app tests pass: `pnpm --filter @instigi/web-app test`
 
 ### Phase 3: History UI + navigation
 

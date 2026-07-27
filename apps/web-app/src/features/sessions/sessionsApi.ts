@@ -6,6 +6,7 @@ import type {
   ExerciseEntry,
   ExerciseEntryValues,
   SessionExercise,
+  SessionSummary,
   UpdateSessionRequest,
   WorkoutSession,
 } from '@instigi/types';
@@ -63,13 +64,19 @@ export type {
 export const sessionsApi = createApi({
   reducerPath: 'sessionsApi',
   baseQuery: createBaseQueryWithReauth(`${TRAINING_API_BASE}/api/sessions`),
-  tagTypes: ['ActiveSession', 'Session'],
+  tagTypes: ['ActiveSession', 'Session', 'History'],
   endpoints: (builder) => ({
     getActiveSession: builder.query<WorkoutSession | null, void>({
       query: () => ({ url: '/active' }),
       transformResponse: (response: ApiResponse<WorkoutSession | null>) =>
         response.data,
       providesTags: ['ActiveSession'],
+    }),
+    getHistory: builder.query<SessionSummary[], void>({
+      query: () => ({ url: '/history' }),
+      transformResponse: (response: ApiResponse<SessionSummary[]>) =>
+        response.data,
+      providesTags: ['History'],
     }),
     getSession: builder.query<WorkoutSession, string>({
       query: (id) => ({ url: `/${id}` }),
@@ -172,6 +179,7 @@ export const sessionsApi = createApi({
       invalidatesTags: (_result, _error, { id }) => [
         { type: 'Session', id },
         'ActiveSession',
+        'History',
       ],
     }),
   }),
@@ -179,6 +187,7 @@ export const sessionsApi = createApi({
 
 export const {
   useGetActiveSessionQuery,
+  useGetHistoryQuery,
   useGetSessionQuery,
   useCreateSessionMutation,
   useUpdateSessionMutation,
