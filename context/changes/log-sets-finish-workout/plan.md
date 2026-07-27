@@ -448,25 +448,25 @@ before `db:migrate`.
 
 #### Automated
 
-- [x] 2.1 Prisma schema valid + client regenerated: `pnpm --filter @instigi/training-service db:generate`
-- [x] 2.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
+- [x] 2.1 Prisma schema valid + client regenerated: `pnpm --filter @instigi/training-service db:generate` — c9b3ac7
+- [x] 2.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck` — c9b3ac7
 
 #### Manual
 
-- [x] 2.3 Migration applies cleanly; `exercise_entries` table exists with expected columns and FK cascade
+- [x] 2.3 Migration applies cleanly; `exercise_entries` table exists with expected columns and FK cascade — c9b3ac7
 
 ### Phase 3: Training-Service Endpoints & Tests
 
 #### Automated
 
-- [ ] 3.1 Tests pass: `pnpm --filter @instigi/training-service test`
-- [ ] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
-- [ ] 3.3 Lint passes: `pnpm --filter @instigi/training-service lint`
+- [x] 3.1 Tests pass: `pnpm --filter @instigi/training-service test`
+- [x] 3.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
+- [x] 3.3 Lint passes: `pnpm --filter @instigi/training-service lint`
 
 #### Manual
 
-- [ ] 3.4 `POST /:id/exercises/:seId/sets` with valid values returns 201 and the entry
-- [ ] 3.5 `POST /:id/finish` with ≥1 set returns 200 + `endedAt`; subsequent set-write → 409; second finish → 409
+- [x] 3.4 `POST /:id/exercises/:seId/sets` with valid values returns 201 and the entry
+- [x] 3.5 `POST /:id/finish` with ≥1 set returns 200 + `endedAt`; subsequent set-write → 409; second finish → 409
 
 ### Phase 4: Web-App Data Layer
 

@@ -15,9 +15,17 @@ vi.mock('../db.js', () => ({
       findFirst: vi.fn(),
       create: vi.fn(),
       delete: vi.fn(),
+      count: vi.fn(),
     },
     exerciseDefinition: {
       findFirst: vi.fn(),
+    },
+    exerciseEntry: {
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      count: vi.fn(),
     },
   },
 }));
@@ -61,6 +69,42 @@ const sessionExerciseRow = {
   allowedEntryTypesSnapshot: ['set'],
   defaultEntryTypeSnapshot: 'set',
   position: 3,
+  entries: [],
+};
+
+const benchExerciseSnapshot = {
+  metricsSnapshot: [
+    { key: 'reps', required: true },
+    { key: 'load', required: true },
+  ],
+  defaultEntryTypeSnapshot: 'set',
+  allowedEntryTypesSnapshot: ['set'],
+};
+
+const pullUpExerciseSnapshot = {
+  metricsSnapshot: [
+    { key: 'reps', required: true },
+    { key: 'load', required: false },
+  ],
+  defaultEntryTypeSnapshot: 'set',
+  allowedEntryTypesSnapshot: ['set'],
+};
+
+const entryRow = {
+  id: 'entry-1',
+  sessionExerciseId: 'se-1',
+  entryType: 'set',
+  values: { reps: 8, load: 70 },
+  isCompleted: true,
+  position: 1,
+};
+
+const finishedSessionRow = {
+  id: 'session-1',
+  title: 'Jul 16 workout',
+  startedAt: new Date('2026-07-16T10:00:00.000Z'),
+  endedAt: new Date('2026-07-16T11:00:00.000Z'),
+  exercises: [],
 };
 
 beforeEach(() => {
@@ -70,7 +114,13 @@ beforeEach(() => {
   vi.mocked(prisma.sessionExercise.findFirst).mockReset();
   vi.mocked(prisma.sessionExercise.create).mockReset();
   vi.mocked(prisma.sessionExercise.delete).mockReset();
+  vi.mocked(prisma.sessionExercise.count).mockReset();
   vi.mocked(prisma.exerciseDefinition.findFirst).mockReset();
+  vi.mocked(prisma.exerciseEntry.findFirst).mockReset();
+  vi.mocked(prisma.exerciseEntry.create).mockReset();
+  vi.mocked(prisma.exerciseEntry.update).mockReset();
+  vi.mocked(prisma.exerciseEntry.delete).mockReset();
+  vi.mocked(prisma.exerciseEntry.count).mockReset();
 });
 
 describe('POST /api/sessions', () => {
@@ -262,5 +312,188 @@ describe('DELETE /api/sessions/:id/exercises/:sessionExerciseId', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.data).toEqual({ id: 'se-1' });
+  });
+});
+
+describe('POST /api/sessions/:id/exercises/:sessionExerciseId/sets', () => {
+  it('logs a valid set and appends the next position', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.findFirst).mockResolvedValueOnce(benchExerciseSnapshot as never);
+    vi.mocked(prisma.exerciseEntry.findFirst).mockResolvedValueOnce({ position: 2 } as never);
+    vi.mocked(prisma.exerciseEntry.create).mockResolvedValueOnce({
+      ...entryRow,
+      position: 3,
+    } as never);
+
+    const res = await request(app)
+      .post('/api/sessions/session-1/exercises/se-1/sets')
+      .set('Authorization', `Bearer ${signToken()}`)
+      .send({ values: { reps: 8, load: 70 } });
+
+    expect(res.status).toBe(201);
+    expect(res.body.data).toMatchObject({
+      id: 'entry-1',
+      entryType: 'set',
+      values: { reps: 8, load: 70 },
+      position: 3,
+    });
+
+    const data = vi.mocked(prisma.exerciseEntry.create).mock.calls[0]?.[0]?.data;
+    expect(data).toMatchObject({ sessionExerciseId: 'se-1', entryType: 'set', position: 3 });
+  });
+
+  it('rejects a set missing a required metric with 400', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.findFirst).mockResolvedValueOnce(benchExerciseSnapshot as never);
+
+    const res = await request(app)
+      .post('/api/sessions/session-1/exercises/se-1/sets')
+      .set('Authorization', `Bearer ${signToken()}`)
+      .send({ values: { reps: 8 } });
+
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('VALIDATION_ERROR');
+    expect(prisma.exerciseEntry.create).not.toHaveBeenCalled();
+  });
+
+  it('accepts a set that omits an optional metric (pull-up load)', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.findFirst).mockResolvedValueOnce(pullUpExerciseSnapshot as never);
+    vi.mocked(prisma.exerciseEntry.findFirst).mockResolvedValueOnce(null as never);
+    vi.mocked(prisma.exerciseEntry.create).mockResolvedValueOnce({
+      id: 'entry-2',
+      sessionExerciseId: 'se-1',
+      entryType: 'set',
+      values: { reps: 10 },
+      isCompleted: true,
+      position: 1,
+    } as never);
+
+    const res = await request(app)
+      .post('/api/sessions/session-1/exercises/se-1/sets')
+      .set('Authorization', `Bearer ${signToken()}`)
+      .send({ values: { reps: 10 } });
+
+    expect(res.status).toBe(201);
+    expect(res.body.data).toMatchObject({ id: 'entry-2', values: { reps: 10 }, position: 1 });
+  });
+
+  it('rejects a set write on a finished session with 409 SESSION_FINISHED', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: new Date('2026-07-16T11:00:00.000Z'),
+    } as never);
+
+    const res = await request(app)
+      .post('/api/sessions/session-1/exercises/se-1/sets')
+      .set('Authorization', `Bearer ${signToken()}`)
+      .send({ values: { reps: 8, load: 70 } });
+
+    expect(res.status).toBe(409);
+    expect(res.body.code).toBe('SESSION_FINISHED');
+    expect(prisma.exerciseEntry.create).not.toHaveBeenCalled();
+  });
+});
+
+describe('PATCH /api/sessions/:id/exercises/:sessionExerciseId/sets/:entryId', () => {
+  it('updates an owned set', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.findFirst).mockResolvedValueOnce(benchExerciseSnapshot as never);
+    vi.mocked(prisma.exerciseEntry.findFirst).mockResolvedValueOnce({ id: 'entry-1' } as never);
+    vi.mocked(prisma.exerciseEntry.update).mockResolvedValueOnce({
+      ...entryRow,
+      values: { reps: 10, load: 72 },
+    } as never);
+
+    const res = await request(app)
+      .patch('/api/sessions/session-1/exercises/se-1/sets/entry-1')
+      .set('Authorization', `Bearer ${signToken()}`)
+      .send({ values: { reps: 10, load: 72 } });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data).toMatchObject({ id: 'entry-1', values: { reps: 10, load: 72 } });
+  });
+});
+
+describe('DELETE /api/sessions/:id/exercises/:sessionExerciseId/sets/:entryId', () => {
+  it('deletes an owned set and echoes its id', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.findFirst).mockResolvedValueOnce(benchExerciseSnapshot as never);
+    vi.mocked(prisma.exerciseEntry.findFirst).mockResolvedValueOnce({ id: 'entry-1' } as never);
+    vi.mocked(prisma.exerciseEntry.delete).mockResolvedValueOnce({ id: 'entry-1' } as never);
+
+    const res = await request(app)
+      .delete('/api/sessions/session-1/exercises/se-1/sets/entry-1')
+      .set('Authorization', `Bearer ${signToken()}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.data).toEqual({ id: 'entry-1' });
+  });
+});
+
+describe('POST /api/sessions/:id/finish', () => {
+  it('finishes a session with content and stamps endedAt', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.count).mockResolvedValueOnce(1 as never);
+    vi.mocked(prisma.exerciseEntry.count).mockResolvedValueOnce(2 as never);
+    vi.mocked(prisma.workoutSession.update).mockResolvedValueOnce(finishedSessionRow as never);
+
+    const res = await request(app)
+      .post('/api/sessions/session-1/finish')
+      .set('Authorization', `Bearer ${signToken()}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.endedAt).not.toBeNull();
+    expect(res.body.data).not.toHaveProperty('userId');
+  });
+
+  it('rejects finishing an empty session with 422 SESSION_EMPTY', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.count).mockResolvedValueOnce(0 as never);
+    vi.mocked(prisma.exerciseEntry.count).mockResolvedValueOnce(0 as never);
+
+    const res = await request(app)
+      .post('/api/sessions/session-1/finish')
+      .set('Authorization', `Bearer ${signToken()}`);
+
+    expect(res.status).toBe(422);
+    expect(res.body.code).toBe('SESSION_EMPTY');
+    expect(prisma.workoutSession.update).not.toHaveBeenCalled();
+  });
+
+  it('rejects finishing an already-finished session with 409', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: new Date('2026-07-16T11:00:00.000Z'),
+    } as never);
+
+    const res = await request(app)
+      .post('/api/sessions/session-1/finish')
+      .set('Authorization', `Bearer ${signToken()}`);
+
+    expect(res.status).toBe(409);
+    expect(res.body.code).toBe('SESSION_ALREADY_FINISHED');
+    expect(prisma.workoutSession.update).not.toHaveBeenCalled();
   });
 });
