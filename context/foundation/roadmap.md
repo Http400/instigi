@@ -36,7 +36,7 @@ Instigi is a pre-launch workout tracker whose authentication is built and workin
 | S-03 | log-sets-finish-workout | log sets capturing exactly each exercise's configured metrics, then finish and save the workout | S-02 | US-01, FR-005, FR-006 | done |
 | S-04 | workout-history-list | view a reverse-chronological list of past completed workouts | S-03 | US-01, FR-010 | done |
 | S-05 | discard-session | discard an in-progress workout session | S-02 | FR-007 | done |
-| S-06 | workout-detail-view | view the full detail of a past workout (all exercises, sets, values) | S-04 | FR-011 | proposed |
+| S-06 | workout-detail-view | view the full detail of a past workout (all exercises, sets, values) | S-04 | FR-011 | done |
 | S-07 | progress-dashboard | view a dashboard with total workouts completed and recent activity | S-04 | FR-012 | proposed |
 | S-08 | web-app-auth-flow | sign up, sign in, stay signed in across reloads, and sign out from the web app | — | US-01, FR-001, FR-002 | done |
 
@@ -165,7 +165,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Nice-to-have; the history list already proves a workout was saved. Park candidate under the speed goal.
-- **Status:** proposed
+- **Status:** done
 
 ### S-07: View a progress dashboard
 
