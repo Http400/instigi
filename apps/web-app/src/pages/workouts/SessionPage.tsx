@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import {
+  Alert,
   Box,
   Button,
   Chip,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   List,
   ListItem,
@@ -16,15 +22,17 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutlined';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import type { SessionExercise } from '@instigi/types';
 import { metricCatalog } from '@instigi/utils/client';
 import {
+  useFinishSessionMutation,
   useGetSessionQuery,
   useRemoveSessionExerciseMutation,
   useUpdateSessionMutation,
 } from '../../features/sessions/sessionsApi';
 import AddExerciseDialog from './AddExerciseDialog';
+import ExerciseSetList from './ExerciseSetList';
 
 function metricLabels(exercise: SessionExercise): string {
   return exercise.metrics
@@ -38,16 +46,20 @@ function categoryLabel(category: string): string {
 
 export default function SessionPage() {
   const { sessionId } = useParams();
+  const navigate = useNavigate();
   const id = sessionId ?? '';
   const { data: session, isLoading, isError, refetch } = useGetSessionQuery(id, {
     skip: !id,
   });
   const [updateSession] = useUpdateSessionMutation();
   const [removeExercise] = useRemoveSessionExerciseMutation();
+  const [finishSession, { isLoading: isFinishing }] = useFinishSessionMutation();
 
   const [title, setTitle] = useState('');
   const [syncedTitle, setSyncedTitle] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [finishError, setFinishError] = useState<string | null>(null);
 
   if (session && session.title !== syncedTitle) {
     setSyncedTitle(session.title);
@@ -87,12 +99,33 @@ export default function SessionPage() {
     (a, b) => a.position - b.position
   );
 
+  const readOnly = session.endedAt !== null;
+  const totalSets = session.exercises.reduce(
+    (sum, exercise) => sum + exercise.entries.length,
+    0
+  );
+
+  const handleFinish = () => {
+    setFinishError(null);
+    void finishSession({ id })
+      .unwrap()
+      .then(() => {
+        setConfirmOpen(false);
+        void navigate('/workouts');
+      })
+      .catch(() => {
+        setConfirmOpen(false);
+        setFinishError('Could not finish this workout. Please try again.');
+      });
+  };
+
   return (
     <Box sx={{ maxWidth: 720, mx: 'auto' }}>
       <TextField
         variant="standard"
         fullWidth
         value={title}
+        disabled={readOnly}
         onChange={(event) => setTitle(event.target.value)}
         onBlur={commitTitle}
         onKeyDown={(event) => {
@@ -109,18 +142,32 @@ export default function SessionPage() {
         sx={{ mb: 3 }}
       />
 
+      {readOnly && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          This workout is finished and saved.
+        </Alert>
+      )}
+
+      {finishError && (
+        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setFinishError(null)}>
+          {finishError}
+        </Alert>
+      )}
+
       <Stack
         direction="row"
         sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 1 }}
       >
         <Typography variant="h6">Exercises</Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setDialogOpen(true)}
-        >
-          Add exercise
-        </Button>
+        {!readOnly && (
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setDialogOpen(true)}
+          >
+            Add exercise
+          </Button>
+        )}
       </Stack>
 
       <Paper variant="outlined">
@@ -136,19 +183,22 @@ export default function SessionPage() {
             {exercises.map((exercise) => (
               <ListItem
                 key={exercise.id}
+                alignItems="flex-start"
                 secondaryAction={
-                  <IconButton
-                    edge="end"
-                    aria-label={`Remove ${exercise.name}`}
-                    onClick={() =>
-                      void removeExercise({
-                        sessionId: id,
-                        sessionExerciseId: exercise.id,
-                      })
-                    }
-                  >
-                    <DeleteOutlineIcon />
-                  </IconButton>
+                  readOnly ? undefined : (
+                    <IconButton
+                      edge="end"
+                      aria-label={`Remove ${exercise.name}`}
+                      onClick={() =>
+                        void removeExercise({
+                          sessionId: id,
+                          sessionExerciseId: exercise.id,
+                        })
+                      }
+                    >
+                      <DeleteOutlineIcon />
+                    </IconButton>
+                  )
                 }
               >
                 <ListItemText
@@ -166,13 +216,57 @@ export default function SessionPage() {
                       />
                     </Stack>
                   }
-                  secondary={metricLabels(exercise)}
+                  secondary={
+                    <>
+                      {metricLabels(exercise)}
+                      <ExerciseSetList
+                        exercise={exercise}
+                        sessionId={id}
+                        readOnly={readOnly}
+                      />
+                    </>
+                  }
+                  slotProps={{ secondary: { component: 'div' } }}
                 />
               </ListItem>
             ))}
           </List>
         )}
       </Paper>
+
+      {!readOnly && (
+        <Stack direction="row" sx={{ justifyContent: 'flex-end', mt: 3 }}>
+          <Button
+            variant="contained"
+            color="success"
+            disabled={totalSets === 0 || isFinishing}
+            onClick={() => setConfirmOpen(true)}
+          >
+            Finish workout
+          </Button>
+        </Stack>
+      )}
+
+      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+        <DialogTitle>Finish workout?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This saves the workout and closes the session. You won&apos;t be able
+            to change it afterwards.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="success"
+            disabled={isFinishing}
+            onClick={handleFinish}
+          >
+            Finish
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <AddExerciseDialog
         sessionId={id}
