@@ -253,16 +253,16 @@ None — no schema changes; reads existing finished sessions.
 
 #### Automated
 
-- [x] 3.1 Web-app typecheck: `pnpm --filter @instigi/web-app typecheck`
-- [x] 3.2 Web-app lint: `pnpm --filter @instigi/web-app lint`
-- [x] 3.3 Web-app tests pass: `pnpm --filter @instigi/web-app test`
-- [x] 3.4 Web-app build: `pnpm --filter @instigi/web-app build`
-- [x] 3.5 Full monorepo green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`
+- [x] 3.1 Web-app typecheck: `pnpm --filter @instigi/web-app typecheck` — 6d09015
+- [x] 3.2 Web-app lint: `pnpm --filter @instigi/web-app lint` — 6d09015
+- [x] 3.3 Web-app tests pass: `pnpm --filter @instigi/web-app test` — 6d09015
+- [x] 3.4 Web-app build: `pnpm --filter @instigi/web-app build` — 6d09015
+- [x] 3.5 Full monorepo green: `pnpm lint && pnpm typecheck && pnpm test && pnpm build` — 6d09015
 
 #### Manual
 
-- [x] 3.6 History nav entry + "View history" link open the history page
-- [x] 3.7 Finished workouts show newest-first with correct name, finish date, and exercise count
-- [x] 3.8 Finishing a workout makes it appear at the top of history without manual refresh
-- [x] 3.9 Clicking a history row opens the read-only session view with sets intact
-- [x] 3.10 Empty state shows when there are no finished workouts
+- [x] 3.6 History nav entry + "View history" link open the history page — 6d09015
+- [x] 3.7 Finished workouts show newest-first with correct name, finish date, and exercise count — 6d09015
+- [x] 3.8 Finishing a workout makes it appear at the top of history without manual refresh — 6d09015
+- [x] 3.9 Clicking a history row opens the read-only session view with sets intact — 6d09015
+- [x] 3.10 Empty state shows when there are no finished workouts — 6d09015
