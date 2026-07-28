@@ -1,7 +1,7 @@
 ---
 change_id: progress-dashboard
 title: Progress dashboard with total workouts and recent activity
-status: implementing
+status: implemented
 created: 2026-07-28
 updated: 2026-07-28
 archived_at: null
