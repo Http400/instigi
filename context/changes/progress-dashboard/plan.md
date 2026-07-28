@@ -148,22 +148,22 @@ Vitest + Testing Library, mocking `react-router` (`useNavigate`) and
 ### Phase 1: Progress stats helper
 
 #### Automated
-- [x] 1.1 Create `progressStats.ts` (`computeProgressStats(history, now)` → totals + last7Days + recent≤5, defensive sort, window/NaN guards)
-- [x] 1.2 Add `progressStats.test.ts` (totals, 7-day window incl. boundary/future, recent cap+sort+no-mutate, empty)
-- [x] 1.3 `pnpm --filter @instigi/web-app test` green
-- [x] 1.4 `pnpm lint && pnpm typecheck` clean
+- [x] 1.1 Create `progressStats.ts` (`computeProgressStats(history, now)` → totals + last7Days + recent≤5, defensive sort, window/NaN guards) — 476e44e
+- [x] 1.2 Add `progressStats.test.ts` (totals, 7-day window incl. boundary/future, recent cap+sort+no-mutate, empty) — 476e44e
+- [x] 1.3 `pnpm --filter @instigi/web-app test` green — 476e44e
+- [x] 1.4 `pnpm lint && pnpm typecheck` clean — 476e44e
 
 ### Phase 2: Dashboard page, route, and nav
 
 #### Automated
-- [ ] 2.1 Create `ProgressPage.tsx` (stat cards + recent-5 list + empty/loading/error states)
-- [ ] 2.2 Add `/progress` route in `router.tsx`
-- [ ] 2.3 Enable the "Progress" nav item in `AppLayout.tsx` (`to: '/progress'`)
-- [ ] 2.4 Add `ProgressPage.test.tsx` (cards, recent nav, view-all, empty+start, loading, error)
-- [ ] 2.5 `pnpm --filter @instigi/web-app test` green
-- [ ] 2.6 `pnpm lint && pnpm typecheck` clean
+- [x] 2.1 Create `ProgressPage.tsx` (stat cards + recent-5 list + empty/loading/error states)
+- [x] 2.2 Add `/progress` route in `router.tsx`
+- [x] 2.3 Enable the "Progress" nav item in `AppLayout.tsx` (`to: '/progress'`)
+- [x] 2.4 Add `ProgressPage.test.tsx` (cards, recent nav, view-all, empty+start, loading, error)
+- [x] 2.5 `pnpm --filter @instigi/web-app test` green
+- [x] 2.6 `pnpm lint && pnpm typecheck` clean
 
 #### Manual
-- [ ] 2.7 "Progress" nav item is enabled, navigates to `/progress`, highlights when active
-- [ ] 2.8 Stat cards + recent list render correct data; rows open detail; "View all history" works
-- [ ] 2.9 Empty state renders with a working "Start a workout" link
+- [x] 2.7 "Progress" nav item is enabled, navigates to `/progress`, highlights when active
+- [x] 2.8 Stat cards + recent list render correct data; rows open detail; "View all history" works
+- [x] 2.9 Empty state renders with a working "Start a workout" link

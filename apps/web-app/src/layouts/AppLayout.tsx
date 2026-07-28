@@ -44,7 +44,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Workouts', icon: <FitnessCenterIcon />, to: '/workouts' },
   { label: 'History', icon: <HistoryIcon />, to: '/workouts/history' },
   { label: 'Exercises', icon: <LibraryBooksIcon />, to: '/exercises' },
-  { label: 'Progress', icon: <ShowChartIcon />, disabled: true },
+  { label: 'Progress', icon: <ShowChartIcon />, to: '/progress' },
   { label: 'Calendar', icon: <CalendarMonthIcon />, disabled: true },
   { label: 'Statistics', icon: <BarChartIcon />, disabled: true },
   { label: 'Settings', icon: <SettingsIcon />, disabled: true },

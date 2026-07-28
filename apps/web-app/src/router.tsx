@@ -6,6 +6,7 @@ import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage';
 import ExercisesPage from './pages/ExercisesPage';
 import WorkoutsPage from './pages/WorkoutsPage';
+import ProgressPage from './pages/ProgressPage';
 import SessionPage from './pages/workouts/SessionPage';
 import HistoryPage from './pages/workouts/HistoryPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
               { path: 'workouts', Component: WorkoutsPage },
               { path: 'workouts/history', Component: HistoryPage },
               { path: 'workouts/:sessionId', Component: SessionPage },
+              { path: 'progress', Component: ProgressPage },
             ],
           },
         ],
