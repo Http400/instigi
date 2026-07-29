@@ -2,7 +2,6 @@ import { createBrowserRouter, Navigate } from 'react-router';
 import RootLayout from './layouts/RootLayout';
 import AppLayout from './layouts/AppLayout';
 import AuthPage from './pages/AuthPage';
-import DashboardPage from './pages/DashboardPage';
 import ExercisesPage from './pages/ExercisesPage';
 import WorkoutsPage from './pages/WorkoutsPage';
 import ProgressPage from './pages/ProgressPage';
@@ -21,7 +20,6 @@ export const router = createBrowserRouter([
       {
         Component: ProtectedRoute,
         children: [
-          { path: 'dashboard', Component: DashboardPage },
           {
             Component: AppLayout,
             children: [
