@@ -173,7 +173,6 @@ export default function ExerciseSetList({
         <Stack
           direction="row"
           spacing={1}
-          sx={{ alignItems: 'center', mt: entries.length ? 1.5 : 0 }}
         >
           {exercise.metrics.map((metric) => {
             const catalogItem = metricCatalog[metric.key];
