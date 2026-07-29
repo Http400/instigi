@@ -131,7 +131,13 @@ export default function AppLayout() {
         }}
       >
         <Toolbar sx={{ px: 2, py: 3 }}>
-          <Logo orientation="horizontal" size={36} color="primary.main" />
+          <Logo
+            orientation="horizontal"
+            size={36}
+            color="primary.main"
+            onClick={() => navigate('/workouts')}
+            sx={{ cursor: 'pointer' }}
+          />
         </Toolbar>
 
         <List sx={{ px: 1, flexGrow: 1 }}>

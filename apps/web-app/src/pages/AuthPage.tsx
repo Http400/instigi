@@ -58,7 +58,7 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/', { replace: true });
+      navigate('/workouts', { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
@@ -79,7 +79,7 @@ export default function AuthPage() {
       dispatch(
         credentialsReceived({ user: result.user, tokens: result.tokens })
       );
-      navigate('/', { replace: true });
+      navigate('/workouts', { replace: true });
     } catch (err) {
       setError(authErrorMessage(err));
     }

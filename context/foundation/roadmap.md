@@ -39,6 +39,7 @@ Instigi is a pre-launch workout tracker whose authentication is built and workin
 | S-06 | workout-detail-view | view the full detail of a past workout (all exercises, sets, values) | S-04 | FR-011 | done |
 | S-07 | progress-dashboard | view a dashboard with total workouts completed and recent activity | S-04 | FR-012 | done |
 | S-08 | web-app-auth-flow | sign up, sign in, stay signed in across reloads, and sign out from the web app | — | US-01, FR-001, FR-002 | done |
+| S-09 | workouts-navigation-polish | land on /workouts after login and via the logo, and no longer see the desktop top bar | S-04, S-08 | US-01, FR-002 | ready |
 
 ## Streams
 
@@ -47,7 +48,7 @@ Navigation aid — groups items that share a Prerequisites chain. Canonical orde
 | Stream | Theme | Chain | Note |
 |---|---|---|---|
 | A | Core logging loop | `F-01` / `F-02` → `S-01` → `S-02` → `S-03` → `S-04` | The must-have slices leading to the north star, in a strict speed-first sequence. `F-02` (exercises page layout) is a parallel enabler that joins the chain at `S-01`. |
-| B | Enhancements & dashboard | `S-05` (parallel with `S-03`/`S-04`, joins Stream A at `S-02`) → `S-06` / `S-07` (parallel, join at `S-04`) | Nice-to-have PRD FRs; park candidates under the speed goal. Parallelizable to spend the capacity blocker well. |
+| B | Enhancements & dashboard | `S-05` (parallel with `S-03`/`S-04`, joins Stream A at `S-02`) → `S-06` / `S-07` (parallel, join at `S-04`) → `S-09` (navigation polish, joins at `S-04`) | Nice-to-have PRD FRs; park candidates under the speed goal. Parallelizable to spend the capacity blocker well. `S-09` re-shapes the delivery of already-shipped history/auth navigation. |
 | C | Account access (web) | `S-08` | Frontend auth experience against the unchanged auth-service; independent of the workout track, runs fully parallel with Stream A. |
 
 ## Baseline
@@ -191,7 +192,17 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** The auth-service is already built and its API contracts must NOT change (PRD guardrail) — this slice is purely web-app frontend work: replace the current shell `AuthPage` with a real auth experience and wire client-side session/token handling and data fetching against the existing endpoints. Low backend risk; the load-bearing care is preserving session persistence across reloads and clean sign-out. Sequenced independently and can go first under the speed goal since a real user must be able to sign in before any workout slice is usable end-to-end. (Client state + data-fetching approach is a user-chosen implementation detail — Redux Toolkit + RTK Query — to be confirmed and detailed in `/10x-plan`.)
 - **Status:** done
 
-## Backlog Handoff
+### S-09: Polish the logged-in workouts navigation
+
+- **Outcome:** user is redirected to `/workouts` after signing in, returns to `/workouts` by clicking the logo, and no longer sees the desktop top bar (a minimal mobile-only top bar keeps a sign-out affordance).
+- **Change ID:** workouts-navigation-polish
+- **PRD refs:** US-01, FR-002
+- **Prerequisites:** S-04, S-08 (both done — the workout screens and the web-app auth flow this slice re-shapes)
+- **Parallel with:** S-06, S-07 (all web-app frontend polish over the completed core loop)
+- **Blockers:** —
+- **Unknowns:** —
+- **Risk:** Pure web-app navigation/layout refinement with no backend or data change — it re-shapes how already-shipped capabilities (auth/session from S-08) are presented rather than adding a new capability. Load-bearing care: removing the top bar must not remove the only sign-out affordance, so a minimal mobile-only top bar (logo + sign-out) replaces it while the desktop sidebar footer sign-out remains. Sequenced after S-04/S-08 because it edits surfaces those slices delivered.
+- **Status:** ready
 
 | Roadmap ID | Change ID | Suggested issue title | Ready for `/10x-plan` | Notes |
 |---|---|---|---|---|
@@ -205,6 +216,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | S-06 | workout-detail-view | View full detail of a past workout | no | Nice-to-have; needs S-04 done |
 | S-07 | progress-dashboard | Progress dashboard (totals + recent activity) | no | Nice-to-have; needs S-04 done |
 | S-08 | web-app-auth-flow | Rebuild web-app sign in / sign up flow (client session + data fetching) | yes | Run `/10x-plan web-app-auth-flow`; independent of the workout track. Chosen approach: Redux Toolkit + RTK Query |
+| S-09 | workouts-navigation-polish | Polish logged-in workouts navigation (post-login & logo redirect to /workouts, remove desktop top bar with mobile fallback) | yes | Run `/10x-plan workouts-navigation-polish`; prereqs S-04 and S-08 are done |
 
 This table is the clean handoff to Jira/Linear or any MCP-backed backlog. One row per `F-NN` / `S-NN`.
 
