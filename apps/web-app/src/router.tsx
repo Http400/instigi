@@ -1,7 +1,6 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import RootLayout from './layouts/RootLayout';
 import AppLayout from './layouts/AppLayout';
-import HomePage from './pages/HomePage';
 import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage';
 import ExercisesPage from './pages/ExercisesPage';
@@ -17,7 +16,7 @@ export const router = createBrowserRouter([
     path: '/',
     Component: RootLayout,
     children: [
-      { index: true, Component: HomePage },
+      { index: true, element: <Navigate to="/workouts" replace /> },
       { path: 'auth', Component: AuthPage },
       {
         Component: ProtectedRoute,

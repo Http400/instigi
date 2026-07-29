@@ -65,8 +65,9 @@ manual walkthrough on desktop + narrow viewport confirms each behavior.
   the "History" nav items are unchanged.
 - **Not** changing any backend, API, Redux slice, or data model.
 - **Not** changing the auth-service or its contracts.
-- **Not** touching `DashboardPage` / `HomePage` content beyond the AppBar removal
-  side effect (both already function without the top bar).
+- **Not** touching `DashboardPage` / `HomePage` *content*. Note: the `/` route now
+  redirects to `/workouts`, so `HomePage` becomes unreachable, but its file is
+  left in place.
 - **Not** implementing the disabled nav items (Calendar, Statistics, Settings,
   bottom-nav "More").
 
@@ -162,6 +163,18 @@ existing `handleSignOut`. Ensure the main content is not obscured (use a static
 bar in flow, or add top offset on `xs` to mirror the existing
 `BOTTOM_NAV_HEIGHT` bottom offset).
 
+#### 3. Redirect the index route (`/`) to /workouts
+
+**File**: `apps/web-app/src/router.tsx`
+
+**Intent**: Make `/` redirect to `/workouts` so the app has a single logged-in
+entry point; unauthenticated users then fall through `ProtectedRoute` to `/auth`.
+`HomePage` becomes unreachable (its route is removed).
+
+**Contract**: Replace the `{ index: true, Component: HomePage }` route with
+`{ index: true, element: <Navigate to="/workouts" replace /> }`; import `Navigate`
+from `react-router` and drop the now-unused `HomePage` import.
+
 ### Success Criteria:
 
 #### Automated Verification:
@@ -177,7 +190,7 @@ bar in flow, or add top offset on `xs` to mirror the existing
 - Mobile sign-out logs the user out and lands on `/auth`.
 - Mobile top-bar logo navigates to `/workouts`.
 - Main content is not hidden behind the mobile top bar or bottom nav.
-- The public `/` page still offers a way to reach sign-in.
+- Visiting `/` redirects to `/workouts` when authenticated, and to `/auth` when not.
 
 **Implementation Note**: After completing this phase and all automated
 verification passes, pause for manual confirmation.
@@ -223,28 +236,28 @@ None — no data or API changes.
 
 #### Automated
 
-- [x] 1.1 Type checking passes: `pnpm --filter web-app typecheck`
-- [x] 1.2 Linting passes: `pnpm --filter web-app lint`
+- [x] 1.1 Type checking passes: `pnpm --filter web-app typecheck` — bc50107
+- [x] 1.2 Linting passes: `pnpm --filter web-app lint` — bc50107
 
 #### Manual
 
-- [x] 1.3 Signing in redirects to `/workouts`
-- [x] 1.4 Visiting `/auth` while signed in redirects to `/workouts`
-- [x] 1.5 Clicking the desktop sidebar logo navigates to `/workouts`
+- [x] 1.3 Signing in redirects to `/workouts` — bc50107
+- [x] 1.4 Visiting `/auth` while signed in redirects to `/workouts` — bc50107
+- [x] 1.5 Clicking the desktop sidebar logo navigates to `/workouts` — bc50107
 
 ### Phase 2: Top-bar restructure
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `pnpm --filter web-app typecheck`
-- [ ] 2.2 Linting passes: `pnpm --filter web-app lint`
-- [ ] 2.3 No unused-symbol lint errors in `RootLayout.tsx`
+- [x] 2.1 Type checking passes: `pnpm --filter web-app typecheck`
+- [x] 2.2 Linting passes: `pnpm --filter web-app lint`
+- [x] 2.3 No unused-symbol lint errors in `RootLayout.tsx`
 
 #### Manual
 
-- [ ] 2.4 No top bar on desktop; sidebar (with footer sign-out) unchanged
-- [ ] 2.5 Narrow viewport shows a minimal top bar with logo + sign-out
-- [ ] 2.6 Mobile sign-out logs out and lands on `/auth`
-- [ ] 2.7 Mobile top-bar logo navigates to `/workouts`
-- [ ] 2.8 Content is not hidden behind the mobile top bar or bottom nav
-- [ ] 2.9 The public `/` page still offers a way to reach sign-in
+- [x] 2.4 No top bar on desktop; sidebar (with footer sign-out) unchanged
+- [x] 2.5 Narrow viewport shows a minimal top bar with logo + sign-out
+- [x] 2.6 Mobile sign-out logs out and lands on `/auth`
+- [x] 2.7 Mobile top-bar logo navigates to `/workouts`
+- [x] 2.8 Content is not hidden behind the mobile top bar or bottom nav
+- [x] 2.9 Visiting `/` redirects to `/workouts` (authenticated) or `/auth` (not)

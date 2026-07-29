@@ -2,10 +2,12 @@ import type { ReactNode } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import {
   Avatar,
+  AppBar,
   Box,
   BottomNavigation,
   BottomNavigationAction,
   Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
@@ -32,6 +34,7 @@ import { loggedOut, selectCurrentUser } from '../features/auth/authSlice';
 
 const DRAWER_WIDTH = 260;
 const BOTTOM_NAV_HEIGHT = 64;
+const MOBILE_TOPBAR_HEIGHT = 56;
 
 interface NavItem {
   label: string;
@@ -207,11 +210,34 @@ export default function AppLayout() {
         </Box>
       </Drawer>
 
+      <AppBar
+        position="fixed"
+        color="default"
+        elevation={1}
+        sx={{ display: { xs: 'block', md: 'none' } }}
+      >
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Logo
+            orientation="horizontal"
+            size={28}
+            color="primary.main"
+            onClick={() => navigate('/workouts')}
+            sx={{ cursor: 'pointer' }}
+          />
+          <Tooltip title="Sign out">
+            <IconButton onClick={handleSignOut} aria-label="Sign out">
+              <LogoutIcon />
+            </IconButton>
+          </Tooltip>
+        </Toolbar>
+      </AppBar>
+
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           p: { xs: 2, md: 4 },
+          pt: { xs: `${MOBILE_TOPBAR_HEIGHT + 16}px`, md: 4 },
           pb: { xs: `${BOTTOM_NAV_HEIGHT + 16}px`, md: 4 },
           minWidth: 0,
         }}
