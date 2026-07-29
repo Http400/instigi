@@ -1,10 +1,10 @@
 ---
 change_id: discard-session
 title: Discard an in-progress workout session
-status: implemented
+status: archived
 created: 2026-07-27
-updated: 2026-07-27
-archived_at: null
+updated: 2026-07-29
+archived_at: 2026-07-29T10:27:08Z
 ---
 
 ## Notes
