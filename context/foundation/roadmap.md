@@ -237,3 +237,4 @@ This table is the clean handoff to Jira/Linear or any MCP-backed backlog. One ro
 - **S-04: user can view a reverse-chronological list of past completed workouts (date, name, exercise count).** — Archived 2026-07-29 → `context/archive/2026-07-27-workout-history-list/`. Lesson: —.
 - **S-05: user can discard an in-progress workout session.** — Archived 2026-07-29 → `context/archive/2026-07-27-discard-session/`. Lesson: —.
 - **S-06: user can view the full detail of a past workout (all exercises, sets, and values).** — Archived 2026-07-29 → `context/archive/2026-07-27-workout-detail-view/`. Lesson: —.
+- **S-07: user can view a dashboard with total workouts completed and a recent-activity summary.** — Archived 2026-07-29 → `context/archive/2026-07-28-progress-dashboard/`. Lesson: —.
