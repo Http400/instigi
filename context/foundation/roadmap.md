@@ -39,7 +39,7 @@ Instigi is a pre-launch workout tracker whose authentication is built and workin
 | S-06 | workout-detail-view | view the full detail of a past workout (all exercises, sets, values) | S-04 | FR-011 | done |
 | S-07 | progress-dashboard | view a dashboard with total workouts completed and recent activity | S-04 | FR-012 | done |
 | S-08 | web-app-auth-flow | sign up, sign in, stay signed in across reloads, and sign out from the web app | — | US-01, FR-001, FR-002 | done |
-| S-09 | workouts-navigation-polish | land on /workouts after login and via the logo, and no longer see the desktop top bar | S-04, S-08 | US-01, FR-002 | ready |
+| S-09 | workouts-navigation-polish | land on /workouts after login and via the logo, and no longer see the desktop top bar | S-04, S-08 | US-01, FR-002 | done |
 
 ## Streams
 
@@ -202,7 +202,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Pure web-app navigation/layout refinement with no backend or data change — it re-shapes how already-shipped capabilities (auth/session from S-08) are presented rather than adding a new capability. Load-bearing care: removing the top bar must not remove the only sign-out affordance, so a minimal mobile-only top bar (logo + sign-out) replaces it while the desktop sidebar footer sign-out remains. Sequenced after S-04/S-08 because it edits surfaces those slices delivered.
-- **Status:** ready
+- **Status:** done
 
 | Roadmap ID | Change ID | Suggested issue title | Ready for `/10x-plan` | Notes |
 |---|---|---|---|---|
@@ -250,3 +250,4 @@ This table is the clean handoff to Jira/Linear or any MCP-backed backlog. One ro
 - **S-05: user can discard an in-progress workout session.** — Archived 2026-07-29 → `context/archive/2026-07-27-discard-session/`. Lesson: —.
 - **S-06: user can view the full detail of a past workout (all exercises, sets, and values).** — Archived 2026-07-29 → `context/archive/2026-07-27-workout-detail-view/`. Lesson: —.
 - **S-07: user can view a dashboard with total workouts completed and a recent-activity summary.** — Archived 2026-07-29 → `context/archive/2026-07-28-progress-dashboard/`. Lesson: —.
+- **S-09: user is redirected to `/workouts` after signing in, returns to `/workouts` by clicking the logo, and no longer sees the desktop top bar (a minimal mobile-only top bar keeps a sign-out affordance).** — Archived 2026-07-29 → `context/archive/2026-07-29-workouts-navigation-polish/`. Lesson: —.
