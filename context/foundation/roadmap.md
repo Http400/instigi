@@ -234,3 +234,4 @@ This table is the clean handoff to Jira/Linear or any MCP-backed backlog. One ro
 - **S-01: user can search and browse the predefined exercise list, each exercise pre-configured with its metric types.** — Archived 2026-07-16 → `context/archive/2026-07-10-exercise-library-browse/`. Lesson: —.
 - **S-02: user can start a named workout session (defaulting to the current date) and add exercises to it from the library.** — Archived 2026-07-27 → `context/archive/2026-07-16-start-session-add-exercises/`. Lesson: —.
 - **S-03: user can log sets capturing exactly the metrics each exercise is configured for, then finish and save the completed workout.** — Archived 2026-07-29 → `context/archive/2026-07-27-log-sets-finish-workout/`. Lesson: —.
+- **S-04: user can view a reverse-chronological list of past completed workouts (date, name, exercise count).** — Archived 2026-07-29 → `context/archive/2026-07-27-workout-history-list/`. Lesson: —.
