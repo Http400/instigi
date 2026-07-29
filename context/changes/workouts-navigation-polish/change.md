@@ -1,7 +1,7 @@
 ---
 change_id: workouts-navigation-polish
 title: Polish the logged-in workouts navigation
-status: implementing
+status: implemented
 created: 2026-07-29
 updated: 2026-07-29
 ---

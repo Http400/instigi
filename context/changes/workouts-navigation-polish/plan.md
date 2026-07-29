@@ -249,15 +249,15 @@ None — no data or API changes.
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `pnpm --filter web-app typecheck`
-- [x] 2.2 Linting passes: `pnpm --filter web-app lint`
-- [x] 2.3 No unused-symbol lint errors in `RootLayout.tsx`
+- [x] 2.1 Type checking passes: `pnpm --filter web-app typecheck` — 8edc9e6
+- [x] 2.2 Linting passes: `pnpm --filter web-app lint` — 8edc9e6
+- [x] 2.3 No unused-symbol lint errors in `RootLayout.tsx` — 8edc9e6
 
 #### Manual
 
-- [x] 2.4 No top bar on desktop; sidebar (with footer sign-out) unchanged
-- [x] 2.5 Narrow viewport shows a minimal top bar with logo + sign-out
-- [x] 2.6 Mobile sign-out logs out and lands on `/auth`
-- [x] 2.7 Mobile top-bar logo navigates to `/workouts`
-- [x] 2.8 Content is not hidden behind the mobile top bar or bottom nav
-- [x] 2.9 Visiting `/` redirects to `/workouts` (authenticated) or `/auth` (not)
+- [x] 2.4 No top bar on desktop; sidebar (with footer sign-out) unchanged — 8edc9e6
+- [x] 2.5 Narrow viewport shows a minimal top bar with logo + sign-out — 8edc9e6
+- [x] 2.6 Mobile sign-out logs out and lands on `/auth` — 8edc9e6
+- [x] 2.7 Mobile top-bar logo navigates to `/workouts` — 8edc9e6
+- [x] 2.8 Content is not hidden behind the mobile top bar or bottom nav — 8edc9e6
+- [x] 2.9 Visiting `/` redirects to `/workouts` (authenticated) or `/auth` (not) — 8edc9e6
