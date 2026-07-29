@@ -133,7 +133,7 @@ export default function AppLayout() {
           },
         }}
       >
-        <Toolbar sx={{ px: 2, py: 3 }}>
+        <Toolbar sx={{ px: 2, py: 3, justifyContent: 'center' }}>
           <Logo
             orientation="horizontal"
             size={36}
