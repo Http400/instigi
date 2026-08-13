@@ -155,7 +155,7 @@ If no warnings were queued, skip the prompt and proceed directly.
 
 5. **Close the matching roadmap item** — best effort; this step never blocks, never rolls back, and never prompts. A roadmap is optional; most changes won't trace to one.
 
-   1. Check for file existence: `test -f context/foundation/roadmap.md`. If absent, skip this step silently.
+   1. `test -f context/foundation/roadmap.md`. If absent, skip this step silently.
    2. Capture whether the file is already dirty: `ROADMAP_PREDIRTY=$(git status --porcelain context/foundation/roadmap.md 2>/dev/null)`. (Used in sub-step 7 to decide whether to stage it into the archive commit.)
    3. Read `context/foundation/roadmap.md`. Look for `<change-id>` used as a `Change ID`:
       - in the `## At a glance` table — the row whose **Change ID** column cell equals `<change-id>` exactly;
@@ -163,7 +163,7 @@ If no warnings were queued, skip the prompt and proceed directly.
 
       `<ID>` is that item's roadmap-local id (`F-NN` or `S-NN`); `<Outcome>` is the text of its `- **Outcome:**` line (keep a leading `(foundation) ` if present).
    4. **No match** → print `ℹ context/foundation/roadmap.md has no item with Change ID "<change-id>" — roadmap left untouched.` and skip the rest of this step. Match is exact-string only; a roadmap slice can spawn several changes, so a near-miss is intentionally *not* closed.
-   5. **Match found** → apply the three edits below using your AI coding assistant. Each is independent and best effort: if a target isn't where the `/10x-roadmap` template puts it (hand-edited roadmap, older format), skip that sub-edit, keep going, and note what was skipped — never abort the archive over roadmap shape. Touch only the fields named here; leave `Outcome`, `Prerequisites`, `Parallel with`, `Risk`, etc. alone.
+   5. **Match found** → apply the three edits below with your AI coding assistant. Each is independent and best effort: if a target isn't where the `/10x-roadmap` template puts it (hand-edited roadmap, older format), skip that sub-edit, keep going, and note what was skipped — never abort the archive over roadmap shape. Touch only the fields named here; leave `Outcome`, `Prerequisites`, `Parallel with`, `Risk`, etc. alone.
       1. **`## At a glance`** — in the matched table row, set the **Status** column cell to `done`.
       2. **Item body** — in the `### <ID>: …` block, rewrite the `- **Status:**` line to `- **Status:** done`.
       3. **`## Done` section** — append one bullet under the `## Done` heading, in that section's documented format:
