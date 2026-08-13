@@ -5,14 +5,17 @@ FROM base AS builder
 WORKDIR /app
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* .npmrc tsconfig.base.json ./
 COPY packages/types/package.json ./packages/types/
+COPY packages/utils/package.json ./packages/utils/
 COPY packages/ui/package.json ./packages/ui/
 COPY apps/web-app/package.json ./apps/web-app/
-RUN pnpm install --frozen-lockfile --filter @instigi/types --filter @instigi/ui --filter @instigi/web-app
+RUN pnpm install --frozen-lockfile --filter @instigi/types --filter @instigi/utils --filter @instigi/ui --filter @instigi/web-app
 
 COPY packages/types ./packages/types
+COPY packages/utils ./packages/utils
 COPY packages/ui ./packages/ui
 COPY apps/web-app ./apps/web-app
 RUN pnpm --filter @instigi/types build
+RUN pnpm --filter @instigi/utils build
 RUN pnpm --filter @instigi/ui build
 RUN pnpm --filter @instigi/web-app build
 
