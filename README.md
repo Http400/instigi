@@ -149,8 +149,8 @@ docker compose up --build
 | ------------ | --------------------------- |
 | web-app      | `https://instigi.com`       |
 | admin-app    | `https://admin.instigi.com` |
-| auth-service | `https://api.instigi.com`   |
-| training-service | `https://training-api.instigi.com` |
+| auth-service | `https://api.instigi.com/auth`   |
+| training-service | `https://api.instigi.com/training` |
 | PostgreSQL   | internal only               |
 
 ## Deployment (VPS)
@@ -159,15 +159,18 @@ The app is deployed via Docker Compose behind a single Caddy reverse proxy. Publ
 
 Before starting the stack, make sure the VPS firewall allows inbound `80/tcp` and `443/tcp`.
 
-### Subdomain routing
+### HTTP routing
 
-| Subdomain                        | Service      |
-| -------------------------------- | ------------ |
-| `www.instigi.com`, `instigi.com` | web-app      |
-| `admin.instigi.com`              | admin-app    |
-| `api.instigi.com`                | auth-service |
-| `training-api.instigi.com`       | training-service |
-| `pgadmin.instigi.com`            | pgAdmin      |
+| Host / path                          | Service          |
+| ------------------------------------ | ---------------- |
+| `www.instigi.com`, `instigi.com`     | web-app          |
+| `admin.instigi.com`                  | admin-app        |
+| `api.instigi.com/auth/*`             | auth-service     |
+| `api.instigi.com/training/*`         | training-service |
+| `pgadmin.instigi.com`                | pgAdmin          |
+
+Caddy strips the `/auth` and `/training` path prefixes before proxying, so
+`api.instigi.com/auth/api/auth/login` reaches auth-service as `/api/auth/login`.
 
 ### Deploy steps
 
@@ -200,7 +203,19 @@ PGADMIN_DEFAULT_PASSWORD=
 CADDY_ACME_EMAIL=admin@instigi.com
 PGADMIN_BASIC_AUTH_USER=admin
 PGADMIN_BASIC_AUTH_HASH='$2a$14$paste-generated-caddy-hash-here'
+VITE_API_URL=https://api.instigi.com
 ```
+
+`VITE_API_URL` is the **public** origin of the API gateway (Caddy), without any
+path suffix. The frontends append `/auth` and `/training` themselves, and Caddy
+strips those prefixes before proxying to the auth- and training-services. Vite
+inlines this value into the SPA bundles **at build time** via a Docker build arg,
+so it must be set before `docker compose build`; if omitted it defaults to
+`https://api.instigi.com`. Because it is baked into the image, **changing the
+origin requires rebuilding** the `web-app` / `admin-app` images. In local
+development leave `VITE_API_URL` unset — the SPAs then use relative URLs and the
+Vite dev server proxies `/auth` → `localhost:4000` and `/training` →
+`localhost:4001` (see `apps/web-app/vite.config.ts`).
 
 Generate `PGADMIN_BASIC_AUTH_HASH` with Caddy:
 
@@ -248,7 +263,7 @@ After DNS is live and the stack starts, verify the public routes:
 curl -I https://instigi.com
 curl -I https://www.instigi.com
 curl -I https://admin.instigi.com
-curl https://api.instigi.com/health
+curl https://api.instigi.com/auth/health
 curl -I https://pgadmin.instigi.com
 ```
 
@@ -293,7 +308,7 @@ curl -X POST http://localhost:4000/api/auth/register \
 Production:
 
 ```bash
-curl -X POST https://api.instigi.com/api/auth/register \
+curl -X POST https://api.instigi.com/auth/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","name":"Alice","password":"secret123"}'
 ```
@@ -309,7 +324,7 @@ curl -X POST http://localhost:4000/api/auth/login \
 Production:
 
 ```bash
-curl -X POST https://api.instigi.com/api/auth/login \
+curl -X POST https://api.instigi.com/auth/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"secret123"}'
 ```

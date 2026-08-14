@@ -11,9 +11,7 @@ import type {
   WorkoutSession,
 } from '@instigi/types';
 import { createBaseQueryWithReauth } from '../api/baseQuery';
-
-const TRAINING_API_BASE =
-  import.meta.env.VITE_TRAINING_API_URL ?? 'http://localhost:4001';
+import { SESSIONS_API } from '../api/config';
 
 interface UpdateSessionArgs extends UpdateSessionRequest {
   id: string;
@@ -68,7 +66,7 @@ export type {
 
 export const sessionsApi = createApi({
   reducerPath: 'sessionsApi',
-  baseQuery: createBaseQueryWithReauth(`${TRAINING_API_BASE}/api/sessions`),
+  baseQuery: createBaseQueryWithReauth(SESSIONS_API),
   tagTypes: ['ActiveSession', 'Session', 'History'],
   endpoints: (builder) => ({
     getActiveSession: builder.query<WorkoutSession | null, void>({

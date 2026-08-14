@@ -17,6 +17,12 @@ COPY apps/web-app ./apps/web-app
 RUN pnpm --filter @instigi/types build
 RUN pnpm --filter @instigi/utils build
 RUN pnpm --filter @instigi/ui build
+
+# Vite inlines this at build time; supply the public API gateway origin so the
+# shipped bundle does not fall back to the localhost dev default. The app appends
+# `/auth` and `/training` path prefixes, which Caddy strips before proxying.
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
 RUN pnpm --filter @instigi/web-app build
 
 FROM nginx:alpine AS runner

@@ -1,9 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import type { ApiResponse, Exercise, ExerciseCategory } from '@instigi/types';
 import { createBaseQueryWithReauth } from '../api/baseQuery';
-
-const TRAINING_API_BASE =
-  import.meta.env.VITE_TRAINING_API_URL ?? 'http://localhost:4001';
+import { EXERCISES_API } from '../api/config';
 
 interface ListExercisesParams {
   search?: string;
@@ -14,7 +12,7 @@ export type { ListExercisesParams };
 
 export const exercisesApi = createApi({
   reducerPath: 'exercisesApi',
-  baseQuery: createBaseQueryWithReauth(`${TRAINING_API_BASE}/api/exercises`),
+  baseQuery: createBaseQueryWithReauth(EXERCISES_API),
   endpoints: (builder) => ({
     listExercises: builder.query<Exercise[], ListExercisesParams | void>({
       query: (params) => ({ url: '', params: params ?? {} }),

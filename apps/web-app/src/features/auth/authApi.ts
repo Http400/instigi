@@ -8,6 +8,7 @@ import type {
   LoginResponse,
 } from '@instigi/types';
 import { createBaseQueryWithReauth } from '../api/baseQuery';
+import { AUTH_API } from '../api/config';
 
 interface RegisterRequest {
   email: string;
@@ -23,11 +24,9 @@ interface RefreshResponse {
 
 export type { RefreshResponse };
 
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:4000';
-
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: createBaseQueryWithReauth(`${API_BASE}/api/auth`),
+  baseQuery: createBaseQueryWithReauth(AUTH_API),
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (body) => ({ url: '/login', method: 'POST', body }),

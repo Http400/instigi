@@ -6,6 +6,7 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import type { ApiResponse, AuthTokens } from '@instigi/types';
 import { loggedOut, tokensRefreshed } from '../auth/authSlice';
+import { AUTH_API } from './config';
 
 /** Minimal shape of the store state this baseQuery needs to read. */
 interface AuthRootStateSlice {
@@ -19,11 +20,9 @@ interface RefreshResponse {
   tokens: AuthTokens;
 }
 
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:4000';
-
 // Refresh always targets the auth-service, regardless of the resource base URL
 // the caller is querying.
-const refreshBaseQuery = fetchBaseQuery({ baseUrl: `${API_BASE}/api/auth` });
+const refreshBaseQuery = fetchBaseQuery({ baseUrl: AUTH_API });
 
 // Module-level mutex shared across every API built by this factory: concurrent
 // 401s (even across different APIs) serialize on a single in-flight refresh.

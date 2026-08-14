@@ -14,6 +14,11 @@ COPY packages/ui ./packages/ui
 COPY apps/admin-app ./apps/admin-app
 RUN pnpm --filter @instigi/types build
 RUN pnpm --filter @instigi/ui build
+
+# Vite inlines this at build time; supply the public auth API origin so the
+# shipped bundle does not fall back to the localhost dev default.
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
 RUN pnpm --filter @instigi/admin-app build
 
 FROM nginx:alpine AS runner

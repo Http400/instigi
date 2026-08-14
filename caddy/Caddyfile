@@ -11,11 +11,15 @@ admin.instigi.com {
 }
 
 api.instigi.com {
-	reverse_proxy auth-service:4000
-}
+	# Path-based routing: strip the prefix before proxying (like nginx
+	# `location /auth/ { proxy_pass http://auth-service:4000/; }`).
+	handle_path /auth/* {
+		reverse_proxy auth-service:4000
+	}
 
-training-api.instigi.com {
-	reverse_proxy training-service:4001
+	handle_path /training/* {
+		reverse_proxy training-service:4001
+	}
 }
 
 pgadmin.instigi.com {
