@@ -12,5 +12,5 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', service: 'training-service' });
 });
 
-app.use('/api/exercises', exercisesRouter);
-app.use('/api/sessions', sessionsRouter);
+app.use('/exercises', exercisesRouter);
+app.use('/sessions', sessionsRouter);

@@ -11,4 +11,4 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', service: 'auth-service' });
 });
 
-app.use('/api/auth', authRouter);
+app.use(authRouter);

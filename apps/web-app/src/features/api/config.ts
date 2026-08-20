@@ -5,6 +5,6 @@
 // individual services (see vite.config.ts).
 const API_BASE = import.meta.env.VITE_API_URL ?? '';
 
-export const AUTH_API = `${API_BASE}/auth/api/auth`;
-export const EXERCISES_API = `${API_BASE}/training/api/exercises`;
-export const SESSIONS_API = `${API_BASE}/training/api/sessions`;
+export const AUTH_API = `${API_BASE}/auth`;
+export const EXERCISES_API = `${API_BASE}/training/exercises`;
+export const SESSIONS_API = `${API_BASE}/training/sessions`;

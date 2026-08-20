@@ -127,16 +127,16 @@ beforeEach(() => {
   vi.mocked(prisma.exerciseEntry.count).mockReset();
 });
 
-describe('POST /api/sessions', () => {
+describe('POST /sessions', () => {
   it('returns 401 without a token', async () => {
-    const res = await request(app).post('/api/sessions').send({});
+    const res = await request(app).post('/sessions').send({});
     expect(res.status).toBe(401);
     expect(res.body.code).toBe('UNAUTHORIZED');
   });
 
   it('returns 401 with an invalid token', async () => {
     const res = await request(app)
-      .post('/api/sessions')
+      .post('/sessions')
       .set('Authorization', 'Bearer not-a-real-token')
       .send({});
     expect(res.status).toBe(401);
@@ -148,7 +148,7 @@ describe('POST /api/sessions', () => {
     vi.mocked(prisma.workoutSession.create).mockResolvedValueOnce(emptySessionRow as never);
 
     const res = await request(app)
-      .post('/api/sessions')
+      .post('/sessions')
       .set('Authorization', `Bearer ${signToken()}`)
       .send({});
 
@@ -167,7 +167,7 @@ describe('POST /api/sessions', () => {
     vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({ id: 'active' } as never);
 
     const res = await request(app)
-      .post('/api/sessions')
+      .post('/sessions')
       .set('Authorization', `Bearer ${signToken()}`)
       .send({});
 
@@ -177,12 +177,12 @@ describe('POST /api/sessions', () => {
   });
 });
 
-describe('GET /api/sessions/active', () => {
+describe('GET /sessions/active', () => {
   it('returns { data: null } when no active session exists', async () => {
     vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce(null as never);
 
     const res = await request(app)
-      .get('/api/sessions/active')
+      .get('/sessions/active')
       .set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(200);
@@ -193,7 +193,7 @@ describe('GET /api/sessions/active', () => {
     vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce(emptySessionRow as never);
 
     await request(app)
-      .get('/api/sessions/active')
+      .get('/sessions/active')
       .set('Authorization', `Bearer ${signToken()}`);
 
     const where = vi.mocked(prisma.workoutSession.findFirst).mock.calls[0]?.[0]?.where;
@@ -201,12 +201,12 @@ describe('GET /api/sessions/active', () => {
   });
 });
 
-describe('GET /api/sessions/:id', () => {
+describe('GET /sessions/:id', () => {
   it('returns 404 for a session the user does not own', async () => {
     vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce(null as never);
 
     const res = await request(app)
-      .get('/api/sessions/session-x')
+      .get('/sessions/session-x')
       .set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(404);
@@ -214,10 +214,10 @@ describe('GET /api/sessions/:id', () => {
   });
 });
 
-describe('PATCH /api/sessions/:id', () => {
+describe('PATCH /sessions/:id', () => {
   it('returns VALIDATION_ERROR 400 for an empty title', async () => {
     const res = await request(app)
-      .patch('/api/sessions/session-1')
+      .patch('/sessions/session-1')
       .set('Authorization', `Bearer ${signToken()}`)
       .send({ title: '' });
 
@@ -227,7 +227,7 @@ describe('PATCH /api/sessions/:id', () => {
   });
 });
 
-describe('POST /api/sessions/:id/exercises', () => {
+describe('POST /sessions/:id/exercises', () => {
   it('snapshots the definition and appends the next position', async () => {
     vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({ id: 'session-1' } as never);
     vi.mocked(prisma.exerciseDefinition.findFirst).mockResolvedValueOnce(definitionRow as never);
@@ -235,7 +235,7 @@ describe('POST /api/sessions/:id/exercises', () => {
     vi.mocked(prisma.sessionExercise.create).mockResolvedValueOnce(sessionExerciseRow as never);
 
     const res = await request(app)
-      .post('/api/sessions/session-1/exercises')
+      .post('/sessions/session-1/exercises')
       .set('Authorization', `Bearer ${signToken()}`)
       .send({ exerciseDefinitionId: definitionRow.id });
 
@@ -261,7 +261,7 @@ describe('POST /api/sessions/:id/exercises', () => {
     vi.mocked(prisma.exerciseDefinition.findFirst).mockResolvedValueOnce(null as never);
 
     const res = await request(app)
-      .post('/api/sessions/session-1/exercises')
+      .post('/sessions/session-1/exercises')
       .set('Authorization', `Bearer ${signToken()}`)
       .send({ exerciseDefinitionId: definitionRow.id });
 
@@ -274,7 +274,7 @@ describe('POST /api/sessions/:id/exercises', () => {
     vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce(null as never);
 
     const res = await request(app)
-      .post('/api/sessions/session-x/exercises')
+      .post('/sessions/session-x/exercises')
       .set('Authorization', `Bearer ${signToken()}`)
       .send({ exerciseDefinitionId: definitionRow.id });
 
@@ -284,7 +284,7 @@ describe('POST /api/sessions/:id/exercises', () => {
 
   it('returns VALIDATION_ERROR 400 for a non-uuid definition id', async () => {
     const res = await request(app)
-      .post('/api/sessions/session-1/exercises')
+      .post('/sessions/session-1/exercises')
       .set('Authorization', `Bearer ${signToken()}`)
       .send({ exerciseDefinitionId: 'not-a-uuid' });
 
@@ -293,12 +293,12 @@ describe('POST /api/sessions/:id/exercises', () => {
   });
 });
 
-describe('DELETE /api/sessions/:id/exercises/:sessionExerciseId', () => {
+describe('DELETE /sessions/:id/exercises/:sessionExerciseId', () => {
   it('returns 404 for a session exercise on a session the user does not own', async () => {
     vi.mocked(prisma.sessionExercise.findFirst).mockResolvedValueOnce(null as never);
 
     const res = await request(app)
-      .delete('/api/sessions/session-1/exercises/se-x')
+      .delete('/sessions/session-1/exercises/se-x')
       .set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(404);
@@ -311,7 +311,7 @@ describe('DELETE /api/sessions/:id/exercises/:sessionExerciseId', () => {
     vi.mocked(prisma.sessionExercise.delete).mockResolvedValueOnce({ id: 'se-1' } as never);
 
     const res = await request(app)
-      .delete('/api/sessions/session-1/exercises/se-1')
+      .delete('/sessions/session-1/exercises/se-1')
       .set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(200);
@@ -319,7 +319,7 @@ describe('DELETE /api/sessions/:id/exercises/:sessionExerciseId', () => {
   });
 });
 
-describe('POST /api/sessions/:id/exercises/:sessionExerciseId/sets', () => {
+describe('POST /sessions/:id/exercises/:sessionExerciseId/sets', () => {
   it('logs a valid set and appends the next position', async () => {
     vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
       id: 'session-1',
@@ -333,7 +333,7 @@ describe('POST /api/sessions/:id/exercises/:sessionExerciseId/sets', () => {
     } as never);
 
     const res = await request(app)
-      .post('/api/sessions/session-1/exercises/se-1/sets')
+      .post('/sessions/session-1/exercises/se-1/sets')
       .set('Authorization', `Bearer ${signToken()}`)
       .send({ values: { reps: 8, load: 70 } });
 
@@ -357,7 +357,7 @@ describe('POST /api/sessions/:id/exercises/:sessionExerciseId/sets', () => {
     vi.mocked(prisma.sessionExercise.findFirst).mockResolvedValueOnce(benchExerciseSnapshot as never);
 
     const res = await request(app)
-      .post('/api/sessions/session-1/exercises/se-1/sets')
+      .post('/sessions/session-1/exercises/se-1/sets')
       .set('Authorization', `Bearer ${signToken()}`)
       .send({ values: { reps: 8 } });
 
@@ -383,7 +383,7 @@ describe('POST /api/sessions/:id/exercises/:sessionExerciseId/sets', () => {
     } as never);
 
     const res = await request(app)
-      .post('/api/sessions/session-1/exercises/se-1/sets')
+      .post('/sessions/session-1/exercises/se-1/sets')
       .set('Authorization', `Bearer ${signToken()}`)
       .send({ values: { reps: 10 } });
 
@@ -398,7 +398,7 @@ describe('POST /api/sessions/:id/exercises/:sessionExerciseId/sets', () => {
     } as never);
 
     const res = await request(app)
-      .post('/api/sessions/session-1/exercises/se-1/sets')
+      .post('/sessions/session-1/exercises/se-1/sets')
       .set('Authorization', `Bearer ${signToken()}`)
       .send({ values: { reps: 8, load: 70 } });
 
@@ -408,7 +408,7 @@ describe('POST /api/sessions/:id/exercises/:sessionExerciseId/sets', () => {
   });
 });
 
-describe('PATCH /api/sessions/:id/exercises/:sessionExerciseId/sets/:entryId', () => {
+describe('PATCH /sessions/:id/exercises/:sessionExerciseId/sets/:entryId', () => {
   it('updates an owned set', async () => {
     vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
       id: 'session-1',
@@ -422,7 +422,7 @@ describe('PATCH /api/sessions/:id/exercises/:sessionExerciseId/sets/:entryId', (
     } as never);
 
     const res = await request(app)
-      .patch('/api/sessions/session-1/exercises/se-1/sets/entry-1')
+      .patch('/sessions/session-1/exercises/se-1/sets/entry-1')
       .set('Authorization', `Bearer ${signToken()}`)
       .send({ values: { reps: 10, load: 72 } });
 
@@ -431,7 +431,7 @@ describe('PATCH /api/sessions/:id/exercises/:sessionExerciseId/sets/:entryId', (
   });
 });
 
-describe('DELETE /api/sessions/:id/exercises/:sessionExerciseId/sets/:entryId', () => {
+describe('DELETE /sessions/:id/exercises/:sessionExerciseId/sets/:entryId', () => {
   it('deletes an owned set and echoes its id', async () => {
     vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
       id: 'session-1',
@@ -442,7 +442,7 @@ describe('DELETE /api/sessions/:id/exercises/:sessionExerciseId/sets/:entryId', 
     vi.mocked(prisma.exerciseEntry.delete).mockResolvedValueOnce({ id: 'entry-1' } as never);
 
     const res = await request(app)
-      .delete('/api/sessions/session-1/exercises/se-1/sets/entry-1')
+      .delete('/sessions/session-1/exercises/se-1/sets/entry-1')
       .set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(200);
@@ -450,7 +450,7 @@ describe('DELETE /api/sessions/:id/exercises/:sessionExerciseId/sets/:entryId', 
   });
 });
 
-describe('POST /api/sessions/:id/finish', () => {
+describe('POST /sessions/:id/finish', () => {
   it('finishes a session with content and stamps endedAt', async () => {
     vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
       id: 'session-1',
@@ -461,7 +461,7 @@ describe('POST /api/sessions/:id/finish', () => {
     vi.mocked(prisma.workoutSession.update).mockResolvedValueOnce(finishedSessionRow as never);
 
     const res = await request(app)
-      .post('/api/sessions/session-1/finish')
+      .post('/sessions/session-1/finish')
       .set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(200);
@@ -478,7 +478,7 @@ describe('POST /api/sessions/:id/finish', () => {
     vi.mocked(prisma.exerciseEntry.count).mockResolvedValueOnce(0 as never);
 
     const res = await request(app)
-      .post('/api/sessions/session-1/finish')
+      .post('/sessions/session-1/finish')
       .set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(422);
@@ -493,7 +493,7 @@ describe('POST /api/sessions/:id/finish', () => {
     } as never);
 
     const res = await request(app)
-      .post('/api/sessions/session-1/finish')
+      .post('/sessions/session-1/finish')
       .set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(409);
@@ -502,7 +502,7 @@ describe('POST /api/sessions/:id/finish', () => {
   });
 });
 
-describe('GET /api/sessions/history', () => {
+describe('GET /sessions/history', () => {
   it('returns finished sessions as summaries in the order Prisma yields', async () => {
     vi.mocked(prisma.workoutSession.findMany).mockResolvedValueOnce([
       {
@@ -520,7 +520,7 @@ describe('GET /api/sessions/history', () => {
     ] as never);
 
     const res = await request(app)
-      .get('/api/sessions/history')
+      .get('/sessions/history')
       .set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(200);
@@ -544,7 +544,7 @@ describe('GET /api/sessions/history', () => {
     vi.mocked(prisma.workoutSession.findMany).mockResolvedValueOnce([] as never);
 
     await request(app)
-      .get('/api/sessions/history')
+      .get('/sessions/history')
       .set('Authorization', `Bearer ${signToken()}`);
 
     const args = vi.mocked(prisma.workoutSession.findMany).mock.calls[0]?.[0];
@@ -553,14 +553,14 @@ describe('GET /api/sessions/history', () => {
   });
 
   it('rejects an unauthenticated request with 401', async () => {
-    const res = await request(app).get('/api/sessions/history');
+    const res = await request(app).get('/sessions/history');
 
     expect(res.status).toBe(401);
     expect(prisma.workoutSession.findMany).not.toHaveBeenCalled();
   });
 });
 
-describe('DELETE /api/sessions/:id', () => {
+describe('DELETE /sessions/:id', () => {
   it('discards an in-progress owned session', async () => {
     vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
       id: 'session-1',
@@ -569,7 +569,7 @@ describe('DELETE /api/sessions/:id', () => {
     vi.mocked(prisma.workoutSession.delete).mockResolvedValueOnce({ id: 'session-1' } as never);
 
     const res = await request(app)
-      .delete('/api/sessions/session-1')
+      .delete('/sessions/session-1')
       .set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(200);
@@ -584,7 +584,7 @@ describe('DELETE /api/sessions/:id', () => {
     } as never);
 
     const res = await request(app)
-      .delete('/api/sessions/session-1')
+      .delete('/sessions/session-1')
       .set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(409);
@@ -596,7 +596,7 @@ describe('DELETE /api/sessions/:id', () => {
     vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce(null as never);
 
     const res = await request(app)
-      .delete('/api/sessions/session-x')
+      .delete('/sessions/session-x')
       .set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(404);
@@ -605,7 +605,7 @@ describe('DELETE /api/sessions/:id', () => {
   });
 
   it('rejects an unauthenticated request with 401', async () => {
-    const res = await request(app).delete('/api/sessions/session-1');
+    const res = await request(app).delete('/sessions/session-1');
 
     expect(res.status).toBe(401);
     expect(prisma.workoutSession.delete).not.toHaveBeenCalled();

@@ -50,16 +50,16 @@ beforeEach(() => {
   vi.mocked(prisma.exerciseDefinition.findMany).mockReset();
 });
 
-describe('GET /api/exercises', () => {
+describe('GET /exercises', () => {
   it('returns 401 without a token', async () => {
-    const res = await request(app).get('/api/exercises');
+    const res = await request(app).get('/exercises');
     expect(res.status).toBe(401);
     expect(res.body.code).toBe('UNAUTHORIZED');
   });
 
   it('returns 401 with an invalid token', async () => {
     const res = await request(app)
-      .get('/api/exercises')
+      .get('/exercises')
       .set('Authorization', 'Bearer not-a-real-token');
     expect(res.status).toBe(401);
     expect(res.body.code).toBe('INVALID_TOKEN');
@@ -71,7 +71,7 @@ describe('GET /api/exercises', () => {
       ownedRow,
     ] as never);
 
-    const res = await request(app).get('/api/exercises').set('Authorization', `Bearer ${signToken()}`);
+    const res = await request(app).get('/exercises').set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.data)).toBe(true);
@@ -91,7 +91,7 @@ describe('GET /api/exercises', () => {
   it('scopes the query to global + own exercises, non-archived', async () => {
     vi.mocked(prisma.exerciseDefinition.findMany).mockResolvedValueOnce([] as never);
 
-    await request(app).get('/api/exercises').set('Authorization', `Bearer ${signToken()}`);
+    await request(app).get('/exercises').set('Authorization', `Bearer ${signToken()}`);
 
     const where = vi.mocked(prisma.exerciseDefinition.findMany).mock.calls[0]?.[0]?.where;
     expect(where).toMatchObject({
@@ -104,7 +104,7 @@ describe('GET /api/exercises', () => {
     vi.mocked(prisma.exerciseDefinition.findMany).mockResolvedValueOnce([] as never);
 
     await request(app)
-      .get('/api/exercises?search=press')
+      .get('/exercises?search=press')
       .set('Authorization', `Bearer ${signToken()}`);
 
     const where = vi.mocked(prisma.exerciseDefinition.findMany).mock.calls[0]?.[0]?.where;
@@ -115,7 +115,7 @@ describe('GET /api/exercises', () => {
     vi.mocked(prisma.exerciseDefinition.findMany).mockResolvedValueOnce([] as never);
 
     await request(app)
-      .get('/api/exercises?category=cardio')
+      .get('/exercises?category=cardio')
       .set('Authorization', `Bearer ${signToken()}`);
 
     const where = vi.mocked(prisma.exerciseDefinition.findMany).mock.calls[0]?.[0]?.where;
@@ -124,7 +124,7 @@ describe('GET /api/exercises', () => {
 
   it('returns VALIDATION_ERROR 400 for an invalid category', async () => {
     const res = await request(app)
-      .get('/api/exercises?category=swimming')
+      .get('/exercises?category=swimming')
       .set('Authorization', `Bearer ${signToken()}`);
 
     expect(res.status).toBe(400);
