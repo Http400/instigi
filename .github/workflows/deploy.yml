@@ -82,7 +82,7 @@ jobs:
       group: deploy-production
       cancel-in-progress: false
     env:
-      PROJECT_PATH: /var/instigi
+      PROJECT_PATH: /home/ubuntu/instigi
       COMPOSE_WAIT_TIMEOUT: '90'
 
     steps:
@@ -136,7 +136,7 @@ jobs:
           scp -i ~/.ssh/deploy_key docker-compose.prod.yml "${VPS_USER}@${VPS_HOST}:${PROJECT_PATH}/"
           scp -i ~/.ssh/deploy_key caddy/Caddyfile "${VPS_USER}@${VPS_HOST}:${PROJECT_PATH}/caddy/"
         env:
-          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_USER: ${{ secrets.VPS_USER || 'ubuntu' }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
 
       - name: Log in to GHCR on VPS when token is configured
@@ -149,7 +149,7 @@ jobs:
           ssh -i ~/.ssh/deploy_key "${VPS_USER}@${VPS_HOST}" \
             "echo '${GHCR_TOKEN}' | docker login ghcr.io -u '${GHCR_USERNAME}' --password-stdin"
         env:
-          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_USER: ${{ secrets.VPS_USER || 'ubuntu' }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
           GHCR_USERNAME: ${{ secrets.GHCR_USERNAME || github.repository_owner }}
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
@@ -166,7 +166,7 @@ jobs:
           echo "previous_sha=${PREVIOUS_SHA}" >> "$GITHUB_OUTPUT"
           echo "Previous production SHA: ${PREVIOUS_SHA:-<none>}"
         env:
-          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_USER: ${{ secrets.VPS_USER || 'ubuntu' }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
 
       - name: Update APP_SHA in .env
@@ -182,7 +182,7 @@ jobs:
                echo 'APP_SHA=${IMAGE_TAG}' >> '${PROJECT_PATH}/.env'; \
              fi"
         env:
-          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_USER: ${{ secrets.VPS_USER || 'ubuntu' }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
           IMAGE_TAG: ${{ steps.resolve.outputs.image_tag }}
 
@@ -195,7 +195,7 @@ jobs:
             "cd '${PROJECT_PATH}' && \
              GHCR_REPOSITORY='${GHCR_REPOSITORY}' docker compose -f docker-compose.prod.yml --env-file .env pull"
         env:
-          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_USER: ${{ secrets.VPS_USER || 'ubuntu' }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
 
       - name: Roll out stack
@@ -207,7 +207,7 @@ jobs:
             "cd '${PROJECT_PATH}' && \
              GHCR_REPOSITORY='${GHCR_REPOSITORY}' docker compose -f docker-compose.prod.yml --env-file .env up -d --no-build --wait --wait-timeout ${COMPOSE_WAIT_TIMEOUT}"
         env:
-          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_USER: ${{ secrets.VPS_USER || 'ubuntu' }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
 
       - name: Validate smoke URL
@@ -248,7 +248,7 @@ jobs:
           echo "::error::Deploy ${IMAGE_TAG} failed. Stack rolled back to ${PREVIOUS_SHA}."
           exit 1
         env:
-          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_USER: ${{ secrets.VPS_USER || 'ubuntu' }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
           IMAGE_TAG: ${{ steps.resolve.outputs.image_tag }}
           SMOKE_URL: ${{ vars.SMOKE_URL }}

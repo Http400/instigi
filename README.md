@@ -314,7 +314,7 @@ Repository **secrets**:
 | Secret         | Description                                                              |
 | -------------- | ------------------------------------------------------------------------ |
 | `VPS_HOST`     | VPS hostname or IP for SSH/SCP.                                           |
-| `VPS_USER`     | SSH user (optional; defaults to `deploy`).                               |
+| `VPS_USER`     | SSH user (optional; defaults to `ubuntu`).                               |
 | `VPS_SSH_KEY`  | Private SSH key with access to the VPS.                                  |
 | `GHCR_TOKEN`   | Optional PAT (`read:packages`) so the VPS can pull private GHCR images.  |
 | `GHCR_USERNAME`| Optional GHCR username for the VPS login (defaults to the repo owner).   |
@@ -329,9 +329,10 @@ Repository **variables**:
 ### VPS prerequisites
 
 - Docker + Docker Compose v2 installed.
-- Project directory `/var/instigi` containing a populated `.env` (see the variables listed
-  under "Create the `.env` file" above — `APP_SHA` is managed automatically by the workflow).
-- The configured `deploy` user able to pull the GHCR images.
+- Project directory `/home/ubuntu/instigi` containing a populated `.env` (see the variables
+  listed under "Create the `.env` file" above — `APP_SHA` is managed automatically by the
+  workflow; the directory itself is created automatically on first deploy).
+- The configured SSH user able to pull the GHCR images.
 
 The `production` GitHub environment gates the deploy job; add required reviewers there if you
 want manual approval before rollout.
