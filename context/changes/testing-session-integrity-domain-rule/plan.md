@@ -306,21 +306,21 @@ Progress is fully `[x]`) and refresh the "Last updated" note line at the top of 
 
 #### Automated
 
-- [x] 2.1 Test suite passes: `pnpm --filter @instigi/training-service test`
-- [x] 2.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
-- [x] 2.3 Lint passes: `pnpm --filter @instigi/training-service lint`
+- [x] 2.1 Test suite passes: `pnpm --filter @instigi/training-service test` — 4552983
+- [x] 2.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck` — 4552983
+- [x] 2.3 Lint passes: `pnpm --filter @instigi/training-service lint` — 4552983
 
 #### Manual
 
-- [x] 2.4 Finish test asserts nested position-ordered entries; removing the controller `include` would fail it
+- [x] 2.4 Finish test asserts nested position-ordered entries; removing the controller `include` would fail it — 4552983
 
 ### Phase 3: Cookbook & rollout status
 
 #### Automated
 
-- [ ] 3.1 §6.1 recipe present: `grep -q "pnpm --filter @instigi/training-service test" context/foundation/test-plan.md`
-- [ ] 3.2 No TBD remains in §6.1
+- [x] 3.1 §6.1 recipe present: `grep -q "pnpm --filter @instigi/training-service test" context/foundation/test-plan.md`
+- [x] 3.2 No TBD remains in §6.1
 
 #### Manual
 
-- [ ] 3.3 §6.1 reads as a usable recipe; §3 Phase 1 Status matches actual Progress
+- [x] 3.3 §6.1 reads as a usable recipe; §3 Phase 1 Status matches actual Progress
