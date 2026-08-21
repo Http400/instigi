@@ -294,25 +294,25 @@ Progress is fully `[x]`) and refresh the "Last updated" note line at the top of 
 
 #### Automated
 
-- [x] 1.1 Test suite passes: `pnpm --filter @instigi/training-service test`
-- [x] 1.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
-- [x] 1.3 Lint passes: `pnpm --filter @instigi/training-service lint`
+- [x] 1.1 Test suite passes: `pnpm --filter @instigi/training-service test` — 494b8ed
+- [x] 1.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck` — 494b8ed
+- [x] 1.3 Lint passes: `pnpm --filter @instigi/training-service lint` — 494b8ed
 
 #### Manual
 
-- [x] 1.4 New case titles map 1:1 to research "Gaps to close (risk #1)"; expectations hand-derived from the domain rule, not from `validateEntryValues`
+- [x] 1.4 New case titles map 1:1 to research "Gaps to close (risk #1)"; expectations hand-derived from the domain rule, not from `validateEntryValues` — 494b8ed
 
 ### Phase 2: Durable finish & empty-session guard (#3, #5)
 
 #### Automated
 
-- [ ] 2.1 Test suite passes: `pnpm --filter @instigi/training-service test`
-- [ ] 2.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
-- [ ] 2.3 Lint passes: `pnpm --filter @instigi/training-service lint`
+- [x] 2.1 Test suite passes: `pnpm --filter @instigi/training-service test`
+- [x] 2.2 Typecheck passes: `pnpm --filter @instigi/training-service typecheck`
+- [x] 2.3 Lint passes: `pnpm --filter @instigi/training-service lint`
 
 #### Manual
 
-- [ ] 2.4 Finish test asserts nested position-ordered entries; removing the controller `include` would fail it
+- [x] 2.4 Finish test asserts nested position-ordered entries; removing the controller `include` would fail it
 
 ### Phase 3: Cookbook & rollout status
 

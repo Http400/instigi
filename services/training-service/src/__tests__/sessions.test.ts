@@ -124,6 +124,49 @@ const finishedSessionRow = {
   exercises: [],
 };
 
+// A finished session that carries its exercises and their entries — proves the finish response
+// returns the whole workout together (risk #3 retrievable-together contract).
+const finishedSessionWithContentRow = {
+  id: 'session-1',
+  title: 'Jul 16 workout',
+  startedAt: new Date('2026-07-16T10:00:00.000Z'),
+  endedAt: new Date('2026-07-16T11:00:00.000Z'),
+  exercises: [
+    {
+      id: 'se-1',
+      sessionId: 'session-1',
+      exerciseDefinitionId: 'def-1',
+      exerciseNameSnapshot: 'Bench Press',
+      categorySnapshot: 'strength',
+      metricsSnapshot: [
+        { key: 'reps', required: true },
+        { key: 'load', required: true },
+      ],
+      allowedEntryTypesSnapshot: ['set'],
+      defaultEntryTypeSnapshot: 'set',
+      position: 1,
+      entries: [
+        {
+          id: 'entry-1',
+          sessionExerciseId: 'se-1',
+          entryType: 'set',
+          values: { reps: 8, load: 70 },
+          isCompleted: true,
+          position: 1,
+        },
+        {
+          id: 'entry-2',
+          sessionExerciseId: 'se-1',
+          entryType: 'set',
+          values: { reps: 6, load: 75 },
+          isCompleted: true,
+          position: 2,
+        },
+      ],
+    },
+  ],
+};
+
 beforeEach(() => {
   vi.mocked(prisma.workoutSession.findFirst).mockReset();
   vi.mocked(prisma.workoutSession.findMany).mockReset();
@@ -608,6 +651,51 @@ describe('POST /sessions/:id/finish', () => {
     expect(res.status).toBe(200);
     expect(res.body.data.endedAt).not.toBeNull();
     expect(res.body.data).not.toHaveProperty('userId');
+  });
+
+  it('returns the finished session with all its exercises and position-ordered entries', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.count).mockResolvedValueOnce(1 as never);
+    vi.mocked(prisma.exerciseEntry.count).mockResolvedValueOnce(2 as never);
+    vi.mocked(prisma.workoutSession.update).mockResolvedValueOnce(
+      finishedSessionWithContentRow as never,
+    );
+
+    const res = await request(app)
+      .post('/sessions/session-1/finish')
+      .set('Authorization', `Bearer ${signToken()}`);
+
+    expect(res.status).toBe(200);
+    // The whole workout comes back together — session + exercises + entries.
+    expect(res.body.data.exercises).toHaveLength(1);
+    const entries = res.body.data.exercises[0].entries;
+    expect(entries).toHaveLength(2);
+    expect(entries.map((e: { position: number }) => e.position)).toEqual([1, 2]);
+    expect(entries[0].values).toEqual({ reps: 8, load: 70 });
+
+    // The update must request the exercises+entries include, or the workout would come back bare.
+    const args = vi.mocked(prisma.workoutSession.update).mock.calls[0]?.[0];
+    expect(args?.include).toHaveProperty('exercises');
+  });
+
+  it('rejects finishing a session that has an exercise but no sets with 422 SESSION_EMPTY', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.count).mockResolvedValueOnce(1 as never);
+    vi.mocked(prisma.exerciseEntry.count).mockResolvedValueOnce(0 as never);
+
+    const res = await request(app)
+      .post('/sessions/session-1/finish')
+      .set('Authorization', `Bearer ${signToken()}`);
+
+    expect(res.status).toBe(422);
+    expect(res.body.code).toBe('SESSION_EMPTY');
+    expect(prisma.workoutSession.update).not.toHaveBeenCalled();
   });
 
   it('rejects finishing an empty session with 422 SESSION_EMPTY', async () => {
