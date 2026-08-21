@@ -1,0 +1,260 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  GHCR_REPOSITORY: http400/instigi # hardcoded cause Docker image repository names must be lowercase
+
+jobs:
+  build-and-push:
+    name: Build and push ${{ matrix.image }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: auth-service
+            dockerfile: services/auth-service/Dockerfile
+            build_args: ''
+          - image: training-service
+            dockerfile: services/training-service/Dockerfile
+            build_args: ''
+          - image: web-app
+            dockerfile: apps/web-app/Dockerfile
+            build_args: |
+              VITE_API_URL=${{ vars.VITE_API_URL || 'https://api.instigi.com' }}
+          - image: admin-app
+            dockerfile: apps/admin-app/Dockerfile
+            build_args: |
+              VITE_API_URL=${{ vars.VITE_API_URL || 'https://api.instigi.com' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.GHCR_REPOSITORY }}/${{ matrix.image }}
+          tags: |
+            type=sha,format=long,prefix=
+          flavor: |
+            latest=false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          build-args: ${{ matrix.build_args }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.image }}
+
+  deploy:
+    name: Deploy ${{ github.sha }} to production
+    runs-on: ubuntu-24.04
+    needs: build-and-push
+    environment: production
+    permissions:
+      contents: read
+      packages: read
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    env:
+      PROJECT_PATH: /var/instigi
+      COMPOSE_WAIT_TIMEOUT: '90'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Resolve image tag
+        id: resolve
+        run: |
+          IMAGE_TAG="${{ github.sha }}"
+
+          if [ "${#IMAGE_TAG}" -ne 40 ]; then
+            echo "::error::image_tag must be a full 40-character SHA, got ${#IMAGE_TAG}: ${IMAGE_TAG}"
+            exit 1
+          fi
+
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "Deploying image tag ${IMAGE_TAG}"
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate published images exist
+        env:
+          IMAGE_TAG: ${{ steps.resolve.outputs.image_tag }}
+        run: |
+          set -euo pipefail
+
+          for image in auth-service training-service web-app admin-app; do
+            full_image="${REGISTRY}/${GHCR_REPOSITORY}/${image}:${IMAGE_TAG}"
+            echo "Checking ${full_image}"
+            docker manifest inspect "${full_image}" > /dev/null
+          done
+
+      - name: Configure SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Copy deployment manifests to VPS
+        run: |
+          set -euo pipefail
+
+          ssh -i ~/.ssh/deploy_key "${VPS_USER}@${VPS_HOST}" "mkdir -p '${PROJECT_PATH}/caddy'"
+          scp -i ~/.ssh/deploy_key docker-compose.prod.yml "${VPS_USER}@${VPS_HOST}:${PROJECT_PATH}/"
+          scp -i ~/.ssh/deploy_key caddy/Caddyfile "${VPS_USER}@${VPS_HOST}:${PROJECT_PATH}/caddy/"
+        env:
+          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+
+      - name: Log in to GHCR on VPS when token is configured
+        run: |
+          if [ -z "${GHCR_TOKEN}" ]; then
+            echo "GHCR_TOKEN not configured. Skipping docker login on VPS."
+            exit 0
+          fi
+
+          ssh -i ~/.ssh/deploy_key "${VPS_USER}@${VPS_HOST}" \
+            "echo '${GHCR_TOKEN}' | docker login ghcr.io -u '${GHCR_USERNAME}' --password-stdin"
+        env:
+          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME || github.repository_owner }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Read previous production SHA
+        id: previous_sha
+        run: |
+          set -euo pipefail
+
+          PREVIOUS_SHA=$(ssh -i ~/.ssh/deploy_key \
+            "${VPS_USER}@${VPS_HOST}" \
+            "grep '^APP_SHA=' '${PROJECT_PATH}/.env' 2>/dev/null | cut -d= -f2 || true")
+
+          echo "previous_sha=${PREVIOUS_SHA}" >> "$GITHUB_OUTPUT"
+          echo "Previous production SHA: ${PREVIOUS_SHA:-<none>}"
+        env:
+          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+
+      - name: Update APP_SHA in .env
+        run: |
+          set -euo pipefail
+
+          ssh -i ~/.ssh/deploy_key \
+            "${VPS_USER}@${VPS_HOST}" \
+            "touch '${PROJECT_PATH}/.env' && \
+             if grep -q '^APP_SHA=' '${PROJECT_PATH}/.env'; then \
+               sed -i 's|^APP_SHA=.*|APP_SHA=${IMAGE_TAG}|' '${PROJECT_PATH}/.env'; \
+             else \
+               echo 'APP_SHA=${IMAGE_TAG}' >> '${PROJECT_PATH}/.env'; \
+             fi"
+        env:
+          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          IMAGE_TAG: ${{ steps.resolve.outputs.image_tag }}
+
+      - name: Pull images on VPS
+        run: |
+          set -euo pipefail
+
+          ssh -i ~/.ssh/deploy_key \
+            "${VPS_USER}@${VPS_HOST}" \
+            "cd '${PROJECT_PATH}' && \
+             GHCR_REPOSITORY='${GHCR_REPOSITORY}' docker compose -f docker-compose.prod.yml --env-file .env pull"
+        env:
+          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+
+      - name: Roll out stack
+        run: |
+          set -euo pipefail
+
+          ssh -i ~/.ssh/deploy_key \
+            "${VPS_USER}@${VPS_HOST}" \
+            "cd '${PROJECT_PATH}' && \
+             GHCR_REPOSITORY='${GHCR_REPOSITORY}' docker compose -f docker-compose.prod.yml --env-file .env up -d --no-build --wait --wait-timeout ${COMPOSE_WAIT_TIMEOUT}"
+        env:
+          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+
+      - name: Validate smoke URL
+        env:
+          SMOKE_URL: ${{ vars.SMOKE_URL }}
+        run: |
+          if [ -z "${SMOKE_URL}" ]; then
+            echo "::error::SMOKE_URL is required for the selected environment."
+            exit 1
+          fi
+
+      - name: Smoke test public URL
+        id: smoke
+        continue-on-error: true
+        env:
+          SMOKE_URL: ${{ vars.SMOKE_URL }}
+        run: curl -f --max-time 30 "${SMOKE_URL}"
+
+      - name: Roll back to previous SHA when smoke test fails
+        if: steps.smoke.outcome == 'failure'
+        run: |
+          set -euo pipefail
+
+          PREVIOUS_SHA="${{ steps.previous_sha.outputs.previous_sha }}"
+          if [ -z "${PREVIOUS_SHA}" ]; then
+            echo "::error::No previous SHA found in .env. Rollback is impossible."
+            exit 1
+          fi
+
+          ssh -i ~/.ssh/deploy_key \
+            "${VPS_USER}@${VPS_HOST}" \
+            "sed -i 's|^APP_SHA=.*|APP_SHA=${PREVIOUS_SHA}|' '${PROJECT_PATH}/.env' && \
+             cd '${PROJECT_PATH}' && \
+             GHCR_REPOSITORY='${GHCR_REPOSITORY}' docker compose -f docker-compose.prod.yml --env-file .env pull && \
+             GHCR_REPOSITORY='${GHCR_REPOSITORY}' docker compose -f docker-compose.prod.yml --env-file .env up -d --no-build --wait --wait-timeout ${COMPOSE_WAIT_TIMEOUT}"
+
+          curl -f --max-time 30 "${SMOKE_URL}"
+          echo "::error::Deploy ${IMAGE_TAG} failed. Stack rolled back to ${PREVIOUS_SHA}."
+          exit 1
+        env:
+          VPS_USER: ${{ secrets.VPS_USER || 'deploy' }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          IMAGE_TAG: ${{ steps.resolve.outputs.image_tag }}
+          SMOKE_URL: ${{ vars.SMOKE_URL }}
+
+      - name: Remove SSH key
+        if: always()
+        run: |
+          rm -f ~/.ssh/deploy_key
+          rm -f ~/.ssh/known_hosts

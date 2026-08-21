@@ -288,6 +288,54 @@ docker builder prune -af
 docker compose down
 ```
 
+## CI/CD (GitHub Actions)
+
+Three workflows live in `.github/workflows`:
+
+- **`ci.yml`** — runs `pnpm lint`, `pnpm typecheck`, and `pnpm build` on every push and PR to `master`.
+- **`test.yml`** — runs `pnpm test`.
+- **`deploy.yml`** — on every push to `master`: builds and pushes the four service images
+  (`auth-service`, `training-service`, `web-app`, `admin-app`) to GHCR tagged with the full
+  commit SHA, then SSHes into the VPS and rolls out the release.
+
+Deployment uses a separate `docker-compose.prod.yml` that **pulls prebuilt GHCR images by
+commit SHA** (`ghcr.io/http400/instigi/<service>:${APP_SHA}`) instead of building on the VPS.
+The `deploy` job copies `docker-compose.prod.yml` and `caddy/Caddyfile` to the VPS, sets
+`APP_SHA` in the VPS `.env`, `docker compose pull`s, then `up -d --wait`. A smoke test hits
+`SMOKE_URL`; if it fails the stack automatically rolls back to the previous `APP_SHA`.
+
+The dev `docker-compose.yml` (which builds locally) is unchanged, so local
+`docker compose up --build` still works.
+
+### Required GitHub configuration
+
+Repository **secrets**:
+
+| Secret         | Description                                                              |
+| -------------- | ------------------------------------------------------------------------ |
+| `VPS_HOST`     | VPS hostname or IP for SSH/SCP.                                           |
+| `VPS_USER`     | SSH user (optional; defaults to `deploy`).                               |
+| `VPS_SSH_KEY`  | Private SSH key with access to the VPS.                                  |
+| `GHCR_TOKEN`   | Optional PAT (`read:packages`) so the VPS can pull private GHCR images.  |
+| `GHCR_USERNAME`| Optional GHCR username for the VPS login (defaults to the repo owner).   |
+
+Repository **variables**:
+
+| Variable       | Description                                                                       |
+| -------------- | -------------------------------------------------------------------------------- |
+| `SMOKE_URL`    | Public URL curled after rollout (e.g. `https://instigi.com`). Required.          |
+| `VITE_API_URL` | Optional; baked into the frontend bundles. Defaults to `https://api.instigi.com`.|
+
+### VPS prerequisites
+
+- Docker + Docker Compose v2 installed.
+- Project directory `/var/instigi` containing a populated `.env` (see the variables listed
+  under "Create the `.env` file" above — `APP_SHA` is managed automatically by the workflow).
+- The configured `deploy` user able to pull the GHCR images.
+
+The `production` GitHub environment gates the deploy job; add required reviewers there if you
+want manual approval before rollout.
+
 ## Auth Service API
 
 | Method | Endpoint             | Description                |
