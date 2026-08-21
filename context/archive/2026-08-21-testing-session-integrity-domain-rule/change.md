@@ -1,10 +1,10 @@
 ---
 change_id: testing-session-integrity-domain-rule
 title: Test rollout Phase 1 — training-service session integrity and metric domain rule
-status: implemented
+status: archived
 created: 2026-08-21
 updated: 2026-08-21
-archived_at: null
+archived_at: 2026-08-21T12:11:11Z
 ---
 
 ## Notes
