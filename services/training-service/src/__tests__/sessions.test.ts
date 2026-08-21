@@ -92,6 +92,21 @@ const pullUpExerciseSnapshot = {
   allowedEntryTypesSnapshot: ['set'],
 };
 
+// Exercise that declares a single metric — used to prove an undeclared metric key is rejected.
+const repsOnlyExerciseSnapshot = {
+  metricsSnapshot: [{ key: 'reps', required: true }],
+  defaultEntryTypeSnapshot: 'set',
+  allowedEntryTypesSnapshot: ['set'],
+};
+
+// Deliberately malformed snapshot: defaultEntryType is NOT in allowedEntryTypes.
+// Pins the current (unchecked) behavior of the defaulted entry-type path.
+const inconsistentDefaultExerciseSnapshot = {
+  metricsSnapshot: [{ key: 'reps', required: true }],
+  defaultEntryTypeSnapshot: 'lap',
+  allowedEntryTypesSnapshot: ['set'],
+};
+
 const entryRow = {
   id: 'entry-1',
   sessionExerciseId: 'se-1',
@@ -406,6 +421,114 @@ describe('POST /sessions/:id/exercises/:sessionExerciseId/sets', () => {
     expect(res.body.code).toBe('SESSION_FINISHED');
     expect(prisma.exerciseEntry.create).not.toHaveBeenCalled();
   });
+
+  it('rejects a set carrying an undeclared metric with 400', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.findFirst).mockResolvedValueOnce(
+      repsOnlyExerciseSnapshot as never,
+    );
+
+    // Exercise declares only `reps`; `load` is a valid MetricKey but undeclared here.
+    const res = await request(app)
+      .post('/sessions/session-1/exercises/se-1/sets')
+      .set('Authorization', `Bearer ${signToken()}`)
+      .send({ values: { reps: 8, load: 70 } });
+
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('VALIDATION_ERROR');
+    expect(prisma.exerciseEntry.create).not.toHaveBeenCalled();
+  });
+
+  it('rejects a set whose supplied entryType is not allowed with 400', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.findFirst).mockResolvedValueOnce(benchExerciseSnapshot as never);
+
+    // Bench allows only 'set'; 'lap' is a valid EntryType but disallowed for this exercise.
+    const res = await request(app)
+      .post('/sessions/session-1/exercises/se-1/sets')
+      .set('Authorization', `Bearer ${signToken()}`)
+      .send({ entryType: 'lap', values: { reps: 8, load: 70 } });
+
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('VALIDATION_ERROR');
+    expect(prisma.exerciseEntry.create).not.toHaveBeenCalled();
+  });
+
+  it('rejects a set whose required metric is zero with 400', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.findFirst).mockResolvedValueOnce(benchExerciseSnapshot as never);
+
+    // Zod allows 0 (nonnegative); the domain rule requires required metrics to be > 0.
+    const res = await request(app)
+      .post('/sessions/session-1/exercises/se-1/sets')
+      .set('Authorization', `Bearer ${signToken()}`)
+      .send({ values: { reps: 0, load: 70 } });
+
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('VALIDATION_ERROR');
+    expect(prisma.exerciseEntry.create).not.toHaveBeenCalled();
+  });
+
+  it('defaults entryType to the exercise default when omitted', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.findFirst).mockResolvedValueOnce(benchExerciseSnapshot as never);
+    vi.mocked(prisma.exerciseEntry.findFirst).mockResolvedValueOnce(null as never);
+    vi.mocked(prisma.exerciseEntry.create).mockResolvedValueOnce({
+      ...entryRow,
+      entryType: 'set',
+      position: 1,
+    } as never);
+
+    const res = await request(app)
+      .post('/sessions/session-1/exercises/se-1/sets')
+      .set('Authorization', `Bearer ${signToken()}`)
+      .send({ values: { reps: 8, load: 70 } });
+
+    expect(res.status).toBe(201);
+    const data = vi.mocked(prisma.exerciseEntry.create).mock.calls[0]?.[0]?.data;
+    expect(data).toMatchObject({ entryType: benchExerciseSnapshot.defaultEntryTypeSnapshot });
+  });
+
+  // KNOWN GAP (research Open Question #1): a defaulted entryType is trusted unchecked — it is
+  // NOT re-validated against allowedEntryTypes. This pins current behavior; if the server is
+  // later hardened to validate the default, flip this expectation to 400.
+  it('accepts a defaulted entryType even when it is not in allowedEntryTypes (current behavior)', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.findFirst).mockResolvedValueOnce(
+      inconsistentDefaultExerciseSnapshot as never,
+    );
+    vi.mocked(prisma.exerciseEntry.findFirst).mockResolvedValueOnce(null as never);
+    vi.mocked(prisma.exerciseEntry.create).mockResolvedValueOnce({
+      ...entryRow,
+      entryType: 'lap',
+      values: { reps: 8 },
+      position: 1,
+    } as never);
+
+    const res = await request(app)
+      .post('/sessions/session-1/exercises/se-1/sets')
+      .set('Authorization', `Bearer ${signToken()}`)
+      .send({ values: { reps: 8 } });
+
+    expect(res.status).toBe(201);
+    const data = vi.mocked(prisma.exerciseEntry.create).mock.calls[0]?.[0]?.data;
+    expect(data).toMatchObject({ entryType: 'lap' });
+  });
 });
 
 describe('PATCH /sessions/:id/exercises/:sessionExerciseId/sets/:entryId', () => {
@@ -428,6 +551,24 @@ describe('PATCH /sessions/:id/exercises/:sessionExerciseId/sets/:entryId', () =>
 
     expect(res.status).toBe(200);
     expect(res.body.data).toMatchObject({ id: 'entry-1', values: { reps: 10, load: 72 } });
+  });
+
+  it('rejects an update that drops a required metric with 400', async () => {
+    vi.mocked(prisma.workoutSession.findFirst).mockResolvedValueOnce({
+      id: 'session-1',
+      endedAt: null,
+    } as never);
+    vi.mocked(prisma.sessionExercise.findFirst).mockResolvedValueOnce(benchExerciseSnapshot as never);
+
+    // Bench requires reps + load; an update to reps-only must be rejected, not persisted.
+    const res = await request(app)
+      .patch('/sessions/session-1/exercises/se-1/sets/entry-1')
+      .set('Authorization', `Bearer ${signToken()}`)
+      .send({ values: { reps: 8 } });
+
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('VALIDATION_ERROR');
+    expect(prisma.exerciseEntry.update).not.toHaveBeenCalled();
   });
 });
 
