@@ -5,6 +5,12 @@ on:
   pull_request:
     branches: [master]
 
+# prisma.config.ts resolves env('DATABASE_URL') even for `prisma generate`,
+# which runs during test/typecheck. A dummy value is enough — no DB connection
+# is made during code generation.
+env:
+  DATABASE_URL: postgresql://user:password@localhost:5432/instigi?schema=public
+
 jobs:
   test:
     runs-on: ubuntu-latest
