@@ -318,9 +318,9 @@ Progress is fully `[x]`) and refresh the "Last updated" note line at the top of 
 
 #### Automated
 
-- [x] 3.1 §6.1 recipe present: `grep -q "pnpm --filter @instigi/training-service test" context/foundation/test-plan.md`
-- [x] 3.2 No TBD remains in §6.1
+- [x] 3.1 §6.1 recipe present: `grep -q "pnpm --filter @instigi/training-service test" context/foundation/test-plan.md` — f1bf2ca
+- [x] 3.2 No TBD remains in §6.1 — f1bf2ca
 
 #### Manual
 
-- [x] 3.3 §6.1 reads as a usable recipe; §3 Phase 1 Status matches actual Progress
+- [x] 3.3 §6.1 reads as a usable recipe; §3 Phase 1 Status matches actual Progress — f1bf2ca
