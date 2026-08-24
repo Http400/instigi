@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-08-21 (Phase 1 complete — session integrity & domain rule tests landed)
+> Last updated: 2026-08-24 (Risk #6 local Playwright coverage added; Phase 4 CI gate pending)
 
 ## 1. Strategy
 
@@ -104,13 +104,13 @@ The classic test base for this project. AI-native tools (if any) carry a
 | unit + integration (apps) | Vitest + @testing-library/react | 4.x | jsdom; `src/test-setup.ts`; co-located `*.test.tsx` |
 | unit + integration (services) | Vitest + supertest | 4.x | Test the `app` export; `vi.mock('../db.js')` at top of file; Prisma client mocked |
 | API mocking | none dedicated | — | Services mock the db module directly; web app mocks `sessionsApi` fetch |
-| e2e | none yet — see §3 Phase 4 | — | No end-to-end tool wired; the north-star loop has no cross-boundary coverage |
+| e2e | Playwright | 1.62.x | App-scoped config in `apps/web-app`; storage-state auth; north-star loop covered locally, CI gate pending |
 | accessibility | none | — | Out of scope for this rollout (see §7) |
 
 **Stack grounding tools (current session):**
 - Docs: none — Context7 / dedicated docs MCP not available in current session; relied on local manifests, configs, and `AGENTS.md`; checked: 2026-08-21
 - Search: web_search (generic) available — not used; stack facts came from local configs; checked: 2026-08-21
-- Runtime/browser: none — no Playwright MCP in current session; the e2e tool for §3 Phase 4 must be selected during `/10x-research`; checked: 2026-08-21
+- Runtime/browser: Playwright CLI + bundled Chromium available; app-scoped runner and storage-state setup verified against the real local services; checked: 2026-08-24
 - Provider/platform: GitHub MCP available (read-only) — not used for this write; relevant later for CI-gate verification; checked: 2026-08-21
 
 ## 5. Quality Gates
@@ -156,7 +156,22 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 ### 6.4 Adding an e2e test for a critical flow
 
-- TBD — see §3 Phase 4 for the start → add → log → finish → history loop and the chosen e2e tool.
+- **Location**: `apps/web-app/e2e/<risk-name>.spec.ts`, one risk-tied test per
+  file. Model new specs on `seed.spec.ts` and follow `e2e/AGENTS.md`.
+- **Auth**: use the setup project's `playwright/.auth/user.json`; individual
+  specs never log in through the UI.
+- **Boundaries**: keep auth, routing, APIs, and Postgres real. Mock only external
+  nondeterministic providers, and only at the network boundary.
+- **Locators and waits**: use `getByRole` / `getByLabel` / `getByText`; wait for
+  URLs, responses, and visible state. Never use CSS/XPath or `waitForTimeout`.
+- **Isolation**: use unique titles/IDs, remove any active session during setup,
+  and delete created sessions in `finally` through the JWT-protected
+  `DELETE /training/e2e/sessions/:id` endpoint.
+- **Canonical example**: `workout-logging-loop.spec.ts` covers Risk #6 across
+  start → rename → add Bench Press → log set → finish → history → read-only
+  detail.
+- **Run one spec**:
+  `pnpm --filter @instigi/web-app exec playwright test e2e/workout-logging-loop.spec.ts --project=chromium`.
 
 ### 6.5 Adding a web-app component/page test
 

@@ -21,3 +21,11 @@ services/training-service/src/generated
 .DS_Store
 *.log
 storybook-static/
+
+# Playwright
+apps/**/.playwright-cli/
+apps/**/playwright/.auth/
+apps/**/playwright/.cache/
+apps/**/test-results/
+apps/**/playwright-report/
+apps/**/blob-report/
